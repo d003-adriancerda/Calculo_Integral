@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula de Cálculo Integral · LaTeX</title>
+<!-- Carga de MathJax para renderizar LaTeX -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+
+<style>
+:root{--ink:#203025;--paper:#f5fbf3;--panel:#fff;--purple:#8C368D;--orange:#F59C00;--green:#3BAA34;--magenta:#CE027F;--line:#cfe4cf;--muted:#526457;--ok:#247a25;--bad:#b4235a}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.55 Georgia,serif}header{padding:2.5rem max(1rem,calc((100% - 1180px)/2));background:linear-gradient(120deg,#e5f5e2,#f2faed);border-bottom:4px solid var(--green)}h1,h2,h3,button,select,nav{font-family:Trebuchet MS,Arial,sans-serif}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.05;max-width:750px;margin:.2rem 0 1rem;color:var(--purple)}header p{max-width:720px;font-size:1.1rem}.signature{font:700 .9rem Trebuchet MS,Arial,sans-serif;color:var(--green);margin-top:1.2rem}.layout{max-width:1180px;margin:1.5rem auto;display:grid;grid-template-columns:260px 1fr;gap:1.5rem;padding:0 1rem}aside{position:sticky;top:1rem;align-self:start;background:var(--green);color:white;padding:1rem;border-radius:8px}aside h2{font-size:1rem;margin:.2rem 0 1rem}nav button{display:block;width:100%;text-align:left;background:transparent;color:#f4fff2;border:0;border-bottom:1px solid #8dc98a;padding:.65rem .4rem;cursor:pointer}nav button.active,nav button:hover{color:white;background:var(--purple)}main{min-width:0}.eyebrow{font:700 .78rem Trebuchet MS,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--magenta)}.lesson-head{border-bottom:2px solid var(--green);padding-bottom:1rem}.lesson-head h2{font-size:2rem;margin:.2rem 0;color:var(--green)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1rem 0}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:1rem}.card h3{margin-top:0;color:var(--green);font-size:1.1rem}.activity{border-left:5px solid var(--orange)}label{display:block;margin:.65rem 0}input,select,textarea{font:inherit;padding:.5rem;border:1px solid #9bc89a;border-radius:4px;max-width:100%}button.action{background:var(--orange);color:#382300;border:0;border-radius:4px;padding:.6rem .9rem;cursor:pointer;font-weight:bold}button.action:hover{background:#d88700}.feedback{font-weight:bold;margin-top:.7rem}.ok{color:var(--ok)}.bad{color:var(--bad)}table{border-collapse:collapse;width:100%;margin:.8rem 0;background:white}th,td{border:1px solid var(--line);padding:.45rem;text-align:center}th{background:#e5f5e2;color:var(--green)}.formula{background:#f2faed;padding:.7rem;font-family:monospace;overflow:auto}.notebook{background:#f4fbf1;border-left-color:var(--green)}.hidden{display:none}.progress{font:700 .9rem Trebuchet MS,Arial,sans-serif;color:#f4fff2}footer{max-width:1180px;margin:2rem auto;padding:1rem;color:var(--muted);border-top:1px solid var(--line)}@media(max-width:760px){.layout{display:block}aside{position:static;margin-bottom:1rem}.grid{grid-template-columns:1fr}.lesson-head h2{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">UNITI · LPID · 4º cuatrimestre</div><h1>Aula de Cálculo Integral</h1><p>Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería. Este laboratorio acompaña la planeación del curso de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p><p class="signature">Diseñado para la clase por Dr. J. Adrián Cerda</p></header>
+<div class="layout"><aside><h2>Ruta de aprendizaje</h2><nav id="nav"></nav><p class="progress" id="progress"></p></aside><main id="app"></main></div>
+<footer>Recurso local para clase. Las actividades no envían datos a internet. El docente puede proyectar la pantalla o compartir esta carpeta. <strong>En cada sesión, escribe en tu cuaderno la actividad o actividades propuestas y la solución o soluciones de los ejercicios.</strong></footer>
+<script>
+// -------------------------------------------------------------
+// DATOS PRINCIPALES CON EXPRESIONES EN LaTeX (CORREGIDO)
+// -------------------------------------------------------------
+const lessons = [
+  [
+    '1',
+    'Razón de cambio y derivada',
+    'Interpreta la derivada como razón instantánea a partir del cociente incremental.',
+    'Construye la derivada por definición y la interpreta geométricamente.',
+    'La derivada mide la rapidez de cambio en un instante.',
+    'En el caso del nivel del agua en un pozo, ¿qué expresa la razón de cambio promedio?',
+    ['El cambio total dividido entre el tiempo total', 'La pendiente de la recta tangente', 'La derivada en un punto'],
+    'El cambio total dividido entre el tiempo total'
+  ],
+  [
+    '2',
+    'Reglas de derivación',
+    'Aplica reglas de potencia, cadena, producto y cociente.',
+    'Selecciona la regla adecuada según la estructura de la función.',
+    'Las reglas de derivación sistematizan el cálculo de tasas de cambio.',
+    'Deriva \\( f(x)=3x^2+2x-5 \\) usando la regla de la potencia.',
+    ['\\(6x+2\\)', '\\(6x-2\\)', '\\(3x+2\\)'],
+    '\\(6x+2\\)'
+  ],
+  [
+    '3',
+    'Análisis de funciones y optimización',
+    'Usa la primera y segunda derivada para encontrar máximos y mínimos.',
+    'Resuelve problemas de optimización con restricciones.',
+    'La derivada identifica puntos críticos y la concavidad.',
+    'Para maximizar utilidades, ¿qué condición debe cumplir la derivada de la función de utilidad?',
+    ['Ser igual a cero', 'Ser positiva', 'Ser negativa'],
+    'Ser igual a cero'
+  ],
+  [
+    '4',
+    'Antiderivadas e integral indefinida',
+    'Reconoce la antiderivada como la operación inversa de la derivada.',
+    'Calcula antiderivadas de funciones básicas.',
+    'Integrar es «deshacer» la derivada.',
+    '¿Por qué toda integral indefinida incluye una constante \\( +C \\)?',
+    ['Porque la derivada de una constante es cero', 'Porque siempre hay un error de redondeo', 'Porque es una convención'],
+    'Porque la derivada de una constante es cero'
+  ],
+  [
+    '5',
+    'Fórmulas de integración elementales',
+    'Aplica fórmulas inmediatas para potencias, exponenciales y trigonométricas.',
+    'Reconoce el patrón de una integral inmediata.',
+    'Una tabla de integrales elementales agiliza el cálculo.',
+    '¿Cuál es el resultado de \\( \\displaystyle \\int x^2 \\, dx \\)?',
+    ['\\( \\dfrac{x^3}{3} + C \\)', '\\( \\dfrac{x^3}{3} \\)', '\\( 3x^2 + C \\)'],
+    '\\( \\dfrac{x^3}{3} + C \\)'
+  ],
+  [
+    '6',
+    'Integración por sustitución',
+    'Aplica cambio de variable para transformar integrales.',
+    'Identifica cuándo es apropiado el método de sustitución.',
+    'La sustitución simplifica integrales de funciones compuestas.',
+    'Para \\( \\displaystyle \\int 2x \\cos(x^2) \\, dx \\), ¿qué sustitución conviene?',
+    ['\\( u = x^2 \\)', '\\( u = 2x \\)', '\\( u = \\cos(x^2) \\)'],
+    '\\( u = x^2 \\)'
+  ],
+  [
+    '7',
+    'Integral definida y sumas de Riemann',
+    'Comprende la integral definida como límite de sumas de Riemann.',
+    'Aproxima áreas y entiende la convergencia de las sumas.',
+    'La integral definida calcula el área bajo una curva.',
+    'Al aumentar el número de rectángulos en una suma de Riemann, la aproximación:',
+    ['Mejora', 'Empeora', 'No cambia'],
+    'Mejora'
+  ],
+  [
+    '8',
+    'Teorema Fundamental del Cálculo',
+    'Relaciona la derivada y la integral definida.',
+    'Evalúa integrales definidas usando antiderivadas.',
+    'El TFC conecta el área con la antiderivada.',
+    '\\( \\displaystyle \\int_0^1 2x \\, dx \\) es:',
+    ['\\( 1 \\)', '\\( 0 \\)', '\\( 2 \\)'],
+    '\\( 1 \\)'
+  ],
+  [
+    '9',
+    'Área entre curvas',
+    'Plantea integrales para calcular áreas entre dos o más curvas.',
+    'Determina los límites de integración y la curva superior.',
+    'El área entre curvas se obtiene restando la inferior de la superior.',
+    'El área entre \\( y=x^2 \\) y \\( y=x \\) en \\( [0,1] \\) se calcula como:',
+    ['\\( \\displaystyle \\int_0^1 (x - x^2) \\, dx \\)', '\\( \\displaystyle \\int_0^1 (x^2 - x) \\, dx \\)', '\\( \\displaystyle \\int_0^1 x \\, dx \\)'],
+    '\\( \\displaystyle \\int_0^1 (x - x^2) \\, dx \\)'
+  ],
+  [
+    '10',
+    'Integración por partes',
+    'Aplica la fórmula de integración por partes para productos de funciones.',
+    'Elige adecuadamente \\( u \\) y \\( dv \\).',
+    'La integración por partes deriva de la regla del producto.',
+    'Para \\( \\displaystyle \\int x e^x \\, dx \\), una elección adecuada es:',
+    ['\\( u=x, dv=e^x \\, dx \\)', '\\( u=e^x, dv=x \\, dx \\)', '\\( u=x e^x, dv=dx \\)'],
+    '\\( u=x, dv=e^x \\, dx \\)'
+  ],
+  [
+    '11',
+    'Sustitución trigonométrica',
+    'Resuelve integrales con raíces cuadradas de formas cuadráticas.',
+    'Usa triángulos de referencia para sustituir.',
+    'La sustitución trigonométrica elimina raíces.',
+    'Para \\( \\sqrt{a^2 - x^2} \\), la sustitución recomendada es:',
+    ['\\( x = a \\sen \\theta \\)', '\\( x = a \\tan \\theta \\)', '\\( x = a \\sec \\theta \\)'],
+    '\\( x = a \\sen \\theta \\)'
+  ],
+  [
+    '12',
+    'Fracciones parciales',
+    'Descompone funciones racionales en fracciones simples.',
+    'Resuelve sistemas de ecuaciones para hallar coeficientes.',
+    'Las fracciones parciales separan denominadores complejos.',
+    'Para \\( \\displaystyle \\int \\frac{dx}{x^2-1} \\), la descomposición es:',
+    ['\\( \\dfrac{A}{x-1} + \\dfrac{B}{x+1} \\)', '\\( \\dfrac{A}{(x-1)^2} + \\dfrac{B}{x+1} \\)', '\\( \\dfrac{A}{x-1} + \\dfrac{B}{(x-1)^2} \\)'],
+    '\\( \\dfrac{A}{x-1} + \\dfrac{B}{x+1} \\)'
+  ],
+  [
+    '13',
+    'Aplicaciones de la integral',
+    'Calcula volúmenes de sólidos de revolución y longitud de arco.',
+    'Modela problemas de ingeniería mediante integrales definidas.',
+    'La integral definida se aplica en geometría y física.',
+    'El volumen de un sólido de revolución generado al rotar \\( y=f(x) \\) alrededor del eje \\( x \\) se calcula con:',
+    ['\\( \\displaystyle \\pi \\int f(x)^2 \\, dx \\)', '\\( \\displaystyle 2\\pi \\int f(x) \\, dx \\)', '\\( \\displaystyle \\int f(x) \\, dx \\)'],
+    '\\( \\displaystyle \\pi \\int f(x)^2 \\, dx \\)'
+  ],
+  [
+    '14',
+    'Proyecto integrador',
+    'Aplica todas las técnicas a un problema de ingeniería.',
+    'Diseña un modelo integral para un caso real.',
+    'Un proyecto integrador conecta el cálculo con la práctica profesional.',
+    '¿Cuál es el primer paso en un proyecto de aplicación?',
+    ['Elegir un problema real y delimitarlo', 'Hacer gráficas', 'Calcular integrales'],
+    'Elegir un problema real y delimitarlo'
+  ]
+];
+
+const exams = {
+  diagnostico: {
+    title: 'Examen diagnóstico · Cálculo Integral',
+    intro: 'Responde individualmente para conocer tu punto de partida. No tiene calificación.',
+    qs: [
+      ['¿Qué es la derivada de una función constante?', ['\\(0\\)', '\\(1\\)', 'La misma función'], '\\(0\\)'],
+      ['¿Cuál es la derivada de \\( x^3 \\)?', ['\\(3x^2\\)', '\\( \\dfrac{x^3}{3} \\)', '\\(3x^3\\)'], '\\(3x^2\\)'],
+      ['¿Qué representa la integral indefinida?', ['Una familia de funciones', 'Un número', 'El área bajo la curva'], 'Una familia de funciones'],
+      ['¿Cuál es la antiderivada de \\( \\cos(x) \\)?', ['\\( \\sen(x)+C \\)', '\\( -\\sen(x)+C \\)', '\\( \\cos(x)+C \\)'], '\\( \\sen(x)+C \\)'],
+      ['¿Qué establece el Teorema Fundamental del Cálculo?', ['La conexión entre derivada e integral', 'La regla de la cadena', 'La regla de L\'Hôpital'], 'La conexión entre derivada e integral'],
+      ['\\( \\displaystyle \\int x \\, dx \\) es:', ['\\( \\dfrac{x^2}{2}+C \\)', '\\( \\dfrac{x^2}{2} \\)', '\\( 2x+C \\)'], '\\( \\dfrac{x^2}{2}+C \\)'],
+      ['¿Qué técnica usarías para \\( \\displaystyle \\int x e^x \\, dx \\)?', ['Integración por partes', 'Sustitución trigonométrica', 'Fracciones parciales'], 'Integración por partes'],
+      ['¿Qué representa el área bajo una curva?', ['La integral definida', 'La derivada', 'La pendiente'], 'La integral definida'],
+      ['¿Qué método es útil para integrales con \\( \\sqrt{a^2 - x^2} \\)?', ['Sustitución trigonométrica', 'Sustitución simple', 'Fracciones parciales'], 'Sustitución trigonométrica'],
+      ['¿Qué es una función racional propia?', ['Grado del numerador menor que el del denominador', 'Grado del numerador mayor', 'Grados iguales'], 'Grado del numerador menor que el del denominador']
+    ]
+  },
+  parcial1: {
+    title: 'Guía Parcial 1 · Derivadas y antiderivadas',
+    intro: 'Repasa derivadas, reglas, antiderivadas y sustitución.',
+    qs: [
+      ['Deriva \\( f(x)=4x^3-2x+1 \\)', ['\\(12x^2-2\\)', '\\(12x^2+2\\)', '\\(4x^2-2\\)'], '\\(12x^2-2\\)'],
+      ['\\( \\displaystyle \\int (3x^2+2) \\, dx \\) es:', ['\\( x^3+2x+C \\)', '\\( x^3+2x \\)', '\\( 3x^3+2x+C \\)'], '\\( x^3+2x+C \\)'],
+      ['Para \\( \\displaystyle \\int x \\cos(x^2) \\, dx \\), la sustitución adecuada es:', ['\\( u=x^2 \\)', '\\( u=\\cos(x^2) \\)', '\\( u=x \\)'], '\\( u=x^2 \\)'],
+      ['¿Cuál es la derivada de \\( e^{2x} \\)?', ['\\( 2e^{2x} \\)', '\\( e^{2x} \\)', '\\( 2x e^{2x} \\)'], '\\( 2e^{2x} \\)'],
+      ['La regla de la cadena se usa cuando:', ['Hay una función compuesta', 'Hay un producto', 'Hay un cociente'], 'Hay una función compuesta']
+    ]
+  },
+  parcial2: {
+    title: 'Guía Parcial 2 · Técnicas y aplicaciones',
+    intro: 'Repasa integración por partes, trigonométrica, fracciones parciales y aplicaciones.',
+    qs: [
+      ['\\( \\displaystyle \\int x^2 \\ln(x) \\, dx \\) requiere:', ['Integración por partes', 'Sustitución trigonométrica', 'Fracciones parciales'], 'Integración por partes'],
+      ['Para \\( \\displaystyle \\int \\frac{dx}{x^2-4} \\), la descomposición es:', ['\\( \\dfrac{A}{x-2}+\\dfrac{B}{x+2} \\)', '\\( \\dfrac{A}{(x-2)^2}+\\dfrac{B}{x+2} \\)', '\\( \\dfrac{A}{x-2}+\\dfrac{B}{(x-2)^2} \\)'], '\\( \\dfrac{A}{x-2}+\\dfrac{B}{x+2} \\)'],
+      ['El volumen de un sólido de revolución se calcula con:', ['\\( \\displaystyle \\pi \\int f(x)^2 \\, dx \\)', '\\( \\displaystyle 2\\pi \\int f(x) \\, dx \\)', '\\( \\displaystyle \\int f(x) \\, dx \\)'], '\\( \\displaystyle \\pi \\int f(x)^2 \\, dx \\)'],
+      ['¿Qué método conviene para \\( \\displaystyle \\int \\sqrt{x^2-1} \\, dx \\)?', ['Sustitución trigonométrica (secante)', 'Sustitución simple', 'Partes'], 'Sustitución trigonométrica (secante)'],
+      ['El área entre dos curvas se obtiene:', ['\\( \\displaystyle \\int (\\text{superior} - \\text{inferior}) \\, dx \\)', '\\( \\displaystyle \\int (\\text{inferior} - \\text{superior}) \\, dx \\)', '\\( \\displaystyle \\int \\text{superior} \\, dx - \\int \\text{inferior} \\, dx \\)'], '\\( \\displaystyle \\int (\\text{superior} - \\text{inferior}) \\, dx \\)']
+    ]
+  }
+};
+
+const glossary = [
+  ['Derivada', 'Razón instantánea de cambio; pendiente de la recta tangente. \\( f\'(x) = \\lim_{\\Delta x \\to 0} \\frac{f(x+\\Delta x)-f(x)}{\\Delta x} \\)'],
+  ['Integral indefinida', 'Familia de antiderivadas; incluye constante de integración: \\( \\displaystyle \\int f(x) \\, dx = F(x) + C \\)'],
+  ['Integral definida', 'Número que representa el área bajo una curva en un intervalo: \\( \\displaystyle \\int_a^b f(x) \\, dx \\)'],
+  ['Teorema Fundamental del Cálculo', 'Conecta la derivada y la integral definida: \\( \\displaystyle \\int_a^b f(x) \\, dx = F(b) - F(a) \\)'],
+  ['Sustitución', 'Método de integración que cambia variable para simplificar: \\( u = g(x) \\), \\( du = g\'(x) \\, dx \\)'],
+  ['Integración por partes', 'Técnica para integrar productos de funciones: \\( \\displaystyle \\int u \\, dv = uv - \\int v \\, du \\)'],
+  ['Sustitución trigonométrica', 'Usa identidades trigonométricas para eliminar raíces. Casos: \\( a^2-x^2 \\), \\( a^2+x^2 \\), \\( x^2-a^2 \\)'],
+  ['Fracciones parciales', 'Descompone funciones racionales en fracciones simples. \\( \\dfrac{P(x)}{Q(x)} = \\sum \\dfrac{A_i}{(x-r_i)^k} \\)'],
+  ['Sólido de revolución', 'Cuerpo generado al rotar una región plana alrededor de un eje. Volumen \\( = \\displaystyle \\pi \\int f(x)^2 \\, dx \\)'],
+  ['Longitud de arco', 'Distancia a lo largo de una curva: \\( \\displaystyle L = \\int_a^b \\sqrt{1 + [f\'(x)]^2} \\, dx \\)']
+];
+
+// Prácticas adicionales y ejemplos para cada sesión
+const practice = {
+  1: {
+    guide: '¿Qué enunciado se sostiene con las razones y qué enunciados funcionan como razones?',
+    q: 'La razón de cambio instantánea se define como:',
+    o: ['El límite del cociente incremental', 'El cociente incremental', 'La pendiente de la secante'],
+    a: 'El límite del cociente incremental',
+    deliver: {
+      definicion: 'Define derivada por definición usando \\( \\displaystyle \\lim_{\\Delta x \\to 0} \\frac{f(x+\\Delta x)-f(x)}{\\Delta x} \\) y escribe un ejemplo.',
+      tabla: 'Construye una tabla con valores de la función y la pendiente de la secante.',
+      ejemplo: 'Usa el caso del acuífero para explicar razón de cambio instantánea.'
+    }
+  },
+  2: {
+    guide: '¿Qué regla elegir según la estructura de la función?',
+    q: 'Deriva \\( f(x)=\\sen(x^2) \\) usando la regla de la cadena:',
+    o: ['\\( 2x \\cos(x^2) \\)', '\\( \\cos(x^2) \\)', '\\( 2x \\sen(x^2) \\)'],
+    a: '\\( 2x \\cos(x^2) \\)',
+    deliver: {
+      definicion: 'Define regla de la cadena \\( (f\\circ g)\'(x) = f\'(g(x)) \\cdot g\'(x) \\) y da un ejemplo.',
+      tabla: 'Haz una tabla con las reglas de derivación y un ejemplo de cada una.',
+      ejemplo: 'Aplica la regla del producto a un costo total.'
+    }
+  },
+  3: {
+    guide: '¿Cómo encontrar máximos y mínimos con derivadas?',
+    q: 'Para un punto crítico, la segunda derivada negativa indica:',
+    o: ['Un máximo local', 'Un mínimo local', 'Un punto de inflexión'],
+    a: 'Un máximo local',
+    deliver: {
+      definicion: 'Define punto crítico, máximo y mínimo. \\( f\'(x)=0 \\) y \\( f\'\'(x) < 0 \\Rightarrow \\) máximo.',
+      tabla: 'Organiza el procedimiento de optimización (1ra y 2da derivada).',
+      ejemplo: 'Resuelve un problema de maximización de utilidades.'
+    }
+  },
+  4: {
+    guide: '¿Qué es una antiderivada y por qué lleva +C?',
+    q: 'La antiderivada de \\( 4x^3 \\) es:',
+    o: ['\\( x^4+C \\)', '\\( 4x^4+C \\)', '\\( 12x^2+C \\)'],
+    a: '\\( x^4+C \\)',
+    deliver: {
+      definicion: 'Define antiderivada y constante de integración.',
+      tabla: 'Muestra la relación entre derivada y antiderivada.',
+      ejemplo: 'Encuentra la antiderivada de una función polinomial.'
+    }
+  },
+  5: {
+    guide: '¿Qué fórmulas de integración son inmediatas?',
+    q: '\\( \\displaystyle \\int \\frac{1}{x} \\, dx \\) es:',
+    o: ['\\( \\ln|x|+C \\)', '\\( x \\ln|x|+C \\)', '\\( \\dfrac{1}{x^2}+C \\)'],
+    a: '\\( \\ln|x|+C \\)',
+    deliver: {
+      definicion: 'Enumera las fórmulas elementales: \\( \\int x^n dx \\), \\( \\int e^x dx \\), \\( \\int \\sen x dx \\), etc.',
+      tabla: 'Construye una tabla de integrales inmediatas.',
+      ejemplo: 'Aplica una fórmula a un problema de área.'
+    }
+  },
+  6: {
+    guide: '¿Cuándo usar sustitución?',
+    q: 'Para \\( \\displaystyle \\int \\frac{2x+1}{x^2+x} \\, dx \\), ¿qué sustitución conviene?',
+    o: ['\\( u=x^2+x \\)', '\\( u=2x+1 \\)', '\\( u=x \\)'],
+    a: '\\( u=x^2+x \\)',
+    deliver: {
+      definicion: 'Describe el método de sustitución: \\( \\int f(g(x)) g\'(x) dx = \\int f(u) du \\).',
+      tabla: 'Muestra el proceso de cambio de variable.',
+      ejemplo: 'Resuelve una integral con sustitución.'
+    }
+  },
+  7: {
+    guide: '¿Cómo se aproxima el área con rectángulos?',
+    q: 'Al usar sumas de Riemann, el área exacta se obtiene cuando:',
+    o: ['El número de rectángulos tiende a infinito', 'El número de rectángulos es 10', 'Los rectángulos son todos iguales'],
+    a: 'El número de rectángulos tiende a infinito',
+    deliver: {
+      definicion: 'Define suma de Riemann e integral definida.',
+      tabla: 'Construye una tabla de aproximaciones con \\( n=2,4,8 \\).',
+      ejemplo: 'Aproxima el área bajo una curva lineal.'
+    }
+  },
+  8: {
+    guide: '¿Cómo se evalúa una integral definida?',
+    q: '\\( \\displaystyle \\int_0^2 2x \\, dx \\) es:',
+    o: ['\\( 4 \\)', '\\( 2 \\)', '\\( 0 \\)'],
+    a: '\\( 4 \\)',
+    deliver: {
+      definicion: 'Enuncia el Teorema Fundamental del Cálculo: \\( \\int_a^b f(x) dx = F(b)-F(a) \\).',
+      tabla: 'Muestra pasos para evaluar una integral definida.',
+      ejemplo: 'Calcula el área bajo una curva polinomial.'
+    }
+  },
+  9: {
+    guide: '¿Cómo plantear el área entre dos curvas?',
+    q: 'Si \\( f(x) \\ge g(x) \\) en \\( [a,b] \\), el área entre ellas es:',
+    o: ['\\( \\displaystyle \\int_a^b (f-g) \\, dx \\)', '\\( \\displaystyle \\int_a^b (g-f) \\, dx \\)', '\\( \\displaystyle \\int_a^b f \\, dx - \\int_a^b g \\, dx \\)'],
+    a: '\\( \\displaystyle \\int_a^b (f-g) \\, dx \\)',
+    deliver: {
+      definicion: 'Define área entre curvas.',
+      tabla: 'Representa gráficamente la región y la integral.',
+      ejemplo: 'Calcula el área entre \\( y=x^2 \\) y \\( y=x \\) en \\( [0,1] \\).'
+    }
+  },
+  10: {
+    guide: '¿Cómo elegir \\( u \\) y \\( dv \\) en integración por partes?',
+    q: 'Para \\( \\displaystyle \\int x \\ln(x) \\, dx \\), la elección recomendada es:',
+    o: ['\\( u=\\ln(x), dv=x \\, dx \\)', '\\( u=x, dv=\\ln(x) \\, dx \\)', '\\( u=x\\ln(x), dv=dx \\)'],
+    a: '\\( u=\\ln(x), dv=x \\, dx \\)',
+    deliver: {
+      definicion: 'Formula la integración por partes: \\( \\int u \\, dv = uv - \\int v \\, du \\).',
+      tabla: 'Muestra el procedimiento con elección de \\( u \\) y \\( dv \\).',
+      ejemplo: 'Resuelve \\( \\int x e^x \\, dx \\).'
+    }
+  },
+  11: {
+    guide: '¿Qué sustitución trigonométrica usar según la forma?',
+    q: 'Para \\( \\sqrt{x^2+a^2} \\), la sustitución es:',
+    o: ['\\( x=a \\tan \\theta \\)', '\\( x=a \\sen \\theta \\)', '\\( x=a \\sec \\theta \\)'],
+    a: '\\( x=a \\tan \\theta \\)',
+    deliver: {
+      definicion: 'Describe los tres casos de sustitución trigonométrica.',
+      tabla: 'Construye un triángulo de referencia para cada caso.',
+      ejemplo: 'Resuelve \\( \\displaystyle \\int \\frac{dx}{\\sqrt{x^2+4}} \\).'
+    }
+  },
+  12: {
+    guide: '¿Cómo descomponer en fracciones parciales?',
+    q: 'Para \\( \\dfrac{x+1}{(x-1)(x+2)} \\), la descomposición es:',
+    o: ['\\( \\dfrac{A}{x-1}+\\dfrac{B}{x+2} \\)', '\\( \\dfrac{A}{x-1}+\\dfrac{B}{(x-1)^2} \\)', '\\( \\dfrac{A}{x+1}+\\dfrac{B}{x-2} \\)'],
+    a: '\\( \\dfrac{A}{x-1}+\\dfrac{B}{x+2} \\)',
+    deliver: {
+      definicion: 'Define fracciones parciales y sus casos.',
+      tabla: 'Muestra la descomposición para factores lineales distintos.',
+      ejemplo: 'Resuelve \\( \\displaystyle \\int \\frac{dx}{x^2-1} \\).'
+    }
+  },
+  13: {
+    guide: '¿Qué magnitud física o geométrica calculamos?',
+    q: 'La longitud de arco de una curva \\( y=f(x) \\) en \\( [a,b] \\) es:',
+    o: ['\\( \\displaystyle \\int_a^b \\sqrt{1 + (f\')^2} \\, dx \\)', '\\( \\displaystyle \\int_a^b \\sqrt{1 + f^2} \\, dx \\)', '\\( \\displaystyle \\int_a^b f(x) \\, dx \\)'],
+    a: '\\( \\displaystyle \\int_a^b \\sqrt{1 + (f\')^2} \\, dx \\)',
+    deliver: {
+      definicion: 'Define longitud de arco, volumen de revolución.',
+      tabla: 'Organiza fórmulas de aplicaciones.',
+      ejemplo: 'Calcula el volumen de un sólido de revolución.'
+    }
+  },
+  14: {
+    guide: '¿Cómo abordar un proyecto de aplicación?',
+    q: 'El primer paso para un proyecto integrador es:',
+    o: ['Definir el problema y las variables', 'Calcular todas las integrales', 'Hacer la gráfica de la función'],
+    a: 'Definir el problema y las variables',
+    deliver: {
+      definicion: 'Define proyecto integrador y sus fases.',
+      tabla: 'Organiza problema, modelo, cálculo y conclusión.',
+      ejemplo: 'Propón un problema de ingeniería que requiera integrales.'
+    }
+  }
+};
+
+const simpleExamples = {
+  1: 'Ejemplo: la velocidad instantánea de un auto es la derivada de la posición: \\( v(t) = \\dfrac{dx}{dt} \\).',
+  2: 'Ejemplo: derivar \\( f(x)=\sen(2x) \\) usando regla de la cadena: \\( 2\cos(2x) \\).',
+  3: 'Ejemplo: maximizar el área de un rectángulo con perímetro fijo. \\( A(x)=x(L-x) \\), \\( A\'(x)=L-2x=0 \\Rightarrow x=L/2 \\).',
+  4: 'Ejemplo: antiderivada de \\( 2x \\) es \\( x^2+C \\).',
+  5: 'Ejemplo: \\( \\displaystyle \\int \cos(x) \\, dx = \sen(x)+C \\).',
+  6: 'Ejemplo: \\( \\displaystyle \\int 2x \cos(x^2) \\, dx \\), \\( u=x^2 \\), \\( du=2x \\, dx \\).',
+  7: 'Ejemplo: área bajo \\( y=x^2 \\) en \\( [0,1] \\) aproximada con 4 rectángulos.',
+  8: 'Ejemplo: \\( \\displaystyle \\int_0^1 x \\, dx = \\frac{1}{2} \\).',
+  9: 'Ejemplo: área entre \\( y=x \\) y \\( y=x^2 \\) en \\( [0,1] \\): \\( \\int_0^1 (x-x^2) dx = 1/6 \\).',
+  10: 'Ejemplo: \\( \\displaystyle \\int x e^x \\, dx = (x-1)e^x + C \\).',
+  11: 'Ejemplo: \\( \\displaystyle \\int \\frac{dx}{\\sqrt{4-x^2}} \\), \\( x=2\sen \\theta \\).',
+  12: 'Ejemplo: \\( \\displaystyle \\int \\frac{dx}{x^2-1} = \\frac{1}{2} \\ln\\left| \\frac{x-1}{x+1} \\right| + C \\).',
+  13: 'Ejemplo: volumen de una esfera mediante discos: \\( \\displaystyle \\pi \\int_{-r}^{r} (r^2-x^2) \\, dx = \\frac{4}{3}\\pi r^3 \\).',
+  14: 'Ejemplo: diseñar un tanque de agua con forma de revolución y calcular su capacidad.'
+};
+
+const extraExercises = {
+  1: [
+    ['¿Cuál es la definición de derivada?', ['Límite del cociente incremental', 'Cociente incremental', 'Pendiente de la recta'], 'Límite del cociente incremental'],
+    ['La derivada de \\( f(x)=x^2 \\) en \\( x=3 \\) es:', ['\\(6\\)', '\\(3\\)', '\\(9\\)'], '\\(6\\)']
+  ],
+  2: [
+    ['Deriva \\( f(x)=(x^2+1)^3 \\)', ['\\( 6x(x^2+1)^2 \\)', '\\( 3(x^2+1)^2 \\)', '\\( 6x^2(x^2+1)^2 \\)'], '\\( 6x(x^2+1)^2 \\)'],
+    ['La regla del producto se usa para:', ['Producto de funciones', 'Cociente de funciones', 'Composición'], 'Producto de funciones']
+  ],
+  3: [
+    ['Si \\( f\'(x)=0 \\) y \\( f\'\'(x)>0 \\), entonces \\( x \\) es:', ['Mínimo local', 'Máximo local', 'Punto de inflexión'], 'Mínimo local'],
+    ['La segunda derivada mide:', ['Concavidad', 'Pendiente', 'Rapidez de cambio'], 'Concavidad']
+  ],
+  4: [
+    ['La antiderivada de \\( \\frac{1}{\\sqrt{x}} \\) es:', ['\\( 2\\sqrt{x}+C \\)', '\\( \\sqrt{x}+C \\)', '\\( \\dfrac{1}{2\\sqrt{x}}+C \\)'], '\\( 2\\sqrt{x}+C \\)'],
+    ['¿Por qué la integral indefinida incluye \\( C \\)?', ['Por la derivada de una constante', 'Por el área bajo la curva', 'Por la regla de la cadena'], 'Por la derivada de una constante']
+  ],
+  5: [
+    ['\\( \\displaystyle \\int e^{2x} \\, dx \\) es:', ['\\( \\dfrac{1}{2}e^{2x}+C \\)', '\\( 2e^{2x}+C \\)', '\\( e^{2x}+C \\)'], '\\( \\dfrac{1}{2}e^{2x}+C \\)'],
+    ['\\( \\displaystyle \\int \\sen(x) \\, dx \\) es:', ['\\( -\\cos(x)+C \\)', '\\( \\cos(x)+C \\)', '\\( -\\sen(x)+C \\)'], '\\( -\\cos(x)+C \\)']
+  ],
+  6: [
+    ['Para \\( \\displaystyle \\int x \\sqrt{x^2+1} \\, dx \\), la sustitución es:', ['\\( u=x^2+1 \\)', '\\( u=x \\)', '\\( u=\\sqrt{x^2+1} \\)'], '\\( u=x^2+1 \\)'],
+    ['La sustitución simplifica la integral porque:', ['Cambia la variable y el diferencial', 'Elimina la constante', 'Convierte en integral definida'], 'Cambia la variable y el diferencial']
+  ],
+  7: [
+    ['La integral definida de una función positiva representa:', ['Área bajo la curva', 'Volumen', 'Longitud'], 'Área bajo la curva'],
+    ['Las sumas de Riemann se usan para:', ['Aproximar integrales definidas', 'Calcular derivadas', 'Resolver ecuaciones'], 'Aproximar integrales definidas']
+  ],
+  8: [
+    ['El TFC dice que \\( \\int_a^b f(x) dx = F(b)-F(a) \\) donde \\( F \\) es:', ['Una antiderivada de \\( f \\)', 'La derivada de \\( f \\)', 'La función original'], 'Una antiderivada de \\( f \\)'],
+    ['La derivada de \\( \\displaystyle \\int_0^x t^2 \\, dt \\) es:', ['\\( x^2 \\)', '\\( 2x \\)', '\\( \\dfrac{x^3}{3} \\)'], '\\( x^2 \\)']
+  ],
+  9: [
+    ['El área entre \\( y=x \\) y \\( y=x^2 \\) en \\( [0,1] \\) es:', ['\\( \\dfrac{1}{6} \\)', '\\( \\dfrac{1}{3} \\)', '\\( \\dfrac{1}{2} \\)'], '\\( \\dfrac{1}{6} \\)'],
+    ['Para encontrar los límites de integración, se igualan:', ['Las dos curvas', 'La derivada de las curvas', 'Las integrales'], 'Las dos curvas']
+  ],
+  10: [
+    ['En integración por partes, la fórmula es:', ['\\( \\int u \\, dv = uv - \\int v \\, du \\)', '\\( \\int u \\, dv = uv + \\int v \\, du \\)', '\\( \\int u \\, dv = \\int uv \\, dx \\)'], '\\( \\int u \\, dv = uv - \\int v \\, du \\)'],
+    ['Para \\( \\displaystyle \\int x \\cos(x) \\, dx \\), una elección adecuada es:', ['\\( u=x, dv=\\cos(x) \\, dx \\)', '\\( u=\\cos(x), dv=x \\, dx \\)', '\\( u=x\\cos(x), dv=dx \\)'], '\\( u=x, dv=\\cos(x) \\, dx \\)']
+  ],
+  11: [
+    ['Para \\( \\sqrt{x^2-4} \\), la sustitución es:', ['\\( x=2 \\sec \\theta \\)', '\\( x=2 \\sen \\theta \\)', '\\( x=2 \\tan \\theta \\)'], '\\( x=2 \\sec \\theta \\)'],
+    ['La sustitución trigonométrica convierte la raíz en:', ['Una expresión trigonométrica simple', 'Un polinomio', 'Una exponencial'], 'Una expresión trigonométrica simple']
+  ],
+  12: [
+    ['La descomposición de \\( \\dfrac{1}{(x-1)(x+1)} \\) es:', ['\\( \\dfrac{A}{x-1}+\\dfrac{B}{x+1} \\)', '\\( \\dfrac{A}{x-1}+\\dfrac{B}{(x-1)^2} \\)', '\\( \\dfrac{A}{x+1}+\\dfrac{B}{(x+1)^2} \\)'], '\\( \\dfrac{A}{x-1}+\\dfrac{B}{x+1} \\)'],
+    ['Para hallar \\( A \\) y \\( B \\) se resuelve:', ['Un sistema de ecuaciones lineales', 'Una integral', 'Una derivada'], 'Un sistema de ecuaciones lineales']
+  ],
+  13: [
+    ['La fórmula del volumen por discos es:', ['\\( \\displaystyle \\pi \\int f(x)^2 \\, dx \\)', '\\( \\displaystyle 2\\pi \\int x f(x) \\, dx \\)', '\\( \\displaystyle \\int f(x) \\, dx \\)'], '\\( \\displaystyle \\pi \\int f(x)^2 \\, dx \\)'],
+    ['La longitud de arco de una curva requiere:', ['Integrar \\( \\sqrt{1+(f\')^2} \\)', 'Integrar \\( f(x) \\)', 'Derivar \\( f(x) \\)'], 'Integrar \\( \\sqrt{1+(f\')^2} \\)']
+  ],
+  14: [
+    ['Un proyecto integrador debe incluir:', ['Problema, modelo, cálculo e interpretación', 'Solo cálculo', 'Solo gráficas'], 'Problema, modelo, cálculo e interpretación'],
+    ['¿Qué permite el modelo matemático?', ['Predecir y optimizar', 'Dibujar gráficas', 'Resolver ecuaciones'], 'Predecir y optimizar']
+  ]
+};
+
+// -------------------------------------------------------------
+// FUNCIONES DE RENDERIZADO Y LÓGICA
+// -------------------------------------------------------------
+let current = '1';
+
+function choices(q, i) {
+  return `<div class="choices">${q[1].map((x,n) => `<label><input type="radio" name="q${i}" value="${x}"> ${x}</label>`).join('')}</div>`;
+}
+
+function checkLesson(id, ans) {
+  const chosen = document.querySelector(`input[name=q${id}]:checked`);
+  const box = document.getElementById('f' + id);
+  if (!chosen) { box.textContent = 'Selecciona una respuesta.'; box.className = 'feedback bad'; return; }
+  box.textContent = chosen.value === ans ? '✅ Correcto. Ahora explica por qué.' : '❌ Revisa la idea clave y vuelve a intentarlo.';
+  box.className = 'feedback ' + (chosen.value === ans ? 'ok' : 'bad');
+}
+
+function checkEvidence(id) {
+  const value = document.getElementById('e' + id).value;
+  const box = document.getElementById('evid' + id);
+  box.textContent = value ? 'Buena elección: explica por qué esa evidencia es pertinente.' : 'Selecciona una evidencia.';
+  box.className = 'feedback ' + (value ? 'ok' : 'bad');
+}
+
+function renderLesson(l) {
+  const [id, title, skill, expected, concept, prompt, opts, answer] = l;
+  return `<div class="lesson-head"><div class="eyebrow">Sesión ${id}/14</div><h2>${title}</h2><p><strong>Competencia:</strong> ${skill}</p><p><strong>Aprendizaje esperado:</strong> ${expected}</p></div>
+  <div class="grid"><section class="card"><h3>💡 Idea clave</h3><p>${concept}</p><div class="formula">Pregunta guía: ${id==='1'?'¿Qué tan rápido cambia algo en un instante?':id==='2'?'¿Qué regla de derivación se adapta a la estructura?':id==='4'?'¿Cómo «deshacemos» la derivada?':id==='8'?'¿Cómo se conectan derivada e integral?':id==='9'?'¿Cuál curva va arriba y cuál abajo?':id==='10'?'¿Cómo elegir u y dv?':id==='11'?'¿Qué triángulo de referencia usar?':id==='12'?'¿Cómo descomponer el denominador?':id==='13'?'¿Qué magnitud física se calcula?':'¿Qué técnica reconozco en esta integral?'}</div></section>
+  <section class="card activity"><h3>📌 Actividad 1 · Comprueba</h3><p>${prompt}</p>${choices([prompt,opts,answer],id)}<button class="action" onclick="checkLesson('${id}','${answer.replaceAll("'","\\'")}')">Comprobar</button><div id="f${id}" class="feedback"></div></section></div>
+  <div class="grid"><section class="card activity"><h3>🧠 Actividad 2 · Elige la evidencia</h3><p>¿Qué evidencia fortalecería mejor tu respuesta?</p><select id="e${id}"><option value="">Selecciona...</option><option>Una definición o regla formal</option><option>Un cálculo paso a paso</option><option>Un ejemplo de la vida cotidiana</option></select><button class="action" onclick="checkEvidence('${id}')">Revisar</button><div id="evid${id}" class="feedback"></div></section>
+  <section class="card activity notebook"><h3>📓 Actividad 3 · Registro en cuaderno</h3><p><strong>Escribe en tu cuaderno</strong> la actividad o actividades propuestas y la solución o soluciones de los ejercicios. Después marca cada evidencia:</p><label><input type="checkbox"> Copié el planteamiento.</label><label><input type="checkbox"> Escribí procedimiento y respuesta.</label><label><input type="checkbox"> Añadí una justificación o ejemplo propio.</label></section></div>
+  <section class="card"><h3>🗣️ Actividad 4 · Transferencia y conversación</h3><p>En parejas, inventen un ejemplo de su comunidad o futura profesión. Expliquen qué función, límite o integral hace que su respuesta sea defendible.</p><textarea rows="3" style="width:100%" placeholder="Escribe aquí una justificación breve..."></textarea></section>`;
+}
+
+function renderGlossary() {
+  return `<div class="lesson-head"><div class="eyebrow">Consulta rápida</div><h2>📚 Glosario de términos clave</h2><p>Usa estas definiciones para preparar la sesión y revisar tu cuaderno.</p></div><section class="card"><table><thead><tr><th>Término</th><th>Definición</th></tr></thead><tbody>${glossary.map(item => `<tr><th>${item[0]}</th><td>${item[1]}</td></tr>`).join('')}</tbody></table></section>`;
+}
+
+function renderExam(ex) {
+  return `<div class="lesson-head"><div class="eyebrow">Evaluación</div><h2>${ex.title}</h2><p>${ex.intro}</p></div><section class="card">${ex.qs.map((q,i) => `<div class="activity"><p><strong>${i+1}. ${q[0]}</strong></p>${choices(q,i)}</div>`).join('')}<button class="action" onclick='gradeExam(${JSON.stringify(ex.qs)})'>Calificar</button><div id="examFeedback" class="feedback"></div></section>`;
+}
+
+function gradeExam(qs) {
+  let score = 0;
+  qs.forEach((q, i) => {
+    const c = document.querySelector(`input[name=q${i}]:checked`);
+    if (c && c.value === q[2]) score++;
+  });
+  const box = document.getElementById('examFeedback');
+  box.textContent = `Resultado: ${score}/${qs.length}. Revisa las respuestas y anota qué concepto necesitas practicar.`;
+  box.className = 'feedback ' + (score === qs.length ? 'ok' : 'bad');
+}
+
+function checkPractice(id) {
+  const item = practice[id];
+  const selected = document.querySelector(`input[name="p${id}"]:checked`);
+  const box = document.getElementById(`pf${id}`);
+  box.textContent = (selected && selected.value === item.a) ? '✅ Correcto: justifica el procedimiento en tu cuaderno.' : '❌ Revisa el planteamiento y vuelve a intentarlo.';
+  box.className = 'feedback ' + (selected && selected.value === item.a ? 'ok' : 'bad');
+}
+
+function revealDeliverable(id) {
+  const value = document.getElementById(`d${id}`).value;
+  const box = document.getElementById(`df${id}`);
+  if (value) {
+    box.textContent = practice[id].deliver[value] || 'Ejercicio no definido.';
+  } else {
+    box.textContent = 'Elige un producto para recibir el ejercicio concreto.';
+  }
+  box.className = 'feedback ' + (value ? 'ok' : 'bad');
+}
+
+function checkExpanded(id, answer) {
+  const selected = document.querySelector(`input[name="a${id}"]:checked`);
+  const box = document.getElementById(`af${id}`);
+  box.textContent = (selected && selected.value === answer) ? '✅ Correcto: anota también por qué.' : '❌ Revisa la idea clave y vuelve a intentarlo.';
+  box.className = 'feedback ' + (selected && selected.value === answer ? 'ok' : 'bad');
+}
+
+function practiceChoices(item, name) {
+  return item.o.map(option => `<label><input type="radio" name="${name}" value="${option}"> ${option}</label>`).join('');
+}
+
+function checkExtra(name, answer) {
+  const selected = document.querySelector(`input[name="${name}"]:checked`);
+  const box = document.getElementById(`${name}f`);
+  box.textContent = (selected && selected.value === answer) ? '✅ Correcto: explica el razonamiento en tu cuaderno.' : '❌ Revisa los datos y vuelve a resolverlo.';
+  box.className = 'feedback ' + (selected && selected.value === answer ? 'ok' : 'bad');
+}
+
+function renderExtraCard(id, index) {
+  const item = extraExercises[id][index];
+  const name = `x${id}${index}`;
+  const safe = item[2].replaceAll("'", "\\'");
+  return `<section class="card activity"><h3>➕ Actividad ${index+6} · Practica</h3><p>${item[0]}</p>${practiceChoices({o:item[1]}, name)}<button class="action" onclick="checkExtra('${name}','${safe}')">Comprobar</button><div id="${name}f" class="feedback"></div><p class="notebook-note">📓 Copia el ejercicio, el procedimiento y la solución en tu cuaderno.</p></section>`;
+}
+
+function renderLessonExpanded(l) {
+  const [id, title, skill, expected, concept, prompt, opts, answer] = l;
+  const item = practice[id];
+  return `<div class="lesson-head"><div class="eyebrow">Sesión ${id}/14</div><h2>${title}</h2><p><strong>Competencia:</strong> ${skill}</p><p><strong>Aprendizaje esperado:</strong> ${expected}</p><p><strong>🤔 Pregunta guía:</strong> ${item.guide}</p></div>
+  <div class="grid"><section class="card"><h3>📖 Explicación con ejemplo</h3><p>${concept}</p><p><strong>Ejemplo sencillo:</strong> ${simpleExamples[id]}</p><div class="formula">${id==='4'?'$\\displaystyle \\int f\'(x) \\, dx = f(x)+C$':id==='7'?'$\\displaystyle \\sum f(x_i) \\Delta x$':id==='8'?'$F(b)-F(a)$':id==='9'?'$\\displaystyle \\int (\\text{superior} - \\text{inferior}) \\, dx$':id==='10'?'$\\displaystyle \\int u \\, dv = uv - \\int v \\, du$':id==='11'?'Triángulo de referencia':id==='12'?'$\\displaystyle \\frac{A}{x-a}+\\frac{B}{x-b}$':id==='13'?'Aplicaciones de la integral':'Estrategia de integración'}</div></section>
+  <section class="card activity"><h3>✅ Actividad 1 · Comprueba</h3><p>${prompt}</p>${practiceChoices({o:opts}, `a${id}`)}<button class="action" onclick="checkExpanded('${id}','${answer.replaceAll("'","\\'")}')">Comprobar</button><div id="af${id}" class="feedback"></div></section></div>
+  <div class="grid"><section class="card activity"><h3>🔍 Actividad 2 · Resuelve y justifica</h3><p>${item.q}</p>${practiceChoices(item, `p${id}`)}<button class="action" onclick="checkPractice('${id}')">Comprobar</button><div id="pf${id}" class="feedback"></div></section>
+  <section class="card activity notebook"><h3>📝 Actividad 3 · Produce una evidencia</h3><p>Elige una opción. Al seleccionarla aparecerá el ejercicio que debes realizar y escribir en tu cuaderno.</p><select id="d${id}" onchange="revealDeliverable('${id}')"><option value="">Selecciona...</option><option value="definicion">Definición</option><option value="tabla">Tabla o representación</option><option value="ejemplo">Ejemplo de la vida cotidiana</option></select><div id="df${id}" class="feedback"></div><p><strong>Registro:</strong> escribe en tu cuaderno la actividad, el procedimiento y la solución o soluciones.</p></section></div>
+  <section class="card"><h3>💬 Actividad 4 · Dialoga y transfiere</h3><p>Explica a un compañero qué paso clave hace que tu respuesta sea correcta. Después escribe una justificación breve.</p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tu explicación..."></textarea></section>
+  <section class="card notebook"><h3>📌 Actividad 5 · Cierre en el cuaderno</h3><p>Escribe una conclusión de dos líneas: qué aprendiste, qué procedimiento utilizaste y dónde podrías aplicarlo.</p><label><input type="checkbox"> Revisé mi procedimiento.</label><label><input type="checkbox"> Escribí la solución completa.</label></section>
+  <div class="grid">${renderExtraCard(id, 0)}${renderExtraCard(id, 1)}</div>`;
+}
+
+function showExpanded(key) {
+  current = key;
+  const nav = document.getElementById('nav');
+  nav.innerHTML = lessons.map(l => `<button class="${key === l[0] ? 'active' : ''}" onclick="show('${l[0]}')">${l[0].padStart(2, '0')} · ${l[1]}</button>`).join('') +
+    `<button class="${key === 'diagnostico' ? 'active' : ''}" onclick="show('diagnostico')">📝 D · Diagnóstico (10)</button>` +
+    `<button class="${key === 'parcial1' ? 'active' : ''}" onclick="show('parcial1')">📄 P1 · Guía Parcial 1</button>` +
+    `<button class="${key === 'parcial2' ? 'active' : ''}" onclick="show('parcial2')">📄 P2 · Guía Parcial 2</button>` +
+    `<button class="${key === 'glosario' ? 'active' : ''}" onclick="show('glosario')">📖 G · Glosario</button>`;
+
+  document.getElementById('progress').textContent = (key.length < 3) ? `Sesión ${key} de 14` : (key === 'glosario' ? 'Consulta' : 'Instrumento');
+
+  let html = '';
+  if (key.length < 3) {
+    html = renderLessonExpanded(lessons.find(l => l[0] === key));
+  } else if (key === 'glosario') {
+    html = renderGlossary();
+  } else {
+    html = renderExam(exams[key]);
+  }
+  document.getElementById('app').innerHTML = html;
+
+  // Renderizar LaTeX con MathJax
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+  }
+}
+
+// Sobrescribimos la función global 'show' para que use la expandida
+window.show = showExpanded;
+
+// Iniciar con la sesión 1
+showExpanded('1');
+</script>
+</body>
+</html>
