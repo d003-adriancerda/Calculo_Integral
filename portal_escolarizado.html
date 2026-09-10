@@ -81,37 +81,39 @@
             margin-top: 1.2rem;
         }
         /* ---------- ★ NUEVO: branding institucional (logo) ---------- */
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 1.4rem;
-            flex-wrap: wrap;
-        }
-        .header-brand>div {
-            flex: 1 1 320px;
-        }
-        .logo {
-            height: 95px;
-            width: auto;
-            max-width: 200px;
-            object-fit: contain;
-            background: #fff;
-            border-radius: 10px;
-            padding: .4rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .10);
-        }
-        @media (max-width: 760px) {
-            .logo {
-                height: 70px;
-            }
-        }
-        @media print {
-            .logo {
-                height: 75px;
-                box-shadow: none;
-            }
-        }
-        /* ---------- fin branding ---------- */
+        /* ---------- ★ branding institucional (logo a la derecha, sin fondo) ---------- */
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+}
+.header-brand>div {
+    flex: 1 1 320px;
+}
+.logo {
+    order: 2;                 /* ← mueve el logo a la DERECHA del texto */
+    height: 110px;
+    width: auto;
+    max-width: 220px;
+    object-fit: contain;
+    /* sin background, sin borde, sin sombra: se integra al header */
+    mix-blend-mode: multiply; /* ← elimina visualmente el fondo blanco del PNG */
+}
+@media (max-width: 760px) {
+    .logo {
+        order: 0;             /* en móvil el logo va ARRIBA (más natural) */
+        align-self: flex-start;
+        height: 75px;
+    }
+}
+@media print {
+    .logo {
+        order: 2;
+        height: 80px;
+    }
+}
+/* ---------- fin branding ---------- */
         .top-bar {
             display: flex;
             flex-wrap: wrap;
