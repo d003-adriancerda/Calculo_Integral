@@ -1297,7 +1297,7 @@
             const item = extraExercises[id][index];
             const name = `x${id}${index}`;
             const safe = item[2].replaceAll("'", "\\'");
-            return `<section class="card activity"><h3>➕ Actividad ${index+6} · Practica</h3><p>${item[0]}</p>${practiceChoices({o:item[1]}, name)}<button class="action" onclick="checkExtra('${name}','${safe}')">Comprobar</button><div id="${name}f" class="feedback"></div><p class="notebook-note">📓 Copia el ejercicio, el procedimiento y la solución en tu cuaderno.</p></section>`;
+            return `<section class="card activity"><h3>➕ Actividad ${index+6} · Extra</h3><p>${item[0]}</p>${practiceChoices({o:item[1]}, name)}<button class="action" onclick="checkExtra('${name}','${safe}')">Comprobar</button><div id="${name}f" class="feedback"></div><p class="notebook-note">📓 Copia el ejercicio, el procedimiento y la solución en tu cuaderno.</p></section>`;
         }
 
         function renderLessonExpanded(l) {
@@ -1314,8 +1314,8 @@
           <div class="grid"><section class="card activity"><h3>🔍 Actividad 2 · Resuelve y justifica</h3><p>${item.q}</p>${practiceChoices(item, `p${id}`)}<button class="action" onclick="checkPractice('${id}')">Comprobar</button><div id="pf${id}" class="feedback"></div></section>
           <section class="card activity notebook"><h3>📝 Actividad 3 · Genera una evidencia</h3><p>Elige una opción. Al seleccionarla aparecerá el ejercicio que debes realizar y escribir en tu cuaderno.</p><select id="d${id}" onchange="revealDeliverable('${id}')"><option value="">Selecciona...</option><option value="definicion">Definición</option><option value="tabla">Tabla o representación</option><option value="ejemplo">Ejemplo de la vida cotidiana</option></select><div id="df${id}" class="feedback"></div><p><strong>Registro:</strong> escribe en tu cuaderno la actividad, el procedimiento y la solución o soluciones.</p></section></div>
           <section class="card"><h3>💬 Actividad 4 · Dialoga y transfiere</h3><p>Explica a un compañero qué paso clave o aprendizaje logrado hace que en esta sesión tus respuestas sean correctas. Después escribe una justificación breve.</p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tu explicación..."></textarea></section>
-          <section class="card notebook"><h3>📌 Actividad 5 · Cierre en el cuaderno</h3><p>Escribe una conclusión de dos líneas: qué aprendiste, qué procedimiento utilizaste y como podrías recordarlo.
-          </p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tus concluciones..."></textarea></p><label><input type="checkbox"> Revisé mi procedimiento.</label><label><input type="checkbox"> Escribí la solución completa.</label>
+          <section class="card notebook"><h3>📌 Actividad 5 · Lo que aprendí</h3><p>Escribe una conclusión de dos líneas: qué aprendiste, qué procedimiento utilizaste y como podrías recordarlo.
+          </p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tus concluciones..."></textarea></p><label><input type="checkbox"> No aprendí nada.</label><label><input type="checkbox"> Todavía estoy procesando la información.</label>
           </section>
           <div class="grid">${renderExtraCard(id, 0)}${renderExtraCard(id, 1)}</div>`;
         }
