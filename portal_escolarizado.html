@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=.61">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Aula Interactiva de Cálculo Integral · LaTeX</title>
     <!-- MathJax -->
     <script>
@@ -65,12 +65,12 @@
             font-family: Trebuchet MS, Arial, sans-serif;
         }
         h1 {
-    font-size: clamp(2rem, 4.2vw, 3.2rem);  /* ← antes: clamp(2rem, 5vw, 4rem) */
-    line-height: 1.05;
-    max-width: 900px;                        /* ← antes: 750px */
-    margin: .2rem 0 1rem;
-    color: var(--purple);
-}
+            font-size: clamp(2rem, 4.2vw, 3.2rem);
+            line-height: 1.05;
+            max-width: 900px;
+            margin: .2rem 0 1rem;
+            color: var(--purple);
+        }
         header p {
             max-width: 720px;
             font-size: 1.1rem;
@@ -80,7 +80,7 @@
             color: var(--green);
             margin-top: 1.2rem;
         }
-        /* ---------- ★ branding institucional: logo a la DERECHA y SIN fondo ---------- */
+        /* ---------- branding institucional: logo a la DERECHA y SIN fondo ---------- */
         .header-brand {
             display: flex;
             align-items: center;
@@ -90,28 +90,28 @@
         .header-brand>div {
             flex: 1 1 320px;
         }
-       .logo {
-    order: 2;
-    margin-left: auto;
-    height: 145px;       /* ← antes: 110px */
-    width: auto;
-    max-width: 290px;    /* ← antes: 220px */
-    object-fit: contain;
-    mix-blend-mode: multiply;
-}
+        .logo {
+            order: 2;                  /* ← logo a la DERECHA del texto */
+            margin-left: auto;         /* ← pegado al extremo derecho */
+            height: 145px;
+            width: auto;
+            max-width: 290px;
+            object-fit: contain;
+            mix-blend-mode: multiply;  /* elimina el fondo blanco del PNG */
+        }
         @media (max-width: 760px) {
             .logo {
-                order: 0;              /* en móvil el logo va ARRIBA */
+                order: 0;
                 margin-left: 0;
                 align-self: flex-start;
-                height: 95px;    /* ← antes: 75px */
+                height: 95px;
             }
         }
         @media print {
             .logo {
                 order: 2;
                 margin-left: auto;
-                height:  height: 100px;   /* ← antes: 80px */
+                height: 100px;
             }
         }
         /* ---------- fin branding ---------- */
@@ -303,7 +303,6 @@
         .formula {
             background: #f2faed;
             padding: .7rem;
-            font-family: monospace;
             overflow: auto;
         }
         .notebook {
@@ -512,8 +511,8 @@
             <div>
                 <div class="eyebrow">UNITI · LPID · 4º cuatrimestre</div>
                 <h1>Aula Interactiva de Cálculo Integral</h1>
-                  <!-- Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería.<br>Este laboratorio acompaña la planeación del curso  -->
-                    <p>Acompaña la Unidad de Aprendizaje de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p>
+                <p>Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería.<br>
+                    Este laboratorio acompaña la planeación del curso de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p>
                 <p class="signature">Diseñado para la clase por Dr. J. Adrián Cerda</p>
             </div>
         </div>
@@ -604,6 +603,29 @@
             typesetMath._tries = (typesetMath._tries || 0) + 1;
             if (typesetMath._tries < 150) setTimeout(() => typesetMath(el), 200);
         }
+
+        // ========================================================================
+        //  ★ NUEVO: FÓRMULA / IDEA CLAVE POR SESIÓN
+        //  Antes era una cadena ternaria y las sesiones 1, 2, 3, 6 y 14 caían
+        //  en un texto de reserva repetido. Ahora cada sesión tiene la suya.
+        //  Puedes editar libremente cualquier fórmula de esta lista.
+        // ========================================================================
+        const sessionFormulas = {
+            1: "$f'(x)=\\displaystyle\\lim_{\\Delta x \\to 0}\\dfrac{f(x+\\Delta x)-f(x)}{\\Delta x}$",
+            2: "$(x^n)'=n\\,x^{n-1} \\qquad (f\\circ g)'=f'(g(x))\\cdot g'(x) \\qquad (f\\cdot g)'=f'\\cdot g+f\\cdot g'$",
+            3: "$f'(c)=0 \\;\\text{ y }\\; f''(c)<0 \\Rightarrow \\text{máximo local}$",
+            4: "$\\displaystyle\\int f'(x)\\,dx = f(x)+C$",
+            5: "$\\displaystyle\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1}+C, \\quad n\\neq -1$",
+            6: "$\\displaystyle\\int f(g(x))\\,g'(x)\\,dx = \\int f(u)\\,du, \\qquad u=g(x)$",
+            7: "$\\displaystyle\\int_a^b f(x)\\,dx = \\lim_{n\\to\\infty}\\sum_{i=1}^{n} f(x_i)\\,\\Delta x$",
+            8: "$\\displaystyle\\int_a^b f(x)\\,dx = F(b)-F(a)$",
+            9: "$\\displaystyle A=\\int_a^b (\\text{superior}-\\text{inferior})\\,dx$",
+            10: "$\\displaystyle\\int u\\,dv = uv - \\int v\\,du$",
+            11: "$x=a\\sen\\theta \\;\\Rightarrow\\; \\sqrt{a^2-x^2}=a\\cos\\theta$",
+            12: "$\\displaystyle\\frac{P(x)}{(x-a)(x-b)}=\\frac{A}{x-a}+\\frac{B}{x-b}$",
+            13: "$\\displaystyle V=\\pi\\int_a^b [f(x)]^2\\,dx \\qquad L=\\int_a^b \\sqrt{1+[f'(x)]^2}\\,dx$",
+            14: "$\\text{Problema} \\to \\text{Modelo} \\to \\text{Cálculo} \\to \\text{Interpretación}$"
+        };
 
         // ========================================================================
         //  DATOS PRINCIPALES
@@ -1042,7 +1064,7 @@
                 ['¿Cuál es la definición de derivada?', ['Límite del cociente incremental', 'Cociente incremental',
                     'Pendiente de la recta'
                 ], 'Límite del cociente incremental'],
-                ['La derivada de \\( f(x)=x^2 \\) en \\( x=3 \\) es:', ['\\(6\\)', '\\(6\\)', '\\(6\\)'], '\\(6\\)']
+                ['La derivada de \\( f(x)=x^2 \\) en \\( x=3 \\) es:', ['\\(6\\)', '\\(3\\)', '\\(9\\)'], '\\(6\\)']
             ],
             2: [
                 ['Deriva \\( f(x)=(x^2+1)^3 \\)', ['\\( 6x(x^2+1)^2 \\)', '\\( 3(x^2+1)^2 \\)',
@@ -1198,12 +1220,6 @@
             setAnswers(all);
         }
 
-        function getAnswer(sessionId, questionIdx) {
-            const all = getAnswers();
-            if (all[sessionId] && all[sessionId][questionIdx]) return all[sessionId][questionIdx];
-            return null;
-        }
-
         // ========================================================================
         //  MODAL DE CONTRASEÑA
         // ========================================================================
@@ -1269,37 +1285,22 @@
             ).join('');
         }
 
-        function checkLesson(id, ans) {
-            const chosen = document.querySelector(`input[name=q${id}]:checked`);
-            const box = document.getElementById('f' + id);
-            if (!chosen) { box.textContent = 'Selecciona una respuesta.'; box.className = 'feedback bad'; return; }
-            const correct = chosen.value === ans;
-            box.textContent = correct ? '✅ Correcto. Ahora explica por qué.' : '❌ Revisa la idea clave y vuelve a intentarlo.';
-            box.className = 'feedback ' + (correct ? 'ok' : 'bad');
-            saveAnswer(id, 0, chosen.value, correct);
-        }
-
-        function checkEvidence(id) {
-            const value = document.getElementById('e' + id).value;
-            const box = document.getElementById('evid' + id);
-            box.textContent = value ? 'Buena elección: explica por qué esa evidencia es pertinente.' : 'Selecciona una evidencia.';
-            box.className = 'feedback ' + (value ? 'ok' : 'bad');
-        }
-
         function checkPractice(id) {
             const item = practice[id];
             const selected = document.querySelector(`input[name="p${id}"]:checked`);
             const box = document.getElementById(`pf${id}`);
-            const correct = selected && selected.value === item.a;
+            if (!selected) {
+                box.textContent = 'Selecciona una respuesta.';
+                box.className = 'feedback bad';
+                return;
+            }
+            const correct = selected.value === item.a;
             box.textContent = correct ? '✅ Correcto: justifica el procedimiento en tu cuaderno.' :
                 '❌ Revisa el planteamiento y vuelve a intentarlo.';
             box.className = 'feedback ' + (correct ? 'ok' : 'bad');
-            if (selected) {
-                saveAnswer(id, 1, selected.value, correct);
-            }
+            saveAnswer(id, 1, selected.value, correct);
         }
 
-        // ★ Con reprocesado de LaTeX para el ejercicio que aparece al elegir
         function revealDeliverable(id) {
             const value = document.getElementById(`d${id}`).value;
             const box = document.getElementById(`df${id}`);
@@ -1309,42 +1310,52 @@
                 box.textContent = 'Elige un producto para recibir el ejercicio concreto.';
             }
             box.className = 'feedback ' + (value ? 'ok' : 'bad');
-            typesetMath(box);
+            typesetMath(box); // renderiza el LaTeX recién inyectado
         }
 
-        function checkExpanded(id, answer) {
+        // ★ CORREGIDO: la respuesta ya no viaja por el onclick (ahí JS se comía
+        //   las barras invertidas del LaTeX y marcaba mal respuestas correctas).
+        //   Ahora se busca directamente en los datos.
+        function checkExpanded(id) {
+            const lesson = lessons.find(l => l[0] === id);
+            const answer = lesson[7];
             const selected = document.querySelector(`input[name="a${id}"]:checked`);
             const box = document.getElementById(`af${id}`);
-            const correct = selected && selected.value === answer;
+            if (!selected) {
+                box.textContent = 'Selecciona una respuesta.';
+                box.className = 'feedback bad';
+                return;
+            }
+            const correct = selected.value === answer;
             box.textContent = correct ? '✅ Correcto: anota también por qué.' : '❌ Revisa la idea clave y vuelve a intentarlo.';
             box.className = 'feedback ' + (correct ? 'ok' : 'bad');
-            if (selected) {
-                saveAnswer(id, 0, selected.value, correct);
-            }
+            saveAnswer(id, 0, selected.value, correct);
         }
 
-        function checkExtra(name, answer) {
+        // ★ CORREGIDO: misma solución que checkExpanded — busca la respuesta
+        //   en extraExercises usando el nombre del grupo de radios.
+        function checkExtra(name) {
             const selected = document.querySelector(`input[name="${name}"]:checked`);
             const box = document.getElementById(`${name}f`);
-            const correct = selected && selected.value === answer;
+            if (!selected) {
+                box.textContent = 'Selecciona una respuesta.';
+                box.className = 'feedback bad';
+                return;
+            }
+            const match = name.match(/^x(\d+)(\d+)$/);
+            const answer = match ? extraExercises[match[1]][parseInt(match[2])][2] : null;
+            const correct = selected.value === answer;
             box.textContent = correct ? '✅ Correcto: explica el razonamiento en tu cuaderno.' :
                 '❌ Revisa los datos y vuelve a resolverlo.';
             box.className = 'feedback ' + (correct ? 'ok' : 'bad');
-            if (selected) {
-                const match = name.match(/^x(\d+)(\d+)$/);
-                if (match) {
-                    const sid = match[1];
-                    const idx = parseInt(match[2]) + 2;
-                    saveAnswer(sid, idx, selected.value, correct);
-                }
-            }
+            const idx = parseInt(match[2]) + 2; // +2 porque las preguntas 0 y 1 son las actividades 1 y 2
+            saveAnswer(match[1], idx, selected.value, correct);
         }
 
         function renderExtraCard(id, index) {
             const item = extraExercises[id][index];
             const name = `x${id}${index}`;
-            const safe = item[2].replaceAll("'", "\\'");
-            return `<section class="card activity"><h3>➕ Actividad ${index+6} · Extra</h3><p>${item[0]}</p>${practiceChoices({o:item[1]}, name)}<button class="action" onclick="checkExtra('${name}','${safe}')">Comprobar</button><div id="${name}f" class="feedback"></div><p class="notebook-note">📓 Copia el ejercicio, el procedimiento y la solución en tu cuaderno.</p></section>`;
+            return `<section class="card activity"><h3>➕ Actividad ${index+6} · Extra</h3><p>${item[0]}</p>${practiceChoices({o:item[1]}, name)}<button class="action" onclick="checkExtra('${name}')">Comprobar</button><div id="${name}f" class="feedback"></div><p class="notebook-note">📓 Copia el ejercicio, el procedimiento y la solución en tu cuaderno.</p></section>`;
         }
 
         function renderLessonExpanded(l) {
@@ -1356,8 +1367,8 @@
               <button class="action" onclick="openPasswordModal('${id}')">🔑 Desbloquear sesión</button></div>`;
             }
             return `<div class="lesson-head"><div class="eyebrow">Sesión ${id}/14</div><h2>${title}</h2><p><strong>Competencia:</strong> ${skill}</p><p><strong>Aprendizaje esperado:</strong> ${expected}</p><p><strong>🤔 Pregunta guía:</strong> ${item.guide}</p></div>
-          <div class="grid"><section class="card"><h3>📖 Explicación con un ejemplo</h3><p>${concept}</p><p><strong>Ejemplo sencillo:</strong> ${simpleExamples[id]}</p><div class="formula">${id==='4'?'$\\displaystyle \\int f\'(x) \\, dx = f(x)+C$':id==='7'?'$\\displaystyle \\sum f(x_i) \\Delta x$':id==='8'?'$F(b)-F(a)$':id==='9'?'$\\displaystyle \\int (\\text{superior} - \\text{inferior}) \\, dx$':id==='10'?'$\\displaystyle \\int u \\, dv = uv - \\int v \\, du$':id==='11'?'Triángulo de referencia':id==='12'?'$\\displaystyle \\frac{A}{x-a}+\\frac{B}{x-b}$':id==='13'?'Aplicaciones de la integral':'Estrategia de integración: la posición es la antiderivada de la velocidad'}</div></section>
-          <section class="card activity"><h3>✅ Actividad 1 · Comprueba</h3><p>${prompt}</p>${practiceChoices({o:opts}, `a${id}`)}<button class="action" onclick="checkExpanded('${id}','${answer.replaceAll("'","\\'")}')">Comprobar</button><div id="af${id}" class="feedback"></div></section></div>
+          <div class="grid"><section class="card"><h3>📖 Explicación con un ejemplo</h3><p>${concept}</p><p><strong>Ejemplo sencillo:</strong> ${simpleExamples[id]}</p><div class="formula"><strong>📌 Idea clave de la sesión:</strong> ${sessionFormulas[id] || ''}</div></section>
+          <section class="card activity"><h3>✅ Actividad 1 · Comprueba</h3><p>${prompt}</p>${practiceChoices({o:opts}, `a${id}`)}<button class="action" onclick="checkExpanded('${id}')">Comprobar</button><div id="af${id}" class="feedback"></div></section></div>
           <div class="grid"><section class="card activity"><h3>🔍 Actividad 2 · Resuelve y justifica</h3><p>${item.q}</p>${practiceChoices(item, `p${id}`)}<button class="action" onclick="checkPractice('${id}')">Comprobar</button><div id="pf${id}" class="feedback"></div></section>
           <section class="card activity notebook"><h3>📝 Actividad 3 · Genera una evidencia</h3><p>Elige una opción. Al seleccionarla aparecerá el ejercicio que debes realizar y escribir en tu cuaderno.</p><select id="d${id}" onchange="revealDeliverable('${id}')"><option value="">Selecciona...</option><option value="definicion">Definición</option><option value="tabla">Tabla o representación</option><option value="ejemplo">Ejemplo de la vida cotidiana</option></select><div id="df${id}" class="feedback"></div><p><strong>Registro:</strong> escribe en tu cuaderno la actividad, el procedimiento y la solución o soluciones.</p></section></div>
           <section class="card"><h3>💬 Actividad 4 · Dialoga y transfiere</h3><p>Explica a un compañero qué paso clave o aprendizaje logrado hace que en esta sesión tus respuestas sean correctas. Después escribe una justificación breve.</p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tu explicación..."></textarea></section>
@@ -1371,11 +1382,20 @@
             return `<div class="lesson-head"><div class="eyebrow">Consulta rápida</div><h2>📚 Glosario de términos clave</h2><p>Usa estas definiciones para preparar la sesión y revisar tu cuaderno.</p></div><section class="card"><table><thead><tr><th>Término</th><th>Definición</th></tr></thead><tbody>${glossary.map(item => `<tr><th>${item[0]}</th><td>${item[1]}</td></tr>`).join('')}</tbody></table></section>`;
         }
 
-        function renderExam(ex) {
-            return `<div class="lesson-head"><div class="eyebrow">Evaluación</div><h2>${ex.title}</h2><p>${ex.intro}</p></div><section class="card">${ex.qs.map((q,i) => `<div class="activity"><p><strong>${i+1}. ${q[0]}</strong></p>${choices(q, 'exam'+i)}</div>`).join('')}<button class="action" onclick='gradeExam(${JSON.stringify(ex.qs)})'>Calificar</button><div id="examFeedback" class="feedback"></div></section>`;
+        // ★ CORREGIDO: antes se inyectaba todo el cuestionario dentro del onclick
+        //   (JSON.stringify) y el apóstrofe de "L'Hôpital" rompía el HTML del botón.
+        //   Ahora el botón solo llama gradeExam() y las preguntas están aquí.
+        let currentExamQs = [];
+        let currentExamKey = '';
+
+        function renderExam(ex, key) {
+            currentExamQs = ex.qs;
+            currentExamKey = key;
+            return `<div class="lesson-head"><div class="eyebrow">Evaluación</div><h2>${ex.title}</h2><p>${ex.intro}</p></div><section class="card">${ex.qs.map((q,i) => `<div class="activity"><p><strong>${i+1}. ${q[0]}</strong></p>${choices(q, 'exam'+i)}</div>`).join('')}<button class="action" onclick="gradeExam()">Calificar</button><div id="examFeedback" class="feedback"></div></section>`;
         }
 
-        function gradeExam(qs) {
+        function gradeExam() {
+            const qs = currentExamQs;
             let score = 0;
             qs.forEach((q, i) => {
                 const c = document.querySelector(`input[name=exam${i}]:checked`);
@@ -1384,17 +1404,19 @@
             const box = document.getElementById('examFeedback');
             box.textContent = `Resultado: ${score}/${qs.length}. Revisa las respuestas y anota qué concepto necesitas practicar.`;
             box.className = 'feedback ' + (score === qs.length ? 'ok' : 'bad');
+            // ★ Guardar con llave única POR EXAMEN (antes los 3 exámenes se
+            //   sobrescribían entre sí porque usaban las mismas llaves exam_0, exam_1...)
             qs.forEach((q, i) => {
                 const c = document.querySelector(`input[name=exam${i}]:checked`);
                 if (c) {
                     const correct = c.value === q[2];
-                    saveAnswer('exam_' + i, 0, c.value, correct);
+                    saveAnswer('exam_' + currentExamKey + '_' + i, 0, c.value, correct);
                 }
             });
         }
 
         // ========================================================================
-        //  REPORTE DE EVIDENCIA (logo + LaTeX reprocesado)
+        //  REPORTE DE EVIDENCIA
         // ========================================================================
         function openReport() {
             const name = getStudentName() || 'No especificado';
@@ -1455,7 +1477,7 @@
                 html += `<h3 style="margin-top:1.5rem;">📝 ${exam.title}</h3>`;
                 let hasAnswers = false;
                 exam.qs.forEach((q, qi) => {
-                    const key = 'exam_' + qi;
+                    const key = 'exam_' + ek + '_' + qi;
                     const ans = answers[key];
                     if (ans) {
                         hasAnswers = true;
@@ -1473,18 +1495,18 @@
                 }
             });
 
+            // Resumen (cuenta sesiones y exámenes)
             let totalOk = 0,
                 totalAll = 0;
             Object.keys(answers).forEach(k => {
                 const arr = answers[k];
-                if (Array.isArray(arr)) {
-                    arr.forEach(a => {
-                        if (a && typeof a === 'object' && a.correct !== undefined) {
-                            totalAll++;
-                            if (a.correct) totalOk++;
-                        }
-                    });
-                }
+                const items = Array.isArray(arr) ? arr : [arr];
+                items.forEach(a => {
+                    if (a && typeof a === 'object' && a.correct !== undefined) {
+                        totalAll++;
+                        if (a.correct) totalOk++;
+                    }
+                });
             });
             html += `<hr><p><strong>Resumen:</strong> ${totalOk} respuestas correctas de ${totalAll} intentos registrados.</p>`;
             html += `<p style="font-size:.9rem;color:var(--muted);">💡 Esta evidencia refleja tu trabajo hasta el momento. Puedes imprimir o guardar como PDF.</p>`;
@@ -1569,7 +1591,7 @@
                 <p>Este instrumento está bloqueado. Ingresa la clave proporcionada por el profesor.</p>
                 <button class="action" onclick="openPasswordModal('exam_${key}')">🔑 Desbloquear</button></div>`;
                 } else {
-                    html = renderExam(exams[key]);
+                    html = renderExam(exams[key], key);
                 }
             } else {
                 html = '<p>Contenido no disponible.</p>';
