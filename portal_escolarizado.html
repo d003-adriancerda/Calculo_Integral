@@ -8,20 +8,23 @@
     <script>
         MathJax = {
             tex: {
-                inlineMath: [
-                    ['$', '$'],
-                    ['\\(', '\\)']
-                ],
-                displayMath: [
-                    ['$$', '$$'],
-                    ['\\[', '\\]']
-                ]
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                macros: {
+                    sen: '\\operatorname{sen}',
+                    arcsen: '\\operatorname{arcsen}',
+                    tg: '\\operatorname{tg}'
+                }
             },
             svg: { fontCache: 'global' }
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async>
-    </script>
+    <!-- OPCIÓN A: con internet (GitHub Pages / aula con wifi). Déjala activa. -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <!-- OPCIÓN B: sin internet. Descarga la carpeta "es5" junto a este archivo,
+         luego COMENTA la línea de arriba y DESCOMENTA la de abajo:
+    <script src="es5/tex-chtml.js" id="MathJax-script" async></script>
+    -->
     <style>
         /* ---------- variables ---------- */
         :root {
@@ -77,6 +80,38 @@
             color: var(--green);
             margin-top: 1.2rem;
         }
+        /* ---------- ★ NUEVO: branding institucional (logo) ---------- */
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1.4rem;
+            flex-wrap: wrap;
+        }
+        .header-brand>div {
+            flex: 1 1 320px;
+        }
+        .logo {
+            height: 95px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 10px;
+            padding: .4rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .10);
+        }
+        @media (max-width: 760px) {
+            .logo {
+                height: 70px;
+            }
+        }
+        @media print {
+            .logo {
+                height: 75px;
+                box-shadow: none;
+            }
+        }
+        /* ---------- fin branding ---------- */
         .top-bar {
             display: flex;
             flex-wrap: wrap;
@@ -467,12 +502,19 @@
 <body>
 
     <!-- ========== HEADER ========== -->
+    <!-- ★ NUEVO: estructura con logo institucional -->
     <header>
-        <div class="eyebrow">UNITI · LPID · 4º cuatrimestre</div>
-        <h1>Aula de Cálculo Integral</h1>
-        <p>Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería.<br>
-            Este laboratorio acompaña la planeación del curso de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p>
-        <p class="signature">Diseñado para la clase por Dr. J. Adrián Cerda</p>
+        <div class="header-brand">
+            <img src="logo.png" alt="Logotipo institucional" class="logo"
+                 onerror="this.style.display='none'">
+            <div>
+                <div class="eyebrow">UNITI · LPID · 4º cuatrimestre</div>
+                <h1>Aula de Cálculo Integral</h1>
+                <p>Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería.<br>
+                    Este laboratorio acompaña la planeación del curso de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p>
+                <p class="signature">Diseñado para la clase por Dr. J. Adrián Cerda</p>
+            </div>
+        </div>
 
         <!-- barra superior: nombre + reporte -->
         <div class="top-bar no-print">
@@ -551,6 +593,21 @@
         // Los exámenes (diagnostico, parcial1, parcial2) no tienen contraseña,
         // pero puedes desactivarlos cambiando EXAM_LOCKED a true.
         const EXAM_LOCKED = true; // si quieres bloquear exámenes con la misma clave que la sesión 14
+
+        // ========================================================================
+        //  ★ NUEVO: REPROCESADO DE MATEMÁTICAS (MathJax)
+        //  Llamar después de cada innerHTML que contenga LaTeX.
+        //  Si MathJax aún no termina de cargar, reintenta automáticamente.
+        // ========================================================================
+        function typesetMath(el) {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise(el ? [el] : undefined)
+                    .catch(err => console.log('MathJax error:', err));
+                return;
+            }
+            typesetMath._tries = (typesetMath._tries || 0) + 1;
+            if (typesetMath._tries < 150) setTimeout(() => typesetMath(el), 200);
+        }
 
         // ========================================================================
         //  DATOS PRINCIPALES (sin cambios)
@@ -1198,8 +1255,7 @@
             nameInput.value = getStudentName();
             nameInput.addEventListener('change', function() {
                 setStudentName(this.value.trim());
-            });
-            // Botón reporte
+            }); // Botón reporte
             document.getElementById('btnOpenReport').addEventListener('click', openReport);
         });
 
@@ -1253,15 +1309,18 @@
             }
         }
 
+        // ★ ACTUALIZADO: ahora reprocesa el LaTeX que acaba de aparecer
         function revealDeliverable(id) {
             const value = document.getElementById(`d${id}`).value;
             const box = document.getElementById(`df${id}`);
             if (value) {
                 box.textContent = practice[id].deliver[value] || 'Ejercicio no definido.';
+                box.innerHTML = practice[id].deliver[value] || 'Ejercicio no definido.';
             } else {
                 box.textContent = 'Elige un producto para recibir el ejercicio concreto.';
             }
             box.className = 'feedback ' + (value ? 'ok' : 'bad');
+            typesetMath(box); // ← renderiza el LaTeX recién inyectado
         }
 
         function checkExpanded(id, answer) {
@@ -1349,6 +1408,7 @@
 
         // ========================================================================
         //  REPORTE DE EVIDENCIA
+        //  ★ ACTUALIZADO: logo + reprocesado de LaTeX
         // ========================================================================
         function openReport() {
             const name = getStudentName() || 'No especificado';
@@ -1357,7 +1417,8 @@
             const unlocked = getUnlocked();
 
             let html = `<div class="report-container">
-            <h2>📄 Evidencia de aprendizaje</h2>
+            <img src="logo.png" alt="" style="height:60px;display:block;margin:0 auto .5rem;" onerror="this.style.display='none'">
+            <h2 style="text-align:center;">📄 Evidencia de aprendizaje</h2>
             <div class="student-info">👤 Estudiante: <strong>${name}</strong></div>
             <p><em>Fecha: ${new Date().toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'})}</em></p>
             <hr>`;
@@ -1449,7 +1510,9 @@
             html += `</div>`;
 
             document.getElementById('reportContent').innerHTML = html;
+            // ★ IMPORTANTE: mostrar el modal ANTES de reprocesar (MathJax mide mal en elementos ocultos)
             document.getElementById('reportModal').style.display = 'flex';
+            typesetMath(document.getElementById('reportContent'));
         }
 
         function closeReport() {
@@ -1540,10 +1603,8 @@
 
             document.getElementById('app').innerHTML = html;
 
-            // Re-renderizar LaTeX
-            if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
-            }
+            // ★ ACTUALIZADO: reprocesar LaTeX con reintentos (\sen, límites, integrales, etc.)
+            typesetMath(document.getElementById('app'));
         }
 
         // Sobrescribir password para exámenes si se bloquean
