@@ -80,40 +80,41 @@
             color: var(--green);
             margin-top: 1.2rem;
         }
-        /* ---------- ★ NUEVO: branding institucional (logo) ---------- */
-        /* ---------- ★ branding institucional (logo a la derecha, sin fondo) ---------- */
-.header-brand {
-    display: flex;
-    align-items: center;
-    gap: 1.4rem;
-    flex-wrap: wrap;
-}
-.header-brand>div {
-    flex: 1 1 320px;
-}
-.logo {
-    order: 2;                 /* ← mueve el logo a la DERECHA del texto */
-    height: 110px;
-    width: auto;
-    max-width: 220px;
-    object-fit: contain;
-    /* sin background, sin borde, sin sombra: se integra al header */
-    mix-blend-mode: multiply; /* ← elimina visualmente el fondo blanco del PNG */
-}
-@media (max-width: 760px) {
-    .logo {
-        order: 0;             /* en móvil el logo va ARRIBA (más natural) */
-        align-self: flex-start;
-        height: 75px;
-    }
-}
-@media print {
-    .logo {
-        order: 2;
-        height: 80px;
-    }
-}
-/* ---------- fin branding ---------- */
+        /* ---------- ★ branding institucional: logo a la DERECHA y SIN fondo ---------- */
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1.4rem;
+            flex-wrap: wrap;
+        }
+        .header-brand>div {
+            flex: 1 1 320px;
+        }
+        .logo {
+            order: 2;                  /* ← mueve el logo a la DERECHA del texto */
+            margin-left: auto;         /* ← lo pega al extremo derecho */
+            height: 110px;
+            width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            mix-blend-mode: multiply;  /* ← elimina visualmente el fondo blanco del PNG */
+        }
+        @media (max-width: 760px) {
+            .logo {
+                order: 0;              /* en móvil el logo va ARRIBA */
+                margin-left: 0;
+                align-self: flex-start;
+                height: 75px;
+            }
+        }
+        @media print {
+            .logo {
+                order: 2;
+                margin-left: auto;
+                height: 80px;
+            }
+        }
+        /* ---------- fin branding ---------- */
         .top-bar {
             display: flex;
             flex-wrap: wrap;
@@ -504,7 +505,6 @@
 <body>
 
     <!-- ========== HEADER ========== -->
-    <!-- ★ NUEVO: estructura con logo institucional -->
     <header>
         <div class="header-brand">
             <img src="logo.png" alt="Logotipo institucional" class="logo"
@@ -573,8 +573,6 @@
     <script>
         // ========================================================================
         //  CONFIGURACIÓN DEL PROFESOR — CLAVES POR SESIÓN
-        //  Cambia los valores de las claves. Cada sesión tiene su propia clave.
-        //  Sesión 1 tiene clave por defecto "clase1" — cámbiala cuando quieras.
         // ========================================================================
         const SESSION_PASSWORDS = {
             '1': 'clase1',
@@ -592,14 +590,10 @@
             '13': 'clase13efv',
             '14': 'clase14uhb'
         };
-        // Los exámenes (diagnostico, parcial1, parcial2) no tienen contraseña,
-        // pero puedes desactivarlos cambiando EXAM_LOCKED a true.
-        const EXAM_LOCKED = true; // si quieres bloquear exámenes con la misma clave que la sesión 14
+        const EXAM_LOCKED = true; // exámenes bloqueados con la clave de la sesión 14
 
         // ========================================================================
-        //  ★ NUEVO: REPROCESADO DE MATEMÁTICAS (MathJax)
-        //  Llamar después de cada innerHTML que contenga LaTeX.
-        //  Si MathJax aún no termina de cargar, reintenta automáticamente.
+        //  REPROCESADO DE MATEMÁTICAS (MathJax) para contenido dinámico
         // ========================================================================
         function typesetMath(el) {
             if (window.MathJax && MathJax.typesetPromise) {
@@ -612,7 +606,7 @@
         }
 
         // ========================================================================
-        //  DATOS PRINCIPALES (sin cambios)
+        //  DATOS PRINCIPALES
         // ========================================================================
         const lessons = [
             ['1', 'Razón de cambio y derivada',
@@ -1200,7 +1194,6 @@
         function saveAnswer(sessionId, questionIdx, value, isCorrect) {
             const all = getAnswers();
             if (!all[sessionId]) all[sessionId] = [];
-            // Guardamos la respuesta con su corrección
             all[sessionId][questionIdx] = { value, correct: isCorrect };
             setAnswers(all);
         }
@@ -1247,17 +1240,15 @@
             }
         }
 
-        // Enter en el campo de contraseña
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('passwordInput').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') tryUnlock();
             });
-            // Cargar nombre guardado
             const nameInput = document.getElementById('studentName');
             nameInput.value = getStudentName();
             nameInput.addEventListener('change', function() {
                 setStudentName(this.value.trim());
-            }); // Botón reporte
+            });
             document.getElementById('btnOpenReport').addEventListener('click', openReport);
         });
 
@@ -1265,7 +1256,6 @@
         //  FUNCIONES DE RENDERIZADO
         // ========================================================================
 
-        // --- helpers ---
         function choices(q, namePrefix) {
             return `<div class="choices">${q[1].map((x, n) => {
                 const name = namePrefix + n;
@@ -1286,8 +1276,6 @@
             const correct = chosen.value === ans;
             box.textContent = correct ? '✅ Correcto. Ahora explica por qué.' : '❌ Revisa la idea clave y vuelve a intentarlo.';
             box.className = 'feedback ' + (correct ? 'ok' : 'bad');
-            // Guardar respuesta
-            const idx = 0; // solo una pregunta por sesión en la actividad 1
             saveAnswer(id, 0, chosen.value, correct);
         }
 
@@ -1311,18 +1299,17 @@
             }
         }
 
-        // ★ ACTUALIZADO: ahora reprocesa el LaTeX que acaba de aparecer
+        // ★ Con reprocesado de LaTeX para el ejercicio que aparece al elegir
         function revealDeliverable(id) {
             const value = document.getElementById(`d${id}`).value;
             const box = document.getElementById(`df${id}`);
             if (value) {
-                box.textContent = practice[id].deliver[value] || 'Ejercicio no definido.';
                 box.innerHTML = practice[id].deliver[value] || 'Ejercicio no definido.';
             } else {
                 box.textContent = 'Elige un producto para recibir el ejercicio concreto.';
             }
             box.className = 'feedback ' + (value ? 'ok' : 'bad');
-            typesetMath(box); // ← renderiza el LaTeX recién inyectado
+            typesetMath(box);
         }
 
         function checkExpanded(id, answer) {
@@ -1344,11 +1331,10 @@
                 '❌ Revisa los datos y vuelve a resolverlo.';
             box.className = 'feedback ' + (correct ? 'ok' : 'bad');
             if (selected) {
-                // extraemos el id de sesión del nombre: x{id}{index}
                 const match = name.match(/^x(\d+)(\d+)$/);
                 if (match) {
                     const sid = match[1];
-                    const idx = parseInt(match[2]) + 2; // +2 porque las primeras preguntas son 0 y 1
+                    const idx = parseInt(match[2]) + 2;
                     saveAnswer(sid, idx, selected.value, correct);
                 }
             }
@@ -1398,7 +1384,6 @@
             const box = document.getElementById('examFeedback');
             box.textContent = `Resultado: ${score}/${qs.length}. Revisa las respuestas y anota qué concepto necesitas practicar.`;
             box.className = 'feedback ' + (score === qs.length ? 'ok' : 'bad');
-            // Guardar respuestas del examen
             qs.forEach((q, i) => {
                 const c = document.querySelector(`input[name=exam${i}]:checked`);
                 if (c) {
@@ -1409,8 +1394,7 @@
         }
 
         // ========================================================================
-        //  REPORTE DE EVIDENCIA
-        //  ★ ACTUALIZADO: logo + reprocesado de LaTeX
+        //  REPORTE DE EVIDENCIA (logo + LaTeX reprocesado)
         // ========================================================================
         function openReport() {
             const name = getStudentName() || 'No especificado';
@@ -1425,7 +1409,6 @@
             <p><em>Fecha: ${new Date().toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'})}</em></p>
             <hr>`;
 
-            // Recorrer todas las sesiones
             allSessions.forEach(id => {
                 const lesson = lessons.find(l => l[0] === id);
                 if (!lesson) return;
@@ -1436,12 +1419,10 @@
                 if (sessAnswers.length === 0) {
                     html += `<p style="color:var(--muted);">No hay respuestas registradas para esta sesión.</p>`;
                 } else {
-                    // Preguntas de la sesión: actividad 1 (idx0), actividad 2 (idx1), extras (idx2+)
                     const qs = [
                         { label: 'Actividad 1 (Comprueba)', prompt: lesson[5] },
                         { label: 'Actividad 2 (Resuelve y justifica)', prompt: practice[id]?.q || '' }
                     ];
-                    // extras
                     const extras = extraExercises[id] || [];
                     extras.forEach((e, ei) => {
                         qs.push({ label: `Actividad ${6+ei} (Bonus)`, prompt: e[0] });
@@ -1467,7 +1448,6 @@
                 }
             });
 
-            // Exámenes
             const examKeys = ['diagnostico', 'parcial1', 'parcial2'];
             examKeys.forEach(ek => {
                 const exam = exams[ek];
@@ -1493,7 +1473,6 @@
                 }
             });
 
-            // Resumen
             let totalOk = 0,
                 totalAll = 0;
             Object.keys(answers).forEach(k => {
@@ -1512,7 +1491,6 @@
             html += `</div>`;
 
             document.getElementById('reportContent').innerHTML = html;
-            // ★ IMPORTANTE: mostrar el modal ANTES de reprocesar (MathJax mide mal en elementos ocultos)
             document.getElementById('reportModal').style.display = 'flex';
             typesetMath(document.getElementById('reportContent'));
         }
@@ -1531,7 +1509,6 @@
             const nav = document.getElementById('nav');
             const unlocked = getUnlocked();
 
-            // Construir botones de sesiones
             let navHtml = lessons.map(l => {
                 const id = l[0];
                 const title = l[1];
@@ -1546,7 +1523,6 @@
                 }
             }).join('');
 
-            // Exámenes
             const examKeys = ['diagnostico', 'parcial1', 'parcial2'];
             const examLabels = {
                 diagnostico: '📝 D · Diagnóstico (10)',
@@ -1565,12 +1541,10 @@
                 }
             });
 
-            // Glosario
             navHtml += `<button class="${key === 'glosario' ? 'active' : ''}" onclick="showExpanded('glosario')">📖 G · Glosario</button>`;
 
             nav.innerHTML = navHtml;
 
-            // Progress
             let progText = '';
             if (key.length < 3) {
                 const unlockedCount = Object.keys(unlocked).filter(k => k.length < 3).length;
@@ -1582,7 +1556,6 @@
             }
             document.getElementById('progress').textContent = progText;
 
-            // Renderizar contenido
             let html = '';
             if (key.length < 3) {
                 const lesson = lessons.find(l => l[0] === key);
@@ -1591,7 +1564,6 @@
             } else if (key === 'glosario') {
                 html = renderGlossary();
             } else if (examKeys.includes(key)) {
-                // Verificar bloqueo de examen
                 if (EXAM_LOCKED && !unlocked['exam_' + key]) {
                     html = `<div class="lesson-head"><div class="eyebrow">Evaluación</div><h2>🔒 ${exams[key].title}</h2>
                 <p>Este instrumento está bloqueado. Ingresa la clave proporcionada por el profesor.</p>
@@ -1604,22 +1576,14 @@
             }
 
             document.getElementById('app').innerHTML = html;
-
-            // ★ ACTUALIZADO: reprocesar LaTeX con reintentos (\sen, límites, integrales, etc.)
             typesetMath(document.getElementById('app'));
         }
 
-        // Sobrescribir password para exámenes si se bloquean
+        // Soporte de contraseñas para exámenes
         const origOpenPasswordModal = openPasswordModal;
         openPasswordModal = function(sessionId) {
             if (sessionId.startsWith('exam_')) {
-                // Usamos la clave de la sesión 14 para los exámenes (o una fija)
-                // Para simplificar, usamos la misma clave que la sesión 14
-                const examKey = sessionId.replace('exam_', '');
-                // Si el profesor quiere clave específica para exámenes, puede cambiarlo aquí
-                // Por ahora usamos la clave de la sesión 14
                 pendingSessionId = sessionId;
-                // Pero la validación la hacemos en tryUnlock
                 document.getElementById('passwordModal').style.display = 'flex';
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordError').style.display = 'none';
@@ -1629,7 +1593,6 @@
             origOpenPasswordModal(sessionId);
         };
 
-        // Modificar tryUnlock para soportar exámenes
         const origTryUnlock = tryUnlock;
         tryUnlock = function() {
             const input = document.getElementById('passwordInput').value.trim();
@@ -1638,7 +1601,6 @@
 
             let expected;
             if (pendingSessionId.startsWith('exam_')) {
-                // Usamos la clave de la sesión 14 para los exámenes
                 expected = SESSION_PASSWORDS['14'];
             } else {
                 expected = SESSION_PASSWORDS[pendingSessionId];
@@ -1659,15 +1621,11 @@
         // ========================================================================
         //  INICIO
         // ========================================================================
-        // Por defecto, desbloquear la sesión 1 para que los alumnos puedan empezar
-        // (comentar esta línea si quieres que todas estén bloqueadas desde el inicio)
         (function init() {
-            // Si no hay ninguna sesión desbloqueada, desbloquear la 1
             const u = getUnlocked();
             if (Object.keys(u).length === 0) {
                 unlockSession('1');
             }
-            // Cargar nombre
             const nameInput = document.getElementById('studentName');
             if (nameInput) nameInput.value = getStudentName();
             showExpanded('1');
