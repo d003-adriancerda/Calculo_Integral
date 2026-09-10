@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Aula de Cálculo Integral · LaTeX</title>
+    <title>Aula Interactiva de Cálculo Integral · LaTeX</title>
     <!-- MathJax -->
     <script>
         MathJax = {
@@ -470,7 +470,8 @@
     <header>
         <div class="eyebrow">UNITI · LPID · 4º cuatrimestre</div>
         <h1>Aula de Cálculo Integral</h1>
-        <p>Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería. Este laboratorio acompaña la planeación del curso de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p>
+        <p>Explora las técnicas de integración y sus aplicaciones en problemas de ingeniería.<br>
+            Este laboratorio acompaña la planeación del curso de <strong>Cálculo Integral</strong> con actividades breves de práctica, discusión y transferencia.</p>
         <p class="signature">Diseñado para la clase por Dr. J. Adrián Cerda</p>
 
         <!-- barra superior: nombre + reporte -->
@@ -494,7 +495,8 @@
     </div>
 
     <footer>
-        Recurso local para clase. Las actividades no envían datos a internet. El docente puede proyectar la pantalla o compartir esta carpeta. <strong>En cada sesión, escribe en tu cuaderno la actividad o actividades propuestas y la solución o soluciones de los ejercicios.</strong>
+        Recurso local para la clase.<br> Las actividades no envían datos a internet.<br> El docente puede proyectar la pantalla o compartir esta carpeta.<br> <strong>En cada sesión, escribe en
+            tu cuaderno la actividad o actividades propuestas con su solución.</strong>
         <br><br>
         <span class="no-print" style="font-size:.9rem;color:var(--purple);">🔒 Sesiones bloqueadas requieren la clave que el profesor proporciona en clase.</span>
     </footer>
@@ -798,7 +800,7 @@
 
         const practice = {
             1: {
-                guide: '¿Qué enunciado se sostiene con las razones y qué enunciados funcionan como razones?',
+                guide: '¿Qué tan rápido cambia algo en un instante, qué significa esto geométricamente sobre la curva, y cómo lo calculamos con rigor algebraico?',
                 q: 'La razón de cambio instantánea se define como:',
                 o: ['El límite del cociente incremental', 'El cociente incremental', 'La pendiente de la secante'],
                 a: 'El límite del cociente incremental',
@@ -966,20 +968,20 @@
         };
 
         const simpleExamples = {
-            1: 'Ejemplo: la velocidad instantánea de un auto es la derivada de la posición: \\( v(t) = \\dfrac{dx}{dt} \\).',
-            2: 'Ejemplo: derivar \\( f(x)=\\sen(2x) \\) usando regla de la cadena: \\( 2\\cos(2x) \\).',
-            3: 'Ejemplo: maximizar el área de un rectángulo con perímetro fijo. \\( A(x)=x(L-x) \\), \\( A\'(x)=L-2x=0 \\Rightarrow x=L/2 \\).',
-            4: 'Ejemplo: antiderivada de \\( 2x \\) es \\( x^2+C \\).',
-            5: 'Ejemplo: \\( \\displaystyle \\int \\cos(x) \\, dx = \\sen(x)+C \\).',
-            6: 'Ejemplo: \\( \\displaystyle \\int 2x \\cos(x^2) \\, dx \\), \\( u=x^2 \\), \\( du=2x \\, dx \\).',
-            7: 'Ejemplo: área bajo \\( y=x^2 \\) en \\( [0,1] \\) aproximada con 4 rectángulos.',
-            8: 'Ejemplo: \\( \\displaystyle \\int_0^1 x \\, dx = \\frac{1}{2} \\).',
-            9: 'Ejemplo: área entre \\( y=x \\) y \\( y=x^2 \\) en \\( [0,1] \\): \\( \\int_0^1 (x-x^2) dx = 1/6 \\).',
-            10: 'Ejemplo: \\( \\displaystyle \\int x e^x \\, dx = (x-1)e^x + C \\).',
-            11: 'Ejemplo: \\( \\displaystyle \\int \\frac{dx}{\\sqrt{4-x^2}} \\), \\( x=2\\sen \\theta \\).',
-            12: 'Ejemplo: \\( \\displaystyle \\int \\frac{dx}{x^2-1} = \\frac{1}{2} \\ln\\left| \\frac{x-1}{x+1} \\right| + C \\).',
-            13: 'Ejemplo: volumen de una esfera mediante discos: \\( \\displaystyle \\pi \\int_{-r}^{r} (r^2-x^2) \\, dx = \\frac{4}{3}\\pi r^3 \\).',
-            14: 'Ejemplo: diseñar un tanque de agua con forma de revolución y calcular su capacidad.'
+            1: ' la velocidad instantánea de un auto es la derivada de la posición: \\( v(t) = \\dfrac{dx}{dt} \\).',
+            2: ' derivar \\( f(x)=\\sen(2x) \\) usando regla de la cadena: \\( 2\\cos(2x) \\).',
+            3: ' maximizar el área de un rectángulo con perímetro fijo. \\( A(x)=x(L-x) \\), \\( A\'(x)=L-2x=0 \\Rightarrow x=L/2 \\).',
+            4: ' antiderivada de \\( 2x \\) es \\( x^2+C \\).',
+            5: ' \\( \\displaystyle \\int \\cos(x) \\, dx = \\sen(x)+C \\).',
+            6: ' \\( \\displaystyle \\int 2x \\cos(x^2) \\, dx \\), \\( u=x^2 \\), \\( du=2x \\, dx \\).',
+            7: ' área bajo \\( y=x^2 \\) en \\( [0,1] \\) aproximada con 4 rectángulos.',
+            8: ' \\( \\displaystyle \\int_0^1 x \\, dx = \\frac{1}{2} \\).',
+            9: ' área entre \\( y=x \\) y \\( y=x^2 \\) en \\( [0,1] \\): \\( \\int_0^1 (x-x^2) dx = 1/6 \\).',
+            10: ' \\( \\displaystyle \\int x e^x \\, dx = (x-1)e^x + C \\).',
+            11: ' \\( \\displaystyle \\int \\frac{dx}{\\sqrt{4-x^2}} \\), \\( x=2\\sen \\theta \\).',
+            12: ' \\( \\displaystyle \\int \\frac{dx}{x^2-1} = \\frac{1}{2} \\ln\\left| \\frac{x-1}{x+1} \\right| + C \\).',
+            13: ' volumen de una esfera mediante discos: \\( \\displaystyle \\pi \\int_{-r}^{r} (r^2-x^2) \\, dx = \\frac{4}{3}\\pi r^3 \\).',
+            14: ' diseñar un tanque de agua con forma de revolución y calcular su capacidad.'
         };
 
         const extraExercises = {
@@ -1307,12 +1309,14 @@
               <button class="action" onclick="openPasswordModal('${id}')">🔑 Desbloquear sesión</button></div>`;
             }
             return `<div class="lesson-head"><div class="eyebrow">Sesión ${id}/14</div><h2>${title}</h2><p><strong>Competencia:</strong> ${skill}</p><p><strong>Aprendizaje esperado:</strong> ${expected}</p><p><strong>🤔 Pregunta guía:</strong> ${item.guide}</p></div>
-          <div class="grid"><section class="card"><h3>📖 Explicación con ejemplo</h3><p>${concept}</p><p><strong>Ejemplo sencillo:</strong> ${simpleExamples[id]}</p><div class="formula">${id==='4'?'$\\displaystyle \\int f\'(x) \\, dx = f(x)+C$':id==='7'?'$\\displaystyle \\sum f(x_i) \\Delta x$':id==='8'?'$F(b)-F(a)$':id==='9'?'$\\displaystyle \\int (\\text{superior} - \\text{inferior}) \\, dx$':id==='10'?'$\\displaystyle \\int u \\, dv = uv - \\int v \\, du$':id==='11'?'Triángulo de referencia':id==='12'?'$\\displaystyle \\frac{A}{x-a}+\\frac{B}{x-b}$':id==='13'?'Aplicaciones de la integral':'Estrategia de integración'}</div></section>
+          <div class="grid"><section class="card"><h3>📖 Explicación con un ejemplo</h3><p>${concept}</p><p><strong>Ejemplo sencillo:</strong> ${simpleExamples[id]}</p><div class="formula">${id==='4'?'$\\displaystyle \\int f\'(x) \\, dx = f(x)+C$':id==='7'?'$\\displaystyle \\sum f(x_i) \\Delta x$':id==='8'?'$F(b)-F(a)$':id==='9'?'$\\displaystyle \\int (\\text{superior} - \\text{inferior}) \\, dx$':id==='10'?'$\\displaystyle \\int u \\, dv = uv - \\int v \\, du$':id==='11'?'Triángulo de referencia':id==='12'?'$\\displaystyle \\frac{A}{x-a}+\\frac{B}{x-b}$':id==='13'?'Aplicaciones de la integral':'Estrategia de integración: la posición es la antiderivada de la velocidad'}</div></section>
           <section class="card activity"><h3>✅ Actividad 1 · Comprueba</h3><p>${prompt}</p>${practiceChoices({o:opts}, `a${id}`)}<button class="action" onclick="checkExpanded('${id}','${answer.replaceAll("'","\\'")}')">Comprobar</button><div id="af${id}" class="feedback"></div></section></div>
           <div class="grid"><section class="card activity"><h3>🔍 Actividad 2 · Resuelve y justifica</h3><p>${item.q}</p>${practiceChoices(item, `p${id}`)}<button class="action" onclick="checkPractice('${id}')">Comprobar</button><div id="pf${id}" class="feedback"></div></section>
-          <section class="card activity notebook"><h3>📝 Actividad 3 · Produce una evidencia</h3><p>Elige una opción. Al seleccionarla aparecerá el ejercicio que debes realizar y escribir en tu cuaderno.</p><select id="d${id}" onchange="revealDeliverable('${id}')"><option value="">Selecciona...</option><option value="definicion">Definición</option><option value="tabla">Tabla o representación</option><option value="ejemplo">Ejemplo de la vida cotidiana</option></select><div id="df${id}" class="feedback"></div><p><strong>Registro:</strong> escribe en tu cuaderno la actividad, el procedimiento y la solución o soluciones.</p></section></div>
-          <section class="card"><h3>💬 Actividad 4 · Dialoga y transfiere</h3><p>Explica a un compañero qué paso clave hace que tu respuesta sea correcta. Después escribe una justificación breve.</p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tu explicación..."></textarea></section>
-          <section class="card notebook"><h3>📌 Actividad 5 · Cierre en el cuaderno</h3><p>Escribe una conclusión de dos líneas: qué aprendiste, qué procedimiento utilizaste y dónde podrías aplicarlo.</p><label><input type="checkbox"> Revisé mi procedimiento.</label><label><input type="checkbox"> Escribí la solución completa.</label></section>
+          <section class="card activity notebook"><h3>📝 Actividad 3 · Genera una evidencia</h3><p>Elige una opción. Al seleccionarla aparecerá el ejercicio que debes realizar y escribir en tu cuaderno.</p><select id="d${id}" onchange="revealDeliverable('${id}')"><option value="">Selecciona...</option><option value="definicion">Definición</option><option value="tabla">Tabla o representación</option><option value="ejemplo">Ejemplo de la vida cotidiana</option></select><div id="df${id}" class="feedback"></div><p><strong>Registro:</strong> escribe en tu cuaderno la actividad, el procedimiento y la solución o soluciones.</p></section></div>
+          <section class="card"><h3>💬 Actividad 4 · Dialoga y transfiere</h3><p>Explica a un compañero qué paso clave o aprendizaje logrado hace que en esta sesión tus respuestas sean correctas. Después escribe una justificación breve.</p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tu explicación..."></textarea></section>
+          <section class="card notebook"><h3>📌 Actividad 5 · Cierre en el cuaderno</h3><p>Escribe una conclusión de dos líneas: qué aprendiste, qué procedimiento utilizaste y como podrías recordarlo.
+          </p><textarea rows="3" style="width:100%" placeholder="Escribe aquí tus concluciones..."></textarea></p><label><input type="checkbox"> Revisé mi procedimiento.</label><label><input type="checkbox"> Escribí la solución completa.</label>
+          </section>
           <div class="grid">${renderExtraCard(id, 0)}${renderExtraCard(id, 1)}</div>`;
         }
 
@@ -1377,7 +1381,7 @@
                     // extras
                     const extras = extraExercises[id] || [];
                     extras.forEach((e, ei) => {
-                        qs.push({ label: `Actividad ${6+ei} (Practica)`, prompt: e[0] });
+                        qs.push({ label: `Actividad ${6+ei} (Bonus)`, prompt: e[0] });
                     });
 
                     qs.forEach((q, qi) => {
