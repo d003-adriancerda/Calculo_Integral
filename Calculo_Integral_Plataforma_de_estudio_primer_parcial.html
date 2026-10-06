@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de práctica — Cálculo integral: primitivas, sustitución, Riemann y área</title>
+<style>
+@import url("https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css");
+</style>
+<style>
+  :root{
+    --bg:#eff0f1; --card:#ffffff; --ink:#1a1b1c; --muted:#6f7378;
+    --accent:#366ea6; --accent-dark:#334250; --accent-soft:#eaf1f8;
+    --stripe:#ebedee; --border:#c7d0da; --ok:#46875c; --ok-soft:#eaf4ed;
+    --bad:#92453e; --bad-soft:#f7ecea;
+    --r:14px; --shadow:0 1px 3px rgba(26,27,28,.08),0 6px 18px rgba(26,27,28,.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.55; font-size:16px;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:0 18px;}
+
+  /* ---------- Header ---------- */
+  header{
+    background:linear-gradient(160deg,var(--accent-dark) 0%, #3a5a7d 70%, var(--accent) 130%);
+    color:#fff; padding:34px 0 30px;
+  }
+  .kicker{
+    font-size:12px; letter-spacing:2.5px; text-transform:uppercase;
+    opacity:.75; margin-bottom:10px; font-weight:600;
+  }
+  header h1{font-size:clamp(22px,4vw,30px); line-height:1.25; font-weight:800; max-width:760px;}
+  header .sub{margin-top:10px; max-width:680px; font-size:15px; opacity:.88;}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;}
+  .badge{
+    background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25);
+    padding:5px 12px; border-radius:999px; font-size:12.5px; font-weight:600;
+  }
+
+  /* ---------- Teoría ---------- */
+  details.teoria{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--r);
+    margin:22px 0 0; box-shadow:var(--shadow); overflow:hidden;
+  }
+  details.teoria summary{
+    cursor:pointer; padding:16px 20px; font-weight:700; font-size:15.5px;
+    color:var(--accent-dark); list-style:none; display:flex; align-items:center; gap:10px;
+    user-select:none;
+  }
+  details.teoria summary::-webkit-details-marker{display:none;}
+  details.teoria summary .chev{transition:transform .2s; color:var(--accent); font-size:13px;}
+  details.teoria[open] summary .chev{transform:rotate(90deg);}
+  .teoria-body{padding:4px 20px 22px; border-top:1px solid var(--stripe);}
+  .teoria-body p.intro{margin:14px 0 4px; font-size:14.5px; color:var(--muted);}
+  .tgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-top:14px;}
+  .tcard{
+    border:1px solid var(--border); border-radius:10px; padding:14px 15px;
+    background:#fbfcfd; font-size:13.8px;
+  }
+  .tcard h3{font-size:13.5px; color:var(--accent-dark); margin-bottom:7px; letter-spacing:.3px;}
+  .tcard p{margin:5px 0;}
+  .tcard b{color:var(--accent-dark);}
+
+  /* ---------- Controles ---------- */
+  .controls{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--r);
+    box-shadow:var(--shadow); margin-top:18px; padding:16px 18px;
+  }
+  .ctl-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
+  .ctl-label{font-size:12px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); font-weight:700; margin-right:2px;}
+  .seg{display:flex; border:1.5px solid var(--accent); border-radius:10px; overflow:hidden;}
+  .seg button{
+    border:0; background:#fff; color:var(--accent); padding:9px 18px; font-size:14px; font-weight:700; cursor:pointer;
+    transition:background .15s,color .15s; font-family:inherit;
+  }
+  .seg button.on{background:var(--accent); color:#fff;}
+  .chips{display:flex; flex-wrap:wrap; gap:7px;}
+  .chip{
+    border:1.5px solid var(--border); background:#fff; color:var(--accent-dark);
+    border-radius:999px; padding:6px 13px; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s;
+    font-family:inherit;
+  }
+  .chip:hover{border-color:var(--accent);}
+  .chip.on{background:var(--accent-dark); border-color:var(--accent-dark); color:#fff;}
+  select.sel{
+    border:1.5px solid var(--border); border-radius:10px; padding:8px 12px; font-size:14px;
+    background:#fff; color:var(--ink); cursor:pointer; font-family:inherit;
+  }
+  .btn{
+    border:0; border-radius:10px; padding:11px 20px; font-size:14.5px; font-weight:700; cursor:pointer;
+    transition:transform .08s, box-shadow .15s; font-family:inherit;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--accent); color:#fff; box-shadow:0 3px 10px rgba(54,110,166,.35);}
+  .btn-primary:hover{background:#2f6096;}
+  .btn-ghost{background:#fff; color:var(--accent-dark); border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+  .ctl-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; padding-top:14px; border-top:1px solid var(--stripe);}
+  .muted{color:var(--muted); font-size:13.5px;}
+
+  /* ---------- Sesión ---------- */
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--r);
+    box-shadow:var(--shadow); margin-top:18px; padding:18px 20px;
+  }
+  .quizbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .mini{background:var(--accent); color:#fff; border-radius:999px; padding:3px 12px; font-size:12px; font-weight:700;}
+  .mini.ctx{background:#fff; color:var(--muted); border:1.5px solid var(--border);}
+  .spacer{flex:1;}
+  .counter{font-size:13px; color:var(--muted); font-weight:700;}
+  .progress{height:8px; background:var(--stripe); border-radius:999px; overflow:hidden; margin:14px 0 4px;}
+  .progress>div{height:100%; width:0; background:linear-gradient(90deg,var(--accent-dark),var(--accent)); transition:width .3s;}
+  .statsbar{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px 0 4px;}
+  .stat{background:#fbfcfd; border:1px solid var(--border); border-radius:10px; padding:10px 12px; text-align:center;}
+  .stat .n{font-size:22px; font-weight:800; color:var(--accent-dark); line-height:1.1;}
+  .stat .l{font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-top:3px; font-weight:600;}
+  .qtext{font-size:16.5px; margin:16px 0 4px; line-height:1.7;}
+  .opt{
+    display:block; width:100%; text-align:left; background:#fbfcfd;
+    border:1.5px solid var(--border); border-radius:12px; padding:12px 15px; margin:9px 0;
+    font-size:15px; cursor:pointer; transition:all .15s; color:var(--ink); font-family:inherit;
+    line-height:1.65;
+  }
+  .opt:hover:not(:disabled){border-color:var(--accent); background:var(--accent-soft);}
+  .opt:disabled{cursor:default;}
+  .opt .key{display:inline-block; font-weight:800; margin-right:9px; color:var(--accent);}
+  .opt.correct{border-color:var(--ok); background:var(--ok-soft);}
+  .opt.correct .key{color:var(--ok);}
+  .opt.wrong{border-color:var(--bad); background:var(--bad-soft);}
+  .opt.wrong .key{color:var(--bad);}
+  .opt.dim{opacity:.55;}
+  .opt.picked{border-color:var(--accent); background:var(--accent-soft);}
+  .exbox{
+    background:var(--accent-soft); border-left:4px solid var(--accent);
+    border-radius:0 10px 10px 0; padding:13px 16px; margin:14px 0 4px; font-size:14.3px; line-height:1.7;
+  }
+  .exbox.ok{border-color:var(--ok); background:var(--ok-soft);}
+  .exbox.bad{border-color:var(--bad); background:var(--bad-soft);}
+  .exbox h4{margin-bottom:6px; font-size:14.5px;}
+  .quiz-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;}
+  .hint{font-size:12.5px; color:var(--muted); margin-top:12px; text-align:center;}
+
+  /* ---------- Resultados ---------- */
+  .card h2{font-size:18px; color:var(--accent-dark);}
+  .card h3{font-size:14.5px; color:var(--accent-dark); margin:16px 0 8px;}
+  .rescore{display:flex; gap:22px; align-items:center; margin:14px 0 6px;}
+  .big{font-size:52px; font-weight:800; color:var(--accent-dark); line-height:1;}
+  .score{font-size:15.5px; font-weight:700;}
+  .trow{display:flex; align-items:center; gap:12px; margin:8px 0;}
+  .tname{width:225px; font-size:13.5px; flex-shrink:0;}
+  .tbar{flex:1; height:10px; background:var(--stripe); border-radius:999px; overflow:hidden;}
+  .tbar>div{height:100%; border-radius:999px;}
+  .tnum{width:52px; text-align:right; font-size:13.5px; font-weight:800; color:var(--accent-dark);}
+  .rev{
+    border:1px solid var(--border); border-left:4px solid var(--bad); border-radius:10px;
+    padding:12px 15px; margin:10px 0; background:#fbfcfd;
+  }
+  .rev .rev-top{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px;}
+  .rev .rev-state{font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:999px; background:var(--bad-soft); color:var(--bad);}
+  .rev .qq{font-size:14.5px; margin:4px 0;}
+  .rev .ans{font-size:13.8px; margin:3px 0;}
+  .rev .ans.bad{color:var(--bad);}
+  .rev .ans.good{color:var(--ok);}
+  .rev .exp{
+    font-size:13.5px; color:#3a4149; background:#fff; border:1px dashed var(--border);
+    border-radius:8px; padding:9px 12px; margin-top:8px;
+  }
+  .good-line{background:var(--ok-soft); color:var(--ok); font-weight:700; border-radius:10px; padding:12px 15px; margin-top:8px;}
+  .foot{font-size:12.5px; color:var(--muted); text-align:center; margin:26px 0 34px;}
+
+  /* ---------- KaTeX ---------- */
+  .katex{font-size:1.08em;}
+  .qtext,.opt,.exbox,.rev,.tcard{overflow-wrap:break-word;}
+  .qtext code,.rev code,.opt code{
+    background:#eef1f4; border:1px solid var(--border); border-radius:6px;
+    padding:1px 6px; font-size:.9em; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media(max-width:640px){
+    .statsbar{grid-template-columns:repeat(2,1fr);}
+    .tname{width:130px;}
+    .rescore{flex-direction:column; gap:6px; align-items:flex-start;}
+    .katex{font-size:1.02em;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Cálculo integral de una variable · Práctica interactiva</div>
+    <h1>Primitivas, integración inmediata, sustitución, sumas de Riemann y área bajo la curva</h1>
+    <p class="sub">Ejercicios de opción múltiple para dominar los temas de la sesión, con fórmulas en LaTeX renderizadas con calidad tipográfica. Las opciones se barajan en cada intento: la respuesta correcta nunca ocupa siempre el mismo inciso. Contextos: matemáticas, programación, innovación y economía social solidaria.</p>
+    <div class="badges">
+      <span class="badge" id="badgeTotal">— ejercicios</span>
+      <span class="badge">Opciones aleatorias a) b) c) d)</span>
+      <span class="badge">Fórmulas en LaTeX (KaTeX)</span>
+      <span class="badge">Explicación paso a paso</span>
+      <span class="badge">2 modos: práctica y examen</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <details class="teoria" open>
+    <summary>Repaso rápido de los temas de la sesión <span class="chev">▶</span></summary>
+    <div class="teoria-body">
+      <p class="intro">Fórmulas e ideas clave de cada tema. Consúltalos antes de practicar si necesitas recordar algo; después intenta resolver sin mirar.</p>
+      <div class="tgrid" id="theoryGrid"></div>
+    </div>
+  </details>
+
+  <section class="controls" id="controls">
+    <div class="ctl-row">
+      <span class="ctl-label">Modo</span>
+      <div class="seg" id="segMode">
+        <button type="button" data-m="study" class="on">Práctica</button>
+        <button type="button" data-m="exam">Examen</button>
+      </div>
+      <span class="ctl-label" style="margin-left:14px">Ejercicios</span>
+      <select class="sel" id="numQ">
+        <option value="10">10</option>
+        <option value="20" selected>20</option>
+        <option value="40">40</option>
+        <option value="all">Todos</option>
+      </select>
+    </div>
+    <div class="ctl-row" style="margin-top:12px">
+      <span class="ctl-label">Temas</span>
+      <div class="chips" id="topicChips"></div>
+    </div>
+    <div class="ctl-row" style="margin-top:12px">
+      <span class="ctl-label">Contextos</span>
+      <div class="chips" id="ctxChips"></div>
+    </div>
+    <div class="ctl-actions">
+      <button class="btn btn-ghost" id="allT">Todos los temas</button>
+      <button class="btn btn-ghost" id="noneT">Ningún tema</button>
+      <button class="btn btn-ghost" id="allC">Todos los contextos</button>
+      <button class="btn btn-ghost" id="noneC">Ningún contexto</button>
+      <button class="btn btn-primary" id="startBtn" style="margin-left:auto">Comenzar sesión</button>
+    </div>
+    <p class="muted" id="bestLine" style="margin-top:10px"></p>
+  </section>
+
+  <section class="card" id="sessionZone" style="display:none">
+    <div class="quizbar">
+      <span class="mini" id="qTopic"></span>
+      <span class="mini ctx" id="qCtx"></span>
+      <span class="spacer"></span>
+      <span class="counter" id="qCount"></span>
+    </div>
+    <div class="progress"><div id="progFill"></div></div>
+    <div class="statsbar">
+      <div class="stat"><div class="n" id="stResp">0</div><div class="l">Respondidas</div></div>
+      <div class="stat"><div class="n" id="stOk">0</div><div class="l">Correctas</div></div>
+      <div class="stat"><div class="n" id="stRacha">0</div><div class="l">Racha</div></div>
+      <div class="stat"><div class="n" id="stPrec">—</div><div class="l">Precisión</div></div>
+    </div>
+    <p class="qtext" id="qText"></p>
+    <div id="opts"></div>
+    <div class="exbox" id="exBox" style="display:none"></div>
+    <div class="quiz-actions">
+      <button class="btn btn-primary" id="nextBtn" style="display:none">Siguiente</button>
+      <button class="btn btn-ghost" id="quitBtn" style="display:none">Abandonar sesión</button>
+    </div>
+    <p class="hint">Atajos: teclas 1-4 para responder · Enter para continuar.</p>
+  </section>
+
+  <section class="card" id="resultZone" style="display:none">
+    <h2>Resultado de la sesión</h2>
+    <div class="rescore">
+      <div class="big" id="resPct">—</div>
+      <div>
+        <p id="resScore" class="score"></p>
+        <p id="resMsg"></p>
+        <p class="muted" id="resBest" style="margin-top:4px"></p>
+      </div>
+    </div>
+    <h3>Desempeño por tema</h3>
+    <div id="resTopics"></div>
+    <div id="perfectBox" style="display:none"><p class="good-line">Sin errores en esta sesión. Puedes subir la dificultad combinando más temas o usando el modo examen.</p></div>
+    <div id="wrongBox">
+      <h3>Ejercicios fallados</h3>
+      <div id="resWrong"></div>
+    </div>
+    <div class="ctl-actions">
+      <button class="btn btn-primary" id="retryBtn">Repetir las falladas</button>
+      <button class="btn btn-ghost" id="againBtn">Nueva sesión (misma configuración)</button>
+      <button class="btn btn-ghost" id="homeBtn">Volver al inicio</button>
+    </div>
+  </section>
+
+  <p class="foot">Simulador de estudio — Cálculo integral de una variable · Primitivas y antiderivadas · Integración inmediata · Integración por sustitución · Sumas de Riemann · Área bajo la curva</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script>
+"use strict";
+
+/* TOPICS y CTXS — teoría con LaTeX (KaTeX) */
+const TOPICS = {
+  prim:{n:"Primitivas y antiderivadas", c:"#8b5cf6",
+    ref:String.raw`<p><b>Definición:</b> F es antiderivada (primitiva) de f en un intervalo si $F'(x) = f(x)$ para todo x de ese intervalo. Derivando F debes obtener exactamente f.</p><p><b>Familia:</b> si F es antiderivada de f, todas las demás son $F(x) + C$. La integral indefinida $\int f(x)\,dx = F(x) + C$ representa a toda la familia.</p><p><b>Condición inicial:</b> un dato como $F(0) = 3$ permite fijar la C y elegir una única antiderivada.</p>`},
+  inme:{n:"Integración inmediata", c:"#0ea5e9",
+    ref:String.raw`<p><b>Potencia:</b> $\int x^{n}\,dx = \dfrac{x^{n+1}}{n+1} + C$ &nbsp;($n \neq -1$). <b>Base:</b> $\int dx = x + C$, $\int \frac{1}{x}\,dx = \ln|x| + C$, $\int e^{x}\,dx = e^{x} + C$.</p><p><b>Trigonométricas:</b> $\int \cos x\,dx = \sin x + C$, $\int \sin x\,dx = -\cos x + C$, $\int \sec^{2}x\,dx = \tan x + C$.</p><p><b>Linealidad:</b> las constantes salen y las sumas se separan: $\int [k\,f + g]\,dx = k\int f\,dx + \int g\,dx$.</p><p><b>Regla de oro:</b> deriva tu resultado; debes recuperar exactamente $f(x)$.</p>`},
+  sust:{n:"Integración por sustitución", c:"#f59e0b",
+    ref:String.raw`<p><b>Cuándo:</b> el integrando contiene una función compuesta $f(g(x))$ multiplicada (casi) por su derivada interna $g'(x)$.</p><p><b>Pasos:</b> 1) Elige $u = $ parte interna (lo de dentro del paréntesis, raíz, exponente o denominador). 2) Calcula $du = g'(x)\,dx$. 3) Reescribe la integral solo con $u$ y $du$. 4) Integra con reglas inmediatas. 5) Regresa a la variable original.</p><p><b>Constantes faltantes:</b> si tienes $x\,dx$ pero $du = 2x\,dx$, compensa: $x\,dx = \frac{du}{2}$.</p>`},
+  rie:{n:"Sumas de Riemann", c:"#10b981",
+    ref:String.raw`<p><b>Reparto:</b> $\Delta x = \frac{b - a}{n}$ y nodos $x_{i} = a + i\,\Delta x$.</p><p><b>Suma:</b> $\displaystyle\sum_{i=1}^{n} f(x_{i})\,\Delta x$ = suma de áreas de n rectángulos de base $\Delta x$ y altura $f(x_{i})$.</p><p><b>Variantes:</b> extremos izquierdos ($x_{0}, \ldots, x_{n-1}$), extremos derechos ($x_{1}, \ldots, x_{n}$), puntos medios ($\frac{x_{i-1} + x_{i}}{2}$).</p><p><b>Estimación:</b> si f crece, la suma izquierda subestima y la derecha sobrestima; si decrece, al revés.</p><p><b>Límite:</b> $\int_{a}^{b} f(x)\,dx = \lim_{n\to\infty} \sum f(x_{i})\,\Delta x$: esa es la definición de la integral definida.</p>`},
+  area:{n:"Área bajo la curva", c:"#ef4444",
+    ref:String.raw`<p><b>FTC:</b> si $F' = f$, entonces $\int_{a}^{b} f(x)\,dx = F(b) - F(a)$: evalúa arriba menos abajo.</p><p><b>Área:</b> con $f \geq 0$ la integral ES el área bajo la curva sobre $[a, b]$; con $f \leq 0$ la integral es negativa y el área geométrica es $-\int_{a}^{b} f$.</p><p><b>Propiedades:</b> $\int_{a}^{a} f = 0$, $\int_{a}^{b} (f + g) = \int_{a}^{b} f + \int_{a}^{b} g$, $\int_{a}^{b} k\,f = k\int_{a}^{b} f$.</p><p><b>Unidades:</b> integrar una tasa (unidades/hora) respecto al tiempo da unidades totales (litros, pesos, socios…).</p>`},
+  mix:{n:"Repaso integrador", c:"#6366f1",
+    ref:String.raw`<p><b>Mapa de la sesión:</b> antiderivadas ($F' = f$) → integración inmediata y por sustitución (técnicas para hallar F) → sumas de Riemann (qué significa $\int_{a}^{b} f$: el límite de áreas de rectángulos) → FTC (cómo evaluarla: $F(b) - F(a)$).</p><p><b>Distinción clave:</b> $\int f(x)\,dx$ es una familia de funciones; $\int_{a}^{b} f(x)\,dx$ es un número.</p>`}
+};
+const CTXS = {
+  mat:{n:"Matemáticas"},
+  prog:{n:"Programación"},
+  inno:{n:"Innovación"},
+  ess:{n:"Economía social solidaria"}
+};
+
+/* BANCO — Primitivas y antiderivadas (15) */
+const BANK_PRIM = [
+{t:"prim",ctx:"mat",q:String.raw`¿Cuál de las siguientes afirmaciones define correctamente el concepto de <b>antiderivada</b>?`,o:[String.raw`F es una antiderivada de f en un intervalo si $F'(x) = f(x)$ para todo x de ese intervalo.`,String.raw`F es una antiderivada de f si $f'(x) = F(x)$ para todo x del intervalo.`,String.raw`F es una antiderivada de f si $F(x) = f(x) + C$ para alguna constante C.`,String.raw`F es una antiderivada de f si su gráfica es la de f desplazada verticalmente.`],a:0,ex:String.raw`La relación se define a través de la derivada: F es antiderivada de f cuando al derivar F se obtiene f. La derivada va de F hacia f, nunca al revés, y el parecido entre gráficas no es el criterio.`},
+{t:"prim",ctx:"mat",q:String.raw`Comprueba si $F(x) = x^{3}$ es antiderivada de $f(x) = 3x^{2}$. ¿Cuál es la conclusión correcta?`,o:[String.raw`Sí lo es, porque $F'(x) = 3x^{2}$, que coincide con $f(x)$.`,String.raw`No lo es, porque $F'(x) = x^{2}$.`,String.raw`Sí lo es, porque ambas son funciones crecientes.`,String.raw`No lo es, porque falta añadir la constante $+C$ en la definición de F.`],a:0,ex:String.raw`Derivamos F: $F'(x) = 3x^{2} = f(x)$. Por lo tanto F sí es una antiderivada de f (una de infinitas: $x^{3} + C$ también lo sería).`},
+{t:"prim",ctx:"mat",q:String.raw`¿Cuál es la antiderivada general de $f(x) = 2x$?`,o:[String.raw`$x^{2} + C$`,String.raw`$2x^{2} + C$`,String.raw`$x^{2}$, sin constante`,String.raw`$2x + C$`],a:0,ex:String.raw`Buscamos F con $F'(x) = 2x$. Como $\left(x^{2} + C\right)' = 2x$, la familia completa es $x^{2} + C$. Omitir la C significa perder infinitas antiderivadas válidas.`},
+{t:"prim",ctx:"mat",q:String.raw`¿Por qué dos antiderivadas cualesquiera de $f(x) = \cos x$ solo pueden diferir en una constante?`,o:[String.raw`Porque si F y G son antiderivadas de f, entonces $(F - G)' = 0$, y toda función con derivada nula en un intervalo es constante.`,String.raw`Porque la derivada de una constante siempre es cero.`,String.raw`Porque $\cos x$ está acotada entre $-1$ y $1$.`,String.raw`Porque las funciones trigonométricas son periódicas y se repiten cada $2\pi$.`],a:0,ex:String.raw`$(F - G)' = f - f = 0$. El teorema clave dice que si una función tiene derivada cero en todo un intervalo, entonces es constante: ahí vive la famosa $+C$.`},
+{t:"prim",ctx:"mat",q:String.raw`¿Cuál de estas funciones <b>NO</b> es antiderivada de $f(x) = x^{2}$?`,o:[String.raw`$x^{3} + 5$`,String.raw`$\dfrac{x^{3}}{3}$`,String.raw`$\dfrac{x^{3}}{3} - 7$`,String.raw`$\dfrac{x^{3}}{3} + \dfrac{1}{4}$`],a:0,ex:String.raw`$\left(x^{3} + 5\right)' = 3x^{2}$, que no es $x^{2}$. Las demás sí: $\left(\frac{x^{3}}{3}\right)' = x^{2}$ y las constantes añadidas desaparecen al derivar.`},
+{t:"prim",ctx:"ess",q:String.raw`Una cooperativa cafetalera modela su ritmo de recolección como $v(t) = 6t$ kg/día. El café acumulado $V(t)$ cumple $V'(t) = v(t)$. ¿Cuál es la familia de funciones acumuladas?`,o:[String.raw`$V(t) = 3t^{2} + C$`,String.raw`$V(t) = 6t^{2} + C$`,String.raw`$V(t) = 3t^{2}$`,String.raw`$V(t) = t^{3} + C$`],a:0,ex:String.raw`Buscamos V con $V'(t) = 6t$. Como $\left(3t^{2} + C\right)' = 6t$, el acumulado es $V(t) = 3t^{2} + C$ kg. La constante C la fijaría el café recolectado antes de empezar a medir.`},
+{t:"prim",ctx:"prog",q:String.raw`Un programador quiere verificar con un test numérico si su función F es antiderivada de f. ¿Qué prueba es la correcta?`,o:[String.raw`Evaluar $\frac{F(x+h) - F(x)}{h}$ con $h$ muy pequeño en varios puntos y comparar el resultado con $f(x)$.`,String.raw`Evaluar $\frac{F(x+h) - F(x)}{h}$ con $h$ muy pequeño y comparar con $f'(x)$.`,String.raw`Comprobar que $F(x) = f(x)$ en varios puntos del dominio.`,String.raw`Integrar numéricamente f con una suma de Riemann y comparar con $F(x)$.`],a:0,ex:String.raw`La condición es $F' = f$. El cociente $\frac{F(x+h) - F(x)}{h}$ aproxima $F'(x)$, así que debe coincidir con $f(x)$, no con $f'(x)$.`},
+{t:"prim",ctx:"mat",q:String.raw`¿Cuál es la antiderivada de la función nula $f(x) = 0$?`,o:[String.raw`Toda función constante $F(x) = C$`,String.raw`Únicamente $F(x) = 0$`,String.raw`$F(x) = C\,x$, con C constante`,String.raw`No existe ninguna`],a:0,ex:String.raw`$(C)' = 0 = f$, así que cualquier constante sirve. Además son las únicas: derivada nula en todo un intervalo implica función constante.`},
+{t:"prim",ctx:"mat",q:String.raw`Se sabe que $F'(x) = 4x$ y que $F(0) = 3$. ¿Cuál es $F(x)$?`,o:[String.raw`$F(x) = 2x^{2} + 3$`,String.raw`$F(x) = 2x^{2} - 3$`,String.raw`$F(x) = 4x^{2} + 3$`,String.raw`$F(x) = 2x^{2} + C$, con C indeterminado`],a:0,ex:String.raw`La familia de antiderivadas de $4x$ es $2x^{2} + C$. La condición $F(0) = 3$ obliga: $2\cdot 0 + C = 3$, de donde $C = 3$. La condición inicial selecciona una antiderivada dentro de la familia.`},
+{t:"prim",ctx:"inno",q:String.raw`Una startup mide la derivada de su función de ingresos: $I'(t) = 12t$ (miles de pesos por mes), con $I(0) = 2$. ¿Cuál es $I(t)$?`,o:[String.raw`$I(t) = 6t^{2} + 2$`,String.raw`$I(t) = 6t^{2} + C$`,String.raw`$I(t) = 12t^{2} + 2$`,String.raw`$I(t) = 6t^{2}$`],a:0,ex:String.raw`La familia de antiderivadas de $12t$ es $6t^{2} + C$. El dato inicial $I(0) = 2$ fija $C = 2$. Sin esa condición no podríamos elegir una sola función.`},
+{t:"prim",ctx:"mat",q:String.raw`La notación $\int f(x)\,dx$ (integral indefinida) representa:`,o:[String.raw`La familia completa de las antiderivadas de f`,String.raw`Un único número real`,String.raw`El área exacta bajo la curva de f en $[a, b]$`,String.raw`La derivada de f evaluada en x`],a:0,ex:String.raw`$\int f(x)\,dx = F(x) + C$ agrupa todas las antiderivadas a la vez. El número (o el área) aparece con la integral definida $\int_{a}^{b} f(x)\,dx$, que lleva límites de integración.`},
+{t:"prim",ctx:"mat",q:String.raw`¿Cuál es la diferencia esencial entre una antiderivada y una integral definida?`,o:[String.raw`La antiderivada es una función F con $F' = f$; la integral definida $\int_{a}^{b} f\,dx$ es un número, $F(b) - F(a)$.`,String.raw`Son el mismo objeto escrito con distinta notación.`,String.raw`La antiderivada es un número y la integral definida es una función.`,String.raw`La antiderivada necesita límites de integración y la integral definida no.`],a:0,ex:String.raw`Son objetos de naturaleza distinta (función frente a número) y se conectan mediante el Teorema Fundamental del Cálculo: $\int_{a}^{b} f = F(b) - F(a)$.`},
+{t:"prim",ctx:"mat",q:String.raw`Si $G(x) = \sin x + 5$, entonces G es antiderivada de:`,o:[String.raw`$g(x) = \cos x$`,String.raw`$g(x) = -\cos x$`,String.raw`$g(x) = \cos x + 5$`,String.raw`$g(x) = \sin x$`],a:0,ex:String.raw`$G'(x) = \cos x$. Observa que el $+5$ desaparece al derivar: por eso $\sin x + 5$, $\sin x + 100$ y $\sin x$ son antiderivadas de la misma función.`},
+{t:"prim",ctx:"ess",q:String.raw`La tasa de ahorro mensual de una cooperativa es $s(m) = 4m - 1$ (miles de pesos por mes) y su ahorro inicial es de 10 mil pesos. ¿Cuál es su función de ahorro acumulado $S(m)$?`,o:[String.raw`$S(m) = 2m^{2} - m + 10$`,String.raw`$S(m) = 2m^{2} - m + C$`,String.raw`$S(m) = 4m^{2} - m + 10$`,String.raw`$S(m) = 2m^{2} - 11$`],a:0,ex:String.raw`$\int (4m - 1)\,dm = 2m^{2} - m + C$. Con $S(0) = 10$ se obtiene $C = 10$. El ahorro acumulado depende del histórico: la constante captura ese punto de partida.`},
+{t:"prim",ctx:"prog",q:String.raw`En un proyecto de software matemático, una función K cumple $K'(x) = 6x^{2} + 2$. ¿Cuál puede ser K?`,o:[String.raw`$K(x) = 2x^{3} + 2x + 7$`,String.raw`$K(x) = 6x^{3} + 2x$`,String.raw`$K(x) = 3x^{3} + 2x + 7$`,String.raw`$K(x) = 2x^{3} + 2x - 6x^{2}$`],a:0,ex:String.raw`Antiderivada de $6x^{2} + 2$: $2x^{3} + 2x + C$. Cualquier constante es válida (por eso el $+7$ es correcto). Las demás opciones no derivan a $6x^{2} + 2$.`}
+];
+
+/* BANCO — Integración inmediata (22) */
+const BANK_INME = [
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int x^{5}\,dx$`,o:[String.raw`$\dfrac{x^{6}}{6} + C$`,String.raw`$5x^{4} + C$`,String.raw`$x^{6} + C$`,String.raw`$6x^{5} + C$`],a:0,ex:String.raw`Regla de la potencia: $\int x^{n}\,dx = \frac{x^{n+1}}{n+1} + C$. Con $n = 5$: $\frac{x^{6}}{6} + C$. Verificación: $\left(\frac{x^{6}}{6}\right)' = \frac{6x^{5}}{6} = x^{5}$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \sqrt{x}\,dx$`,o:[String.raw`$\dfrac{2}{3}\,x^{3/2} + C$`,String.raw`$\dfrac{1}{2}\,x^{-1/2} + C$`,String.raw`$x^{3/2} + C$`,String.raw`$\dfrac{3}{2}\,x^{1/2} + C$`],a:0,ex:String.raw`$\sqrt{x} = x^{1/2}$. Con la regla de la potencia: $\frac{x^{3/2}}{3/2} = \frac{2}{3}x^{3/2} + C$. La opción con $x^{-1/2}$ aparece por derivar en lugar de integrar.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int 7\,dx$`,o:[String.raw`$7x + C$`,String.raw`$x^{7} + C$`,String.raw`$7 + C$`,String.raw`$7x$, sin constante`],a:0,ex:String.raw`$\int k\,dx = kx + C$. Derivando $7x + C$ recuperamos 7. Sin la constante perderíamos todas las antiderivadas paralelas.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int 3x^{2}\,dx$`,o:[String.raw`$x^{3} + C$`,String.raw`$3x^{3} + C$`,String.raw`$\dfrac{x^{3}}{3} + C$`,String.raw`$6x + C$`],a:0,ex:String.raw`La constante sale de la integral: $3\int x^{2}\,dx = 3\cdot\frac{x^{3}}{3} = x^{3}$. Verifica: $\left(x^{3}\right)' = 3x^{2}$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int (2x + 3)\,dx$`,o:[String.raw`$x^{2} + 3x + C$`,String.raw`$2x^{2} + 3x + C$`,String.raw`$x^{2} + 3 + C$`,String.raw`$2x + 3 + C$`],a:0,ex:String.raw`Término a término: $\int 2x\,dx = x^{2}$ y $\int 3\,dx = 3x$. La linealidad permite integrar las sumas parte por parte.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \frac{1}{x^{2}}\,dx$`,o:[String.raw`$-\dfrac{1}{x} + C$`,String.raw`$\dfrac{1}{x} + C$`,String.raw`$-\dfrac{2}{x^{3}} + C$`,String.raw`$\ln|x| + C$`],a:0,ex:String.raw`$\frac{1}{x^{2}} = x^{-2}$. Aplicando la potencia: $\frac{x^{-1}}{-1} = -x^{-1} = -\frac{1}{x} + C$. Verifica: $\left(-\frac{1}{x}\right)' = \frac{1}{x^{2}}$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int e^{x}\,dx$`,o:[String.raw`$e^{x} + C$`,String.raw`$\dfrac{e^{x}}{x} + C$`,String.raw`$e^{x+1} + C$`,String.raw`$\dfrac{1}{2}\,e^{2x} + C$`],a:0,ex:String.raw`$e^{x}$ es la función que al derivarse da $e^{x}$: es su propia antiderivada. Ojo: $\left(\frac{1}{2}e^{2x}\right)' = e^{2x}$, que no es $e^{x}$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \cos x\,dx$`,o:[String.raw`$\sin x + C$`,String.raw`$-\sin x + C$`,String.raw`$\cos x + C$`,String.raw`$-\cos x + C$`],a:0,ex:String.raw`$(\sin x)' = \cos x$, así que la antiderivada de $\cos x$ es $\sin x + C$. La opción $-\cos x + C$ es la antiderivada de $\sin x$: no las confundas.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \sin x\,dx$`,o:[String.raw`$-\cos x + C$`,String.raw`$\cos x + C$`,String.raw`$-\sin x + C$`,String.raw`$\sin x + C$`],a:0,ex:String.raw`$(-\cos x)' = \sin x$. El signo negativo es el error clásico de este caso.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \left(4x^{3} - 2x\right) dx$`,o:[String.raw`$x^{4} - x^{2} + C$`,String.raw`$4x^{4} - 2x^{2} + C$`,String.raw`$x^{4} - 2x^{2} + C$`,String.raw`$4x^{3} - 2 + C$`],a:0,ex:String.raw`Término a término: $4\cdot\frac{x^{4}}{4} = x^{4}$ y $2\cdot\frac{x^{2}}{2} = x^{2}$. Resultado: $x^{4} - x^{2} + C$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \frac{1}{x}\,dx$, para $x > 0$`,o:[String.raw`$\ln x + C$`,String.raw`$-\dfrac{1}{x^{2}} + C$`,String.raw`$x\ln x - x + C$`,String.raw`$\dfrac{1}{2x^{2}} + C$`],a:0,ex:String.raw`Es el caso excepcional $n = -1$ donde la regla de la potencia falla: $\int x^{-1}\,dx = \ln|x| + C$, que para $x > 0$ se escribe $\ln x + C$. La opción $x\ln x - x + C$ es la antiderivada de $\ln x$, no de $\frac{1}{x}$.`},
+{t:"inme",ctx:"mat",q:String.raw`Un estudiante razona: «$\int x^{2}\,dx = x^{3} + C$, porque la derivada de $x^{3}$ es $3x^{2}$, que es casi $x^{2}$». ¿Cuál es el problema?`,o:[String.raw`$\left(x^{3}\right)' = 3x^{2}$, no $x^{2}$; la antiderivada correcta es $\frac{x^{3}}{3} + C$`,String.raw`Ninguno: el resultado es correcto`,String.raw`El único error es olvidar la constante C`,String.raw`La regla de la potencia no se puede usar con exponentes positivos`],a:0,ex:String.raw`La antiderivada debe derivar exactamente a la función original. $\left(x^{3}\right)' = 3x^{2} \neq x^{2}$, mientras que $\left(\frac{x^{3}}{3}\right)' = x^{2}$. En cálculo, «casi» no basta.`},
+{t:"inme",ctx:"ess",q:String.raw`El consumo de agua de una huerta comunitaria crece según $c(t) = 8t + 3$ litros por hora. El consumo acumulado $C(t)$ cumple $C'(t) = c(t)$. Entonces:`,o:[String.raw`$C(t) = 4t^{2} + 3t + K$`,String.raw`$C(t) = 8t^{2} + 3t + K$`,String.raw`$C(t) = 4t^{2} + 3 + K$`,String.raw`$C(t) = 8t + 3 + K$`],a:0,ex:String.raw`$\int (8t + 3)\,dt = 8\cdot\frac{t^{2}}{2} + 3t = 4t^{2} + 3t + K$. La constante K se fijaría conociendo el consumo acumulado en algún instante.`},
+{t:"inme",ctx:"prog",q:String.raw`Un sistema respalda datos a razón de $r(t) = 6t^{2}$ MB por minuto. La función de datos acumulados $R(t)$ (con $R' = r$) es:`,o:[String.raw`$R(t) = 2t^{3} + C$`,String.raw`$R(t) = 6t^{3} + C$`,String.raw`$R(t) = 3t^{3} + C$`,String.raw`$R(t) = 2t^{2} + C$`],a:0,ex:String.raw`$\int 6t^{2}\,dt = 6\cdot\frac{t^{3}}{3} = 2t^{3} + C$. Truco práctico: divide el coeficiente entre el nuevo exponente (3) y sube el exponente en 1.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int x^{1/3}\,dx$`,o:[String.raw`$\dfrac{3}{4}\,x^{4/3} + C$`,String.raw`$\dfrac{4}{3}\,x^{4/3} + C$`,String.raw`$\dfrac{1}{3}\,x^{-2/3} + C$`,String.raw`$x^{4/3} + C$`],a:0,ex:String.raw`Aquí $n = \frac{1}{3}$, así que $n + 1 = \frac{4}{3}$ y $\frac{1}{4/3} = \frac{3}{4}$: el resultado es $\frac{3}{4}x^{4/3} + C$.`},
+{t:"inme",ctx:"inno",q:String.raw`La tasa de adopción de una app comunitaria es $A'(t) = 5e^{t} + 4$ (miles de usuarios por mes). La función de usuarios totales es:`,o:[String.raw`$A(t) = 5e^{t} + 4t + C$`,String.raw`$A(t) = 5e^{t} + C$`,String.raw`$A(t) = 5e^{t} + 4 + C$`,String.raw`$A(t) = 5t\,e^{t} + 4t + C$`],a:0,ex:String.raw`Término a término: $\int 5e^{t}\,dt = 5e^{t}$ y $\int 4\,dt = 4t$. La opción con $t\,e^{t}$ correspondería a integrar por una vía mucho más avanzada.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int dx$ (integral de la función 1)`,o:[String.raw`$x + C$`,String.raw`$1 + C$`,String.raw`$\dfrac{x^{2}}{2} + C$`,String.raw`$C$`],a:0,ex:String.raw`$\int dx = \int 1\cdot dx = x + C$. Cuando no aparece factor antes de $dx$, se integra la función constante 1.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int 0\,dx$`,o:[String.raw`$C$, una constante arbitraria`,String.raw`$0$, sin constante`,String.raw`$x + C$`,String.raw`$x^{0} + C$`],a:0,ex:String.raw`La antiderivada de 0 es cualquier constante: $(C)' = 0$. Y escribir $0 + C$ es exactamente $C$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \frac{1}{2}\,x\,dx$`,o:[String.raw`$\dfrac{x^{2}}{4} + C$`,String.raw`$\dfrac{x^{2}}{2} + C$`,String.raw`$\dfrac{1}{2}\,x^{2} + C$`,String.raw`$x^{2} + \dfrac{C}{2}$`],a:0,ex:String.raw`La constante $\frac{1}{2}$ sale de la integral: $\frac{1}{2}\cdot\frac{x^{2}}{2} = \frac{x^{2}}{4}$. Verifica: $\left(\frac{x^{2}}{4}\right)' = \frac{x}{2}$.`},
+{t:"inme",ctx:"mat",q:String.raw`Resuelve: $\int \sec^{2}x\,dx$`,o:[String.raw`$\tan x + C$`,String.raw`$\sec x\,\tan x + C$`,String.raw`$-\tan x + C$`,String.raw`$\cot x + C$`],a:0,ex:String.raw`Basta leer la tabla de derivadas al revés: $(\tan x)' = \sec^{2}x$, así que $\int \sec^{2}x\,dx = \tan x + C$.`},
+{t:"inme",ctx:"ess",q:String.raw`Una cooperativa de reciclaje procesa material a razón de $P'(d) = 200d - 50$ kg por día, empezando con 0 kg acumulados. Entonces $P(d) =$`,o:[String.raw`$100d^{2} - 50d$`,String.raw`$200d^{2} - 50d$`,String.raw`$100d^{2} - 50$`,String.raw`$100d^{2} + 50d$`],a:0,ex:String.raw`$P(d) = \int (200d - 50)\,dd = 100d^{2} - 50d + C$, y la condición $P(0) = 0$ obliga a $C = 0$.`},
+{t:"inme",ctx:"mat",q:String.raw`¿Cuál de las siguientes integrales está <b>mal resuelta</b>?`,o:[String.raw`$\int x^{4}\,dx = 4x^{3} + C$`,String.raw`$\int x^{4}\,dx = \dfrac{x^{5}}{5} + C$`,String.raw`$\int 5\,dx = 5x + C$`,String.raw`$\int e^{x}\,dx = e^{x} + C$`],a:0,ex:String.raw`$\int x^{4}\,dx = \frac{x^{5}}{5} + C$. La expresión $4x^{3} + C$ sale de derivar $x^{4}$, no de integrar: confundir derivación con integración es el error más frecuente al comenzar.`}
+];
+
+/* BANCO — Integración por sustitución (20) */
+const BANK_SUST = [
+{t:"sust",ctx:"mat",q:String.raw`Para resolver $\int 2x\left(x^{2} + 1\right)^{5} dx$ con el cambio $u = x^{2} + 1$, ¿cuál es $du$?`,o:[String.raw`$du = 2x\,dx$`,String.raw`$du = x^{2}\,dx$`,String.raw`$du = 2x$`,String.raw`$du = 5\left(x^{2} + 1\right)^{4} dx$`],a:0,ex:String.raw`$u = x^{2} + 1$ implica $\frac{du}{dx} = 2x$, es decir $du = 2x\,dx$. Que ese factor aparezca exactamente en el integrando es la señal de que el cambio es adecuado.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int 2x\left(x^{2} + 1\right)^{5} dx$`,o:[String.raw`$\dfrac{\left(x^{2} + 1\right)^{6}}{6} + C$`,String.raw`$\dfrac{\left(x^{2} + 1\right)^{6}}{3} + C$`,String.raw`$\dfrac{\left(x^{2} + 1\right)^{6}}{30} + C$`,String.raw`$10x\left(x^{2} + 1\right)^{4} + C$`],a:0,ex:String.raw`Con $u = x^{2} + 1$ y $du = 2x\,dx$: $\int u^{5}\,du = \frac{u^{6}}{6} + C$. Regresando a x: $\frac{\left(x^{2}+1\right)^{6}}{6} + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int x\,e^{x^{2}}\,dx$`,o:[String.raw`$\dfrac{1}{2}\,e^{x^{2}} + C$`,String.raw`$e^{x^{2}} + C$`,String.raw`$2\,e^{x^{2}} + C$`,String.raw`$x^{2}\,e^{x^{2}} + C$`],a:0,ex:String.raw`$u = x^{2}$, $du = 2x\,dx$, así que $x\,dx = \frac{du}{2}$: $\int e^{u}\,\frac{du}{2} = \frac{1}{2}e^{u} + C = \frac{1}{2}e^{x^{2}} + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \cos(3x)\,dx$`,o:[String.raw`$\dfrac{1}{3}\sin(3x) + C$`,String.raw`$\sin(3x) + C$`,String.raw`$3\sin(3x) + C$`,String.raw`$\dfrac{1}{3}\cos(3x) + C$`],a:0,ex:String.raw`$u = 3x$, $du = 3\,dx$, así que $dx = \frac{du}{3}$: $\int \cos u\,\frac{du}{3} = \frac{1}{3}\sin u + C = \frac{1}{3}\sin(3x) + C$. Verifica derivando.`},
+{t:"sust",ctx:"mat",q:String.raw`En $\int x^{2}\sqrt{x^{3} + 1}\,dx$, ¿cuál es el cambio de variable más conveniente?`,o:[String.raw`$u = x^{3} + 1$`,String.raw`$u = x^{2}$`,String.raw`$u = \sqrt{x^{3} + 1}$`,String.raw`$u = x^{3}$`],a:0,ex:String.raw`$u = x^{3} + 1$, porque $du = 3x^{2}\,dx$ y el integrando contiene $x^{2}\,dx$ (solo falta el 3, que se compensa con $\frac{1}{3}$). Así la raíz queda como $\sqrt{u}$, que es inmediata.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \frac{3x^{2}}{x^{3} + 2}\,dx$`,o:[String.raw`$\ln\left|x^{3} + 2\right| + C$`,String.raw`$3\ln\left|x^{3} + 2\right| + C$`,String.raw`$\dfrac{1}{3}\ln\left|x^{3} + 2\right| + C$`,String.raw`$\dfrac{\left(x^{3} + 2\right)^{4}}{4} + C$`],a:0,ex:String.raw`$u = x^{3} + 2$, $du = 3x^{2}\,dx$: la integral se convierte en $\int \frac{du}{u} = \ln|u| + C = \ln\left|x^{3} + 2\right| + C$. Reconocer la forma $\int \frac{du}{u}$ es muy útil.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \sin x\,\cos x\,dx$ (sugerencia: $u = \sin x$)`,o:[String.raw`$\dfrac{\sin^{2}x}{2} + C$`,String.raw`$\sin^{2}x + C$`,String.raw`$-\dfrac{\sin^{2}x}{2} + C$`,String.raw`$\dfrac{\cos^{2}x}{2} + C$`],a:0,ex:String.raw`$u = \sin x$, $du = \cos x\,dx$: $\int u\,du = \frac{u^{2}}{2} = \frac{\sin^{2}x}{2} + C$. (Con $u = \cos x$ llegarías a $-\frac{\cos^{2}x}{2} + C$, que es equivalente: difieren solo en la constante $\frac{1}{2}$.)`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int e^{-x}\,dx$`,o:[String.raw`$-e^{-x} + C$`,String.raw`$e^{-x} + C$`,String.raw`$e^{x} + C$`,String.raw`$-e^{x} + C$`],a:0,ex:String.raw`$u = -x$, $du = -dx$: $\int e^{u}(-du) = -e^{u} + C = -e^{-x} + C$. Verifica: $\left(-e^{-x}\right)' = e^{-x}$.`},
+{t:"sust",ctx:"mat",q:String.raw`En $\int (2x + 1)\left(x^{2} + x\right)^{3} dx$, con $u = x^{2} + x$, la integral se transforma en:`,o:[String.raw`$\int u^{3}\,du$`,String.raw`$\int u^{3}\left(2x + 1\right) du$`,String.raw`$\int (2x + 1)\,du$`,String.raw`$\int u^{2}\,du$`],a:0,ex:String.raw`$du = (2x + 1)\,dx$ y ese factor está completo en el integrando: todo se convierte a u. El resultado final sería $\frac{u^{4}}{4} + C = \frac{\left(x^{2}+x\right)^{4}}{4} + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \frac{x}{x^{2} + 1}\,dx$`,o:[String.raw`$\dfrac{1}{2}\ln\left(x^{2} + 1\right) + C$`,String.raw`$\ln\left(x^{2} + 1\right) + C$`,String.raw`$2\ln\left(x^{2} + 1\right) + C$`,String.raw`$\dfrac{1}{2}\ln(x + 1) + C$`],a:0,ex:String.raw`$u = x^{2} + 1$, $du = 2x\,dx$, así que $x\,dx = \frac{du}{2}$: $\int \frac{1}{u}\cdot\frac{du}{2} = \frac{1}{2}\ln|u| + C$. Como $x^{2} + 1 > 0$ siempre, se escribe sin valor absoluto.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \cos x\,e^{\sin x}\,dx$`,o:[String.raw`$e^{\sin x} + C$`,String.raw`$e^{\sin x}\cos x + C$`,String.raw`$-e^{\sin x} + C$`,String.raw`$\sin x\,e^{\sin x} + C$`],a:0,ex:String.raw`$u = \sin x$, $du = \cos x\,dx$: $\int e^{u}\,du = e^{u} + C = e^{\sin x} + C$. El patrón «derivada interna presente + exponencial» delata la sustitución.`},
+{t:"sust",ctx:"prog",q:String.raw`Un script de cálculo simbólico debe integrar $g(x) = 6x^{2}\left(x^{3} + 5\right)^{2}$. Con $u = x^{3} + 5$, el resultado es:`,o:[String.raw`$\dfrac{2}{3}\left(x^{3} + 5\right)^{3} + C$`,String.raw`$2\left(x^{3} + 5\right)^{3} + C$`,String.raw`$\dfrac{1}{3}\left(x^{3} + 5\right)^{3} + C$`,String.raw`$\left(x^{3} + 5\right)^{3} + C$`],a:0,ex:String.raw`$du = 3x^{2}\,dx$, así que $6x^{2}\,dx = 2\,du$: $\int 2u^{2}\,du = \frac{2}{3}u^{3} + C = \frac{2}{3}\left(x^{3}+5\right)^{3} + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`¿Cuál de estas integrales se resuelve <b>directamente</b> con reglas inmediatas, sin necesidad de sustitución?`,o:[String.raw`$\int 3x^{2}\,dx$`,String.raw`$\int x\left(x^{2} + 1\right)^{4} dx$`,String.raw`$\int \cos(5x)\,dx$`,String.raw`$\int e^{3x}\,dx$`],a:0,ex:String.raw`$\int 3x^{2}\,dx$ es inmediata: $x^{3} + C$. Las otras tres tienen una composición interna (el $5x$, el $3x$, el $x^{2}+1$ dentro de otra función) y se resuelven o simplifican con el cambio $u = $ parte interna.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \frac{\ln x}{x}\,dx$, para $x > 0$`,o:[String.raw`$\dfrac{(\ln x)^{2}}{2} + C$`,String.raw`$\dfrac{\ln\left(x^{2}\right)}{2} + C$`,String.raw`$\dfrac{1}{x\ln x} + C$`,String.raw`$x\ln x - x + C$`],a:0,ex:String.raw`$u = \ln x$, $du = \frac{dx}{x}$: $\int u\,du = \frac{u^{2}}{2} = \frac{(\ln x)^{2}}{2} + C$. Es el clásico «logaritmo dividido entre x».`},
+{t:"sust",ctx:"ess",q:String.raw`Una cooperativa de lácteos estima su tasa de producción de queso como $p(t) = 12t\left(3t^{2} + 4\right)^{2}$ kg/día. Con $u = 3t^{2} + 4$, la producción acumulada es:`,o:[String.raw`$\dfrac{2}{3}\left(3t^{2} + 4\right)^{3} + C$`,String.raw`$4\left(3t^{2} + 4\right)^{3} + C$`,String.raw`$\dfrac{1}{3}\left(3t^{2} + 4\right)^{3} + C$`,String.raw`$\dfrac{12t\left(3t^{2} + 4\right)^{3}}{3} + C$`],a:0,ex:String.raw`$du = 6t\,dt$, así que $12t\,dt = 2\,du$: $\int 2u^{2}\,du = \frac{2}{3}u^{3} + C = \frac{2}{3}\left(3t^{2}+4\right)^{3} + C$.`},
+{t:"sust",ctx:"inno",q:String.raw`La velocidad de viralización de una campaña abierta es $v(d) = 0.4\,e^{0.4d}$ (miles de compartidos por día). El total compartido $T(d)$, con $T' = v$, es:`,o:[String.raw`$e^{0.4d} + C$`,String.raw`$0.4\,e^{0.4d} + C$`,String.raw`$0.16\,e^{0.4d} + C$`,String.raw`$\dfrac{e^{0.4d}}{0.4} + C$`],a:0,ex:String.raw`$u = 0.4d$, $du = 0.4\,dd$: el factor del integrando es exactamente $du$, así que $\int e^{u}\,du = e^{u} + C = e^{0.4d} + C$. Verifica: $\left(e^{0.4d}\right)' = 0.4\,e^{0.4d}$.`},
+{t:"sust",ctx:"mat",q:String.raw`Al integrar $\int \tan x\,dx$ con el cambio $u = \cos x$ se obtiene:`,o:[String.raw`$-\ln|\cos x| + C$`,String.raw`$\ln|\cos x| + C$`,String.raw`$-\ln|\sin x| + C$`,String.raw`$\sec^{2}x + C$`],a:0,ex:String.raw`$\tan x = \frac{\sin x}{\cos x}$. Con $u = \cos x$, $du = -\sin x\,dx$: $\int \frac{1}{u}(-du) = -\ln|u| + C = -\ln|\cos x| + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int \sqrt{2x + 3}\,dx$`,o:[String.raw`$\dfrac{1}{3}\left(2x + 3\right)^{3/2} + C$`,String.raw`$\dfrac{2}{3}\left(2x + 3\right)^{3/2} + C$`,String.raw`$\dfrac{1}{2}\left(2x + 3\right)^{3/2} + C$`,String.raw`$\left(2x + 3\right)^{3/2} + C$`],a:0,ex:String.raw`$u = 2x + 3$, $du = 2\,dx$: $\int \sqrt{u}\,\frac{du}{2} = \frac{1}{2}\cdot\frac{2}{3}\,u^{3/2} = \frac{1}{3}\left(2x+3\right)^{3/2} + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`En $\int x^{3}\sqrt{x^{4} + 1}\,dx$, con $u = x^{4} + 1$, el factor $x^{3}\,dx$ equivale a:`,o:[String.raw`$\dfrac{du}{4}$`,String.raw`$du$`,String.raw`$4\,du$`,String.raw`$\dfrac{du}{3}$`],a:0,ex:String.raw`$du = 4x^{3}\,dx$, entonces $x^{3}\,dx = \frac{du}{4}$. La integral queda $\frac{1}{4}\int \sqrt{u}\,du = \frac{1}{6}\left(x^{4}+1\right)^{3/2} + C$.`},
+{t:"sust",ctx:"mat",q:String.raw`Resuelve: $\int e^{x}\left(e^{x} + 1\right)^{4} dx$`,o:[String.raw`$\dfrac{\left(e^{x} + 1\right)^{5}}{5} + C$`,String.raw`$\dfrac{e^{x}\left(e^{x} + 1\right)^{5}}{5} + C$`,String.raw`$\dfrac{\left(e^{x} + 1\right)^{4}}{4} + C$`,String.raw`$4\left(e^{x} + 1\right)^{3} + C$`],a:0,ex:String.raw`$u = e^{x} + 1$, $du = e^{x}\,dx$ (presente completo): $\int u^{4}\,du = \frac{u^{5}}{5} + C = \frac{\left(e^{x}+1\right)^{5}}{5} + C$.`}
+];
+
+/* BANCO — Sumas de Riemann (20) */
+const BANK_RIE = [
+{t:"rie",ctx:"mat",q:String.raw`En una suma de Riemann para f en $[a, b]$ con n subintervalos, ¿cómo se calcula $\Delta x$?`,o:[String.raw`$\Delta x = \dfrac{b - a}{n}$`,String.raw`$\Delta x = (b - a)\,n$`,String.raw`$\Delta x = \dfrac{n}{b - a}$`,String.raw`$\Delta x = \dfrac{a - b}{n}$`],a:0,ex:String.raw`$\Delta x$ es el ancho común de los subintervalos: la longitud total $b - a$ repartida en n partes iguales. Ejemplo: en $[0, 2]$ con $n = 4$, $\Delta x = 0.5$.`},
+{t:"rie",ctx:"mat",q:String.raw`Para $f(x) = x^{2}$ en $[0, 2]$ con $n = 2$ rectángulos usando <b>extremos izquierdos</b>, la suma de Riemann vale:`,o:[String.raw`$1\cdot(f(0) + f(1)) = 0 + 1 = 1$`,String.raw`$1\cdot(f(1) + f(2)) = 1 + 4 = 5$`,String.raw`$1\cdot(f(0.5) + f(1.5)) = 0.25 + 2.25 = 2.5$`,String.raw`$2\cdot(f(0) + f(2)) = 0 + 4 = 4$`],a:0,ex:String.raw`$\Delta x = \frac{2-0}{2} = 1$. Los extremos izquierdos de $[0, 1]$ y $[1, 2]$ son 0 y 1: $L_{2} = 1\cdot(0 + 1) = 1$. (La suma derecha sería 5, la de puntos medios 2.5 y el área exacta $\frac{8}{3} \approx 2.67$.)`},
+{t:"rie",ctx:"mat",q:String.raw`Para $f(x) = x^{2}$ en $[0, 2]$ con $n = 2$ usando <b>extremos derechos</b>, la suma vale:`,o:[String.raw`$1\cdot(f(1) + f(2)) = 5$`,String.raw`$1\cdot(f(0) + f(1)) = 1$`,String.raw`$1\cdot(f(0.5) + f(1.5)) = 2.5$`,String.raw`$1\cdot(f(0) + f(2)) = 4$`],a:0,ex:String.raw`Los extremos derechos de $[0, 1]$ y $[1, 2]$ son 1 y 2: $R_{2} = 1\cdot(1 + 4) = 5$. Como f es creciente, esta suma sobrestima el área exacta $\frac{8}{3} \approx 2.67$.`},
+{t:"rie",ctx:"mat",q:String.raw`Para $f(x) = x^{2}$ en $[0, 2]$ con $n = 2$ usando <b>puntos medios</b>, la suma vale:`,o:[String.raw`$1\cdot(f(0.5) + f(1.5)) = 0.25 + 2.25 = 2.5$`,String.raw`$1\cdot(f(0) + f(1)) = 1$`,String.raw`$1\cdot(f(1) + f(2)) = 5$`,String.raw`$1\cdot(f(0.5) + f(1)) = 1.25$`],a:0,ex:String.raw`Los puntos medios de $[0, 1]$ y $[1, 2]$ son 0.5 y 1.5: $M_{2} = 0.25 + 2.25 = 2.5$, muy cerca del valor exacto $\frac{8}{3} \approx 2.67$.`},
+{t:"rie",ctx:"mat",q:String.raw`Si f es <b>creciente</b> y positiva en $[a, b]$, la suma por extremos izquierdos:`,o:[String.raw`Subestima el área exacta`,String.raw`Sobrestima el área exacta`,String.raw`Coincide siempre con el área exacta`,String.raw`Puede resultar negativa`],a:0,ex:String.raw`En cada subintervalo, el extremo izquierdo tiene la altura más pequeña (f crece): los rectángulos quedan por debajo de la curva. La suma derecha, en cambio, sobrestima.`},
+{t:"rie",ctx:"mat",q:String.raw`Si f es <b>decreciente</b> y positiva en $[a, b]$, la suma por extremos izquierdos:`,o:[String.raw`Sobrestima el área exacta`,String.raw`Subestima el área exacta`,String.raw`Coincide con el área exacta`,String.raw`No puede calcularse`],a:0,ex:String.raw`Con f decreciente, la altura en el extremo izquierdo es la mayor de cada subintervalo: los rectángulos cubren de más. Es el razonamiento simétrico al caso creciente.`},
+{t:"rie",ctx:"mat",q:String.raw`¿Qué puntos dividen al intervalo $[1, 5]$ al usar $n = 4$ subintervalos?`,o:[String.raw`1, 2, 3, 4, 5`,String.raw`1, 2, 3, 5`,String.raw`1, 1.5, 2.5, 4, 5`,String.raw`0, 1, 2, 3, 4, 5`],a:0,ex:String.raw`$\Delta x = \frac{5-1}{4} = 1$ y los nodos son $a$, $a + \Delta x$, $a + 2\Delta x$, …: 1, 2, 3, 4 y 5. En total hay $n + 1 = 5$ puntos.`},
+{t:"rie",ctx:"mat",q:String.raw`El límite de las sumas de Riemann cuando $n \to \infty$ (y $\Delta x \to 0$) define:`,o:[String.raw`La integral definida $\int_{a}^{b} f(x)\,dx$`,String.raw`La derivada $f'(b)$`,String.raw`Siempre el valor cero`,String.raw`La antiderivada $F(x)$`],a:0,ex:String.raw`$\int_{a}^{b} f = \lim_{n\to\infty}\sum f(x_{i})\,\Delta x$: las sumas con rectángulos finitos aproximan; el límite es el valor exacto. Esa es la definición formal de la integral definida.`},
+{t:"rie",ctx:"prog",q:String.raw`Un programador escribe: <code>dx = (b-a)/n; s = 0; for i in range(n): s += f(a + i*dx) * dx</code>. ¿Qué calcula s al terminar?`,o:[String.raw`Una suma de Riemann por extremos izquierdos: una aproximación del área bajo f en $[a, b]$`,String.raw`El valor exacto de $\int_{a}^{b} f(x)\,dx$ para cualquier f`,String.raw`La derivada numérica de f en el punto a`,String.raw`El promedio de los valores de f en $[a, b]$`],a:0,ex:String.raw`Cada iteración suma $f(x_{i})\,\Delta x$: el área de un rectángulo. Los nodos $a + i\,\Delta x$ (con $i = 0, \ldots, n-1$) son extremos izquierdos, así que $s = L_{n}$. Con n grande, $s \approx \int_{a}^{b} f$.`},
+{t:"rie",ctx:"prog",q:String.raw`Si en ese mismo código se cambia <code>a + i*dx</code> por <code>a + (i+1)*dx</code>, la suma calculada pasa a ser:`,o:[String.raw`La suma por extremos derechos`,String.raw`La suma por puntos medios`,String.raw`Otra vez la suma por extremos izquierdos`,String.raw`La integral exacta`],a:0,ex:String.raw`$a + (i+1)\,\Delta x$ desplaza cada nodo un paso a la derecha: el primer nodo es $a + \Delta x$ y el último es $b$. Eso es exactamente la suma derecha $R_{n}$.`},
+{t:"rie",ctx:"ess",q:String.raw`Una cooperativa registra su ritmo de empaque de miel (frascos por hora): en $t = 0, 1, 2, 3$ horas empaca a 20, 26, 30 y 24 frascos/h. Con suma por <b>extremos izquierdos</b> y $\Delta t = 1$, ¿cuántos frascos se estima que se empacan entre $t = 0$ y $t = 3$?`,o:[String.raw`$20 + 26 + 30 = 76$ frascos`,String.raw`$26 + 30 + 24 = 80$ frascos`,String.raw`$20 + 26 + 30 + 24 = 100$ frascos`,String.raw`$\frac{20 + 26 + 30 + 24}{2} = 50$ frascos`],a:0,ex:String.raw`La suma izquierda usa las alturas en $t = 0, 1, 2$ (los extremos izquierdos de los tres subintervalos): $1\cdot(20 + 26 + 30) = 76$ frascos.`},
+{t:"rie",ctx:"ess",q:String.raw`Con los mismos datos (20, 26, 30, 24 en $t = 0, 1, 2, 3$), la suma por <b>extremos derechos</b> vale:`,o:[String.raw`$26 + 30 + 24 = 80$ frascos`,String.raw`$20 + 26 + 30 = 76$ frascos`,String.raw`$20 + 26 + 30 + 24 = 100$ frascos`,String.raw`$\frac{26 + 30 + 24}{3} = 26.67$ frascos`],a:0,ex:String.raw`Los extremos derechos son $t = 1, 2, 3$: $R = 1\cdot(26 + 30 + 24) = 80$ frascos. Nota que solo hay 3 subintervalos y por tanto 3 rectángulos.`},
+{t:"rie",ctx:"mat",q:String.raw`La expresión $\displaystyle\sum_{i=1}^{n} f(x_{i})\,\Delta x$ representa:`,o:[String.raw`La suma de las áreas de n rectángulos de altura $f(x_{i})$ y base $\Delta x$`,String.raw`La suma de las derivadas de f en n puntos`,String.raw`El producto de f por n`,String.raw`El número de rectángulos necesarios para cubrir $[a, b]$`],a:0,ex:String.raw`Cada término $f(x_{i})\,\Delta x$ es el área de un rectángulo (base $\Delta x$, altura $f(x_{i})$). La suma de los n términos aproxima el área total bajo la curva en $[a, b]$.`},
+{t:"rie",ctx:"mat",q:String.raw`Si $f(x) < 0$ en todo $[a, b]$, la suma de Riemann $\sum f(x_{i})\,\Delta x$ resulta:`,o:[String.raw`Negativa: los rectángulos bajo el eje x aportan áreas con signo negativo`,String.raw`Positiva, porque las áreas siempre son positivas`,String.raw`Exactamente cero`,String.raw`Indefinida`],a:0,ex:String.raw`Al ser $f(x_{i}) < 0$, cada término es negativo: la suma aproxima la integral con signo (área con signo). El área geométrica real sería $-$(suma).`},
+{t:"rie",ctx:"mat",q:String.raw`¿Qué ocurre con la suma de Riemann al aumentar n (más rectángulos, $\Delta x$ más pequeño)?`,o:[String.raw`Se acerca cada vez más al valor exacto del área`,String.raw`Se aleja del valor exacto`,String.raw`No cambia`,String.raw`Se vuelve negativa`],a:0,ex:String.raw`Más rectángulos capturan mejor la forma de la curva: el error tiende a cero. Esa convergencia es justamente el límite que define a la integral definida.`},
+{t:"rie",ctx:"mat",q:String.raw`Para $f(x) = x$ en $[0, 4]$ con $n = 4$ y $\Delta x = 1$, la suma por extremos derechos vale:`,o:[String.raw`$1 + 2 + 3 + 4 = 10$`,String.raw`$0 + 1 + 2 + 3 = 6$`,String.raw`$0.5 + 1.5 + 2.5 + 3.5 = 8$`,String.raw`$4\cdot 4 = 16$`],a:0,ex:String.raw`Nodos derechos: 1, 2, 3 y 4. $R_{4} = 1\cdot(1 + 2 + 3 + 4) = 10$. El área exacta del triángulo es $\frac{1}{2}\cdot 4\cdot 4 = 8$: como f crece, la suma derecha sobrestima.`},
+{t:"rie",ctx:"mat",q:String.raw`Para la misma $f(x) = x$ en $[0, 4]$ con $n = 4$, la suma por <b>puntos medios</b> vale:`,o:[String.raw`$0.5 + 1.5 + 2.5 + 3.5 = 8$`,String.raw`$10$`,String.raw`$6$`,String.raw`$9$`],a:0,ex:String.raw`$M_{4} = 1\cdot(0.5 + 1.5 + 2.5 + 3.5) = 8$, exactamente el área del triángulo. Para funciones lineales, los puntos medios no dejan error: cada rectángulo compensa el exceso y el defecto.`},
+{t:"rie",ctx:"inno",q:String.raw`Una incubadora de proyectos genera prototipos a 2 por semana durante las semanas 0 a 4, y a 5 por semana durante las semanas 4 a 8. ¿Cuántos prototipos se generan en las 8 semanas?`,o:[String.raw`$2\cdot 4 + 5\cdot 4 = 28$ prototipos`,String.raw`$2\cdot 8 + 5\cdot 8 = 56$ prototipos`,String.raw`$(2 + 5)\cdot 8 = 56$ prototipos`,String.raw`$\frac{2 + 5}{2} = 3.5$ prototipos`],a:0,ex:String.raw`Es una suma de Riemann de dos rectángulos de ancho 4: áreas $2\cdot 4 = 8$ y $5\cdot 4 = 20$, total 28. Al ser tasas constantes por tramo, el resultado es exacto.`},
+{t:"rie",ctx:"mat",q:String.raw`En la notación $\sum_{i=1}^{n}$, ¿qué papel juega i?`,o:[String.raw`Es el índice de la suma: recorre los valores $1, 2, \ldots, n$`,String.raw`Es la unidad imaginaria`,String.raw`Es el número de subintervalos`,String.raw`Es el valor máximo de f`],a:0,ex:String.raw`El índice $i$ etiqueta cada rectángulo: $i = 1$ es el primero, $i = n$ el último. El nodo evaluado en el rectángulo i-ésimo es $x_{i} = a + i\,\Delta x$.`},
+{t:"rie",ctx:"prog",q:String.raw`Al pasar de $n = 10$ a $n = 1000$ rectángulos en un ciclo for, el costo de cálculo y la precisión se comportan así:`,o:[String.raw`El tiempo de cómputo crece (más iteraciones), pero la aproximación mejora`,String.raw`El tiempo disminuye y la precisión mejora`,String.raw`Todo queda igual, solo cambia el formato del resultado`,String.raw`El cálculo se vuelve imposible para cualquier computadora`],a:0,ex:String.raw`El ciclo ejecuta n sumas: el costo es proporcional a n. La recompensa es precisión: con $n = 1000$ la suma está mucho más cerca de $\int_{a}^{b} f$. Es el compromiso clásico entre precisión y costo.`}
+];
+
+/* BANCO — Área bajo la curva (20) */
+const BANK_AREA = [
+{t:"area",ctx:"mat",q:String.raw`Interpreta geométricamente y calcula: $\int_{0}^{2} 3\,dx$`,o:[String.raw`$6$: un rectángulo de base 2 y altura 3`,String.raw`$3$: la altura de la recta`,String.raw`$2$: la longitud del intervalo`,String.raw`$5$: $3 + 2$ sumados`],a:0,ex:String.raw`La región bajo $y = 3$ entre $x = 0$ y $x = 2$ es un rectángulo de $2 \times 3$: área 6. Con el FTC: $\left[3x\right]_{0}^{2} = 6 - 0 = 6$.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula con geometría: $\int_{0}^{4} x\,dx$`,o:[String.raw`$8$: un triángulo de base 4 y altura 4`,String.raw`$16$: un cuadrado de lado 4`,String.raw`$4$: la mitad de 8`,String.raw`$2$: la mitad de 4`],a:0,ex:String.raw`La región bajo $y = x$ entre 0 y 4 es un triángulo rectángulo: $\frac{1}{2}\cdot 4\cdot 4 = 8$. Con antiderivadas: $\left[\frac{x^{2}}{2}\right]_{0}^{4} = 8 - 0 = 8$.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{0}^{2} (x + 1)\,dx$`,o:[String.raw`$4$`,String.raw`$3$`,String.raw`$6$`,String.raw`$2$`],a:0,ex:String.raw`La región es un trapecio de alturas $f(0) = 1$ y $f(2) = 3$ con base 2: $\frac{1+3}{2}\cdot 2 = 4$. Con el FTC: $\left[\frac{x^{2}}{2} + x\right]_{0}^{2} = 2 + 2 = 4$.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{0}^{2} x^{2}\,dx$`,o:[String.raw`$\dfrac{8}{3}$`,String.raw`$4$`,String.raw`$2$`,String.raw`$\dfrac{2}{3}$`],a:0,ex:String.raw`$\left[\frac{x^{3}}{3}\right]_{0}^{2} = \frac{8}{3} - 0 = \frac{8}{3} \approx 2.67$. Como la parábola es cóncava hacia arriba, el área es menor que la del trapecio con alturas en los extremos (que daría 4).`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{0}^{3} (x - 3)\,dx$`,o:[String.raw`$-\dfrac{9}{2}$`,String.raw`$\dfrac{9}{2}$`,String.raw`$0$`,String.raw`$-3$`],a:0,ex:String.raw`$\left[\frac{x^{2}}{2} - 3x\right]_{0}^{3} = \left(\frac{9}{2} - 9\right) - 0 = -\frac{9}{2}$. La recta está debajo del eje x en todo $(0, 3)$: la integral es el área con signo negativo. El área geométrica es $\frac{9}{2}$.`},
+{t:"area",ctx:"mat",q:String.raw`Si $f(x) \leq 0$ en $[a, b]$, el área geométrica entre la gráfica de f y el eje x es:`,o:[String.raw`$-\int_{a}^{b} f(x)\,dx$`,String.raw`$\int_{a}^{b} f(x)\,dx$`,String.raw`$\int_{a}^{b} f(x)\,dx + C$`,String.raw`$0$, porque no hay región sobre el eje`],a:0,ex:String.raw`La integral resulta negativa (área con signo). El área geométrica, siempre positiva, es $-\int_{a}^{b} f$, o de forma equivalente $\int_{a}^{b} |f(x)|\,dx$.`},
+{t:"area",ctx:"mat",q:String.raw`El Teorema Fundamental del Cálculo establece que, si $F' = f$, entonces:`,o:[String.raw`$\int_{a}^{b} f(x)\,dx = F(b) - F(a)$`,String.raw`$\int_{a}^{b} f(x)\,dx = F(a) - F(b)$`,String.raw`$\int_{a}^{b} f(x)\,dx = F(b) + F(a)$`,String.raw`$\int_{a}^{b} f(x)\,dx = F(b)\cdot F(a)$`],a:0,ex:String.raw`Se evalúa la antiderivada en el límite superior y se le resta la del límite inferior: arriba menos abajo. La constante C se cancela sola.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{1}^{3} 2x\,dx$`,o:[String.raw`$8$`,String.raw`$9$`,String.raw`$6$`,String.raw`$4$`],a:0,ex:String.raw`$\left[x^{2}\right]_{1}^{3} = 9 - 1 = 8$. Geométricamente: trapecio de alturas 2 y 6 con base 2: $\frac{2+6}{2}\cdot 2 = 8$. Ambos caminos coinciden.`},
+{t:"area",ctx:"prog",q:String.raw`Un sensor de un dron registra su velocidad $v(t)$ en m/s. Un programa calcula $\int_{0}^{T} v(t)\,dt$. ¿Qué obtiene físicamente?`,o:[String.raw`La distancia recorrida en el intervalo $[0, T]$, en metros`,String.raw`La aceleración media en m/s$^{2}$`,String.raw`La velocidad final en $t = T$`,String.raw`El tiempo total de vuelo`],a:0,ex:String.raw`Integrar la velocidad respecto al tiempo da el desplazamiento. Geométricamente: el área bajo la curva $v(t)$ entre 0 y T.`},
+{t:"area",ctx:"ess",q:String.raw`Una bomba comunitaria entrega agua a razón constante de 20 litros por minuto durante 30 minutos. El volumen total entregado es:`,o:[String.raw`$600$ litros: el área del rectángulo de $20 \times 30$`,String.raw`$50$ litros`,String.raw`$20/30$ de litro`,String.raw`$300$ litros`],a:0,ex:String.raw`$\int_{0}^{30} 20\,dt = 20\cdot 30 = 600$ litros. Con tasa constante, el área bajo la curva es un simple rectángulo: tasa por tiempo.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{0}^{\pi} \sin x\,dx$`,o:[String.raw`$2$`,String.raw`$0$`,String.raw`$\pi$`,String.raw`$1$`],a:0,ex:String.raw`$\left[-\cos x\right]_{0}^{\pi} = (-\cos\pi) - (-\cos 0) = 1 + 1 = 2$. La joroba del seno sobre $[0, \pi]$ tiene área exactamente 2.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{2}^{2} \left(x^{3} + 7\right) dx$`,o:[String.raw`$0$`,String.raw`$14$`,String.raw`$30$`,String.raw`No está definida`],a:0,ex:String.raw`Cuando los límites de integración coinciden, la integral vale 0: $F(2) - F(2) = 0$. Un intervalo de longitud cero no encierra área.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{0}^{3} (2x + 1)\,dx$`,o:[String.raw`$12$`,String.raw`$9$`,String.raw`$10$`,String.raw`$15$`],a:0,ex:String.raw`$\left[x^{2} + x\right]_{0}^{3} = 9 + 3 = 12$. Trapecio: alturas 1 y 7 con base 3: $\frac{1+7}{2}\cdot 3 = 12$. El cálculo con antiderivadas y la geometría coinciden.`},
+{t:"area",ctx:"mat",q:String.raw`Usando simetría: $\int_{-1}^{1} x^{3}\,dx$`,o:[String.raw`$0$`,String.raw`$\dfrac{1}{2}$`,String.raw`$2$`,String.raw`$1$`],a:0,ex:String.raw`$x^{3}$ es impar y $[-1, 1]$ es simétrico: el área sobre el eje ($x > 0$) cancela exactamente con la de bajo el eje ($x < 0$). Cálculo: $\left[\frac{x^{4}}{4}\right]_{-1}^{1} = \frac{1}{4} - \frac{1}{4} = 0$.`},
+{t:"area",ctx:"mat",q:String.raw`Si $\int_{0}^{2} f(x)\,dx = 5$ y $\int_{0}^{2} g(x)\,dx = 3$, entonces $\int_{0}^{2} \left[f(x) + g(x)\right] dx$ vale:`,o:[String.raw`$8$`,String.raw`$15$`,String.raw`$2$`,String.raw`No se puede determinar`],a:0,ex:String.raw`La integral es lineal: la integral de una suma es la suma de las integrales. $5 + 3 = 8$.`},
+{t:"area",ctx:"prog",q:String.raw`Un sistema registra el error $e(t)$ de un modelo, que cambia de signo dentro de $[0, 10]$. Para obtener el <b>área total</b> entre la curva y el eje, el código debe calcular:`,o:[String.raw`$\int_{0}^{10} |e(t)|\,dt$ (o integrar por tramos y sumar valores absolutos)`,String.raw`$\int_{0}^{10} e(t)\,dt$ directamente`,String.raw`$\int_{0}^{10} e'(t)\,dt$`,String.raw`$\int_{0}^{10} e(t)\,dt$ y multiplicar por $-1$ al final`],a:0,ex:String.raw`La integral directa da el valor neto (positivos menos negativos). Para el área total se integra $|e|$, o se parte el intervalo en los cruces por cero y se suman las áreas en valor absoluto.`},
+{t:"area",ctx:"ess",q:String.raw`El ritmo de captación de socios de una cooperativa es $r(m) = 2m + 4$ socios por mes. ¿Cuántos socios se incorporan entre el mes 0 y el mes 6?`,o:[String.raw`$60$`,String.raw`$36$`,String.raw`$48$`,String.raw`$24$`],a:0,ex:String.raw`$\int_{0}^{6} (2m + 4)\,dm = \left[m^{2} + 4m\right]_{0}^{6} = (36 + 24) - 0 = 60$ socios. El área bajo la tasa de captación es el total de incorporaciones.`},
+{t:"area",ctx:"inno",q:String.raw`El costo marginal de producir unidades de un kit educativo es $C'(q) = 100 + 2q$ pesos por unidad. El costo incremental de pasar de 10 a 20 unidades es:`,o:[String.raw`$1300$ pesos`,String.raw`$2040$ pesos`,String.raw`$130$ pesos`,String.raw`$1400$ pesos`],a:0,ex:String.raw`El cambio total es la integral del marginal: $\int_{10}^{20} (100 + 2q)\,dq = \left[100q + q^{2}\right]_{10}^{20} = (2000 + 400) - (1000 + 100) = 1300$ pesos.`},
+{t:"area",ctx:"mat",q:String.raw`¿Qué representa $\int_{1}^{4} f(x)\,dx$ cuando $f(x) > 0$ en $[1, 4]$?`,o:[String.raw`El área de la región limitada por la gráfica de f, el eje x y las rectas verticales $x = 1$ y $x = 4$`,String.raw`La pendiente de la tangente a f en $x = 4$`,String.raw`El valor máximo de f en $[1, 4]$`,String.raw`La longitud de la curva entre $x = 1$ y $x = 4$`],a:0,ex:String.raw`Con f positiva, la integral definida coincide exactamente con el área bajo la curva sobre ese intervalo. La longitud de arco y la tangente son conceptos distintos.`},
+{t:"area",ctx:"mat",q:String.raw`Calcula: $\int_{0}^{2} 3x^{2}\,dx$`,o:[String.raw`$8$`,String.raw`$6$`,String.raw`$4$`,String.raw`$12$`],a:0,ex:String.raw`$3\left[\frac{x^{3}}{3}\right]_{0}^{2} = 3\cdot\frac{8}{3} = 8$. De forma equivalente: $\left[x^{3}\right]_{0}^{2} = 2^{3} - 0^{3} = 8$.`}
+];
+
+/* BANCO — Repaso integrador (15) */
+const BANK_MIX = [
+{t:"mix",ctx:"mat",q:String.raw`Un estudiante afirma: «como $\int_{0}^{2} x^{2}\,dx = \frac{8}{3}$, la antiderivada de $x^{2}$ es $\frac{8}{3}$». ¿Qué está confundiendo?`,o:[String.raw`Confunde la integral definida (un número: $\frac{8}{3}$) con la antiderivada (una función: $\frac{x^{3}}{3} + C$)`,String.raw`Nada: la afirmación es correcta`,String.raw`Confunde la constante C con el límite superior`,String.raw`Confunde la derivada con el límite de una suma`],a:0,ex:String.raw`La integral definida sobre un intervalo produce un número; la antiderivada es una familia de funciones. El vínculo es el FTC: $\frac{8}{3} = \left[\frac{x^{3}}{3}\right]_{0}^{2} = F(2) - F(0)$.`},
+{t:"mix",ctx:"mat",q:String.raw`¿Cuál enunciado relaciona correctamente los conceptos de la sesión?`,o:[String.raw`Las antiderivadas permiten evaluar la integral definida, que es el límite de las sumas de Riemann y representa un área`,String.raw`Las sumas de Riemann son antiderivadas del área bajo la curva`,String.raw`La integral definida es la derivada de la suma de Riemann`,String.raw`El área bajo la curva siempre coincide con la derivada de f en el punto medio`],a:0,ex:String.raw`Cadena conceptual completa: suma de Riemann → (límite cuando $n \to \infty$) → integral definida → (FTC) → se evalúa con una antiderivada: $F(b) - F(a)$. Ese es el mapa de toda la sesión.`},
+{t:"mix",ctx:"mat",q:String.raw`Se sabe que $F' = f$, con $F(0) = 4$ y $F(2) = 10$. El valor de $\int_{0}^{2} f(x)\,dx$ es:`,o:[String.raw`$6$`,String.raw`$10$`,String.raw`$4$`,String.raw`$14$`],a:0,ex:String.raw`FTC: $\int_{0}^{2} f = F(2) - F(0) = 10 - 4 = 6$. No hace falta conocer la fórmula de f: basta con cuánto cambió F entre 0 y 2.`},
+{t:"mix",ctx:"prog",q:String.raw`Para aproximar $\int_{0}^{1} e^{-x^{2}}\,dx$ (función sin antiderivada elemental), la estrategia numérica correcta es:`,o:[String.raw`Calcular una suma de Riemann (mejor aún, de puntos medios) con n grande`,String.raw`Aplicar el FTC con $F(x) = \dfrac{e^{-x^{2}}}{x}$`,String.raw`Derivar $e^{-x^{2}}$ dos veces y evaluar`,String.raw`Dividir el intervalo entre el número e`],a:0,ex:String.raw`Muchas funciones no tienen antiderivada expresable con funciones elementales. Ahí las sumas de Riemann son la herramienta central: aproximan el área sin conocer F. (Además, $\frac{e^{-x^{2}}}{x}$ ni siquiera deriva a $e^{-x^{2}}$.)`},
+{t:"mix",ctx:"mat",q:String.raw`La función $F(x) = \int_{0}^{x} t^{2}\,dt$ (con límite superior variable) es:`,o:[String.raw`$F(x) = \dfrac{x^{3}}{3}$: una función de x`,String.raw`Un número constante`,String.raw`$F(x) = \dfrac{t^{3}}{3}$`,String.raw`$F(x) = 3t^{2}$`],a:0,ex:String.raw`Con límite superior variable, la integral definida define una función acumulativa: $F(x) = \frac{x^{3}}{3}$. Su derivada es $x^{2}$: esa es la primera parte del FTC.`},
+{t:"mix",ctx:"ess",q:String.raw`Una cooperativa conoce su tasa de producción $p(t)$ (kg por día) y quiere el total producido entre el día 2 y el día 9. ¿Cuál es el procedimiento correcto?`,o:[String.raw`Reconocer que el total es $\int_{2}^{9} p(t)\,dt$, hallar una antiderivada P de p y calcular $P(9) - P(2)$`,String.raw`Derivar $p(t)$ y evaluarla en 9 y en 2`,String.raw`Hacer una única suma de Riemann con $n = 1$ y reportarla como exacta`,String.raw`Calcular $p(9) + p(2)$ y dividir entre 2`],a:0,ex:String.raw`El total es la integral de la tasa: $\int_{2}^{9} p$. Se evalúa con una antiderivada P: $P(9) - P(2)$. Una suma de Riemann daría solo una aproximación (salvo que $n \to \infty$).`},
+{t:"mix",ctx:"mat",q:String.raw`¿Cuál de las siguientes expresiones es un <b>número</b> y no una función?`,o:[String.raw`$\int_{1}^{5} (x^{2} + 1)\,dx$`,String.raw`$\int (x^{2} + 1)\,dx$`,String.raw`$\dfrac{x^{3}}{3} + x + C$`,String.raw`$F(x) = \int_{0}^{x} (t^{2} + 1)\,dt$`],a:0,ex:String.raw`Con límites numéricos el resultado es un número. La integral sin límites es una familia de funciones y, con límite superior variable, es una función de x.`},
+{t:"mix",ctx:"inno",q:String.raw`El costo de iterar un prototipo en un laboratorio abierto crece según $I'(n) = 50 + 10n$ pesos por iteración. El gasto acumulado tras las primeras 5 iteraciones (desde $n = 0$) es:`,o:[String.raw`$375$ pesos`,String.raw`$100$ pesos`,String.raw`$250$ pesos`,String.raw`$125$ pesos`],a:0,ex:String.raw`El gasto es $\int_{0}^{5} (50 + 10n)\,dn = \left[50n + 5n^{2}\right]_{0}^{5} = 250 + 125 = 375$ pesos. Integrar la tasa marginal da el acumulado.`},
+{t:"mix",ctx:"mat",q:String.raw`Si G es una antiderivada de g en $[a, b]$, ¿cuál afirmación es verdadera?`,o:[String.raw`$\int_{a}^{b} g(x)\,dx = G(b) - G(a)$, sin importar qué constante se haya añadido a G`,String.raw`$\int_{a}^{b} g(x)\,dx = G(a) - G(b)$`,String.raw`Añadir una constante a G cambia el valor de la integral definida`,String.raw`El FTC solo funciona con la antiderivada que tiene $C = 0$`],a:0,ex:String.raw`La constante se cancela: $(G(b) + C) - (G(a) + C) = G(b) - G(a)$. Por eso el FTC funciona con cualquiera de las antiderivadas de la familia.`},
+{t:"mix",ctx:"prog",q:String.raw`En los métodos de Monte Carlo para estimar áreas, la idea análoga a las sumas de Riemann es:`,o:[String.raw`Lanzar puntos aleatorios sobre la región y contar la fracción que cae bajo la curva`,String.raw`Derivar la función en puntos aleatorios`,String.raw`Promediar los valores de f sin ponderar por el ancho del intervalo`,String.raw`Evaluar f únicamente en los extremos del intervalo`],a:0,ex:String.raw`Ambos métodos aproximan el área sin antiderivada. Riemann usa rectángulos sistemáticos; Monte Carlo, muestreo aleatorio. Los dos convergen al valor real al aumentar el número de muestras.`},
+{t:"mix",ctx:"mat",q:String.raw`Usando que $x^{3}$ es antiderivada de $3x^{2}$, se concluye que $\int 3x^{2}\,dx =$`,o:[String.raw`$x^{3} + C$, por definición de antiderivada`,String.raw`$x^{3}$, exactamente y sin constante`,String.raw`$3x^{3} + C$`,String.raw`$x^{2} + C$`],a:0,ex:String.raw`Si F es antiderivada de f, entonces $\int f\,dx = F + C$. Aquí $\left(x^{3}\right)' = 3x^{2}$, así que la respuesta es $x^{3} + C$. La C es imprescindible: $x^{3} + 1$ también deriva a $3x^{2}$.`},
+{t:"mix",ctx:"ess",q:String.raw`Un mercado solidario recibe visitas a razón de $v(d) = 30 + 6d - d^{2}$ personas por día. El total de visitantes en los primeros 3 días es:`,o:[String.raw`$108$ personas`,String.raw`$36$ personas`,String.raw`$90$ personas`,String.raw`$117$ personas`],a:0,ex:String.raw`$\int_{0}^{3} (30 + 6d - d^{2})\,dd = \left[30d + 3d^{2} - \frac{d^{3}}{3}\right]_{0}^{3} = (90 + 27 - 9) - 0 = 108$ personas. Una suma de Riemann con muchos rectángulos confirmaría este valor exacto.`},
+{t:"mix",ctx:"mat",q:String.raw`¿Cuál es la diferencia entre $\int f(x)\,dx$ y $\int_{a}^{b} f(x)\,dx$?`,o:[String.raw`La primera es la familia de antiderivadas $F(x) + C$; la segunda es el número $F(b) - F(a)$`,String.raw`La primera es un número y la segunda una familia de funciones`,String.raw`Ambas son números; solo cambia la notación`,String.raw`Ambas son funciones; solo cambian los límites`],a:0,ex:String.raw`Indefinida → familia de funciones (antiderivadas). Definida → número (área con signo o variación acumulada). Es LA distinción conceptual de la sesión.`},
+{t:"mix",ctx:"prog",q:String.raw`Un estudiante programa la suma izquierda con $n = 50$ para $\int_{0}^{2} x^{2}\,dx$ y obtiene 2.587 (el valor exacto es $\frac{8}{3} \approx 2.667$). ¿Qué debe esperar al subir a $n = 5000$?`,o:[String.raw`Que el resultado se acerque aún más a 2.667: más rectángulos mejoran la aproximación`,String.raw`Que se aleje de 2.667 a medida que n crece`,String.raw`Que el resultado no cambie en absoluto`,String.raw`Que oscile aleatoriamente sin ninguna tendencia`],a:0,ex:String.raw`$L_{50} = 2.587$ subestima porque f es creciente. Al aumentar n, $\Delta x$ se hace más pequeño y la suma converge al valor exacto $\frac{8}{3} \approx 2.667$. La convergencia es la esencia del método.`},
+{t:"mix",ctx:"mat",q:String.raw`Al calcular $\int_{a}^{b} f(x)\,dx$ con el FTC usando $F(x) + C$, ¿qué papel juega la constante C?`,o:[String.raw`Ninguno: C se cancela al hacer $F(b) - F(a)$`,String.raw`C se suma al resultado final`,String.raw`C se multiplica por $(b - a)$`,String.raw`C debe elegirse igual a $f(a)$ para que el cálculo sea válido`],a:0,ex:String.raw`$(F(b) + C) - (F(a) + C) = F(b) - F(a)$. La constante importa en la integral indefinida (familia completa) y desaparece en la definida (un número único).`}
+];
+
+const QUESTIONS = [...BANK_PRIM, ...BANK_INME, ...BANK_SUST, ...BANK_RIE, ...BANK_AREA, ...BANK_MIX];
+
+/* ===================== ESTADO Y UTILIDADES ===================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const LS_KEY = "ci_calculo_best";
+let S = null;
+
+/* Render matemático KaTeX: se llama tras cada actualización del DOM. */
+function typeset(root){
+  try{
+    if(window.renderMathInElement){
+      renderMathInElement(root || document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$",  right: "$",  display: false}
+        ],
+        throwOnError: false,
+        strict: "ignore"
+      });
+    }
+  }catch(e){ /* si KaTeX falla, la app sigue funcionando con el texto plano */ }
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function getBest(){ try{ return parseInt(localStorage.getItem(LS_KEY) || "0", 10) || 0; }catch(e){ return 0; } }
+function setBest(v){ try{ localStorage.setItem(LS_KEY, String(v)); }catch(e){} }
+function getMode(){
+  const b = document.querySelector("#segMode button.on");
+  return b ? b.dataset.m : "study";
+}
+function showZone(id){
+  ["controls", "sessionZone", "resultZone"].forEach(z => {
+    const el = document.getElementById(z);
+    if(el) el.style.display = (z === id) ? "" : "none";
+  });
+  window.scrollTo(0, 0);
+}
+
+/* ===================== PANTALLA DE INICIO ===================== */
+function buildSetup(){
+  const counts = {};
+  QUESTIONS.forEach(q => { counts[q.t] = (counts[q.t] || 0) + 1; });
+
+  const tc = $("#topicChips"); tc.innerHTML = "";
+  Object.keys(TOPICS).forEach(k => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip on"; b.dataset.k = k;
+    b.innerHTML = '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + TOPICS[k].c + ';margin-right:6px;vertical-align:middle;"></span>'
+      + TOPICS[k].n + " <b>(" + (counts[k] || 0) + ")</b>";
+    b.onclick = () => b.classList.toggle("on");
+    tc.appendChild(b);
+  });
+
+  const cc = $("#ctxChips"); cc.innerHTML = "";
+  Object.keys(CTXS).forEach(k => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip on"; b.dataset.k = k;
+    b.textContent = CTXS[k].n;
+    b.onclick = () => b.classList.toggle("on");
+    cc.appendChild(b);
+  });
+
+  const th = $("#theoryGrid"); th.innerHTML = "";
+  Object.keys(TOPICS).forEach(k => {
+    const d = document.createElement("div");
+    d.className = "tcard";
+    d.innerHTML = "<h3>" + TOPICS[k].n + "</h3>" + TOPICS[k].ref;
+    th.appendChild(d);
+  });
+
+  $("#badgeTotal").textContent = QUESTIONS.length + " ejercicios";
+  const best = getBest();
+  $("#bestLine").textContent = best
+    ? "Mejor resultado registrado en este dispositivo: " + best + "%."
+    : "Aún no hay resultados registrados en este dispositivo.";
+  typeset(th);
+}
+
+/* ===================== SESIÓN ===================== */
+function prepQ(q){
+  const perm = shuffle(q.o.map((txt, i) => ({txt: txt, orig: i})));
+  return {t:q.t, ctx:q.ctx, q:q.q, ex:q.ex, o:q.o, a:q.a, perm:perm, ci:perm.findIndex(p => p.orig === q.a)};
+}
+
+function startQuiz(){
+  const ts = $$("#topicChips .chip.on").map(b => b.dataset.k);
+  const cs = $$("#ctxChips .chip.on").map(b => b.dataset.k);
+  if(!ts.length || !cs.length){
+    alert("Selecciona al menos un tema y un contexto.");
+    return;
+  }
+  let pool = QUESTIONS.filter(q => ts.includes(q.t) && cs.includes(q.ctx));
+  if(pool.length === 0){
+    alert("No hay ejercicios con esa combinación de tema y contexto. Amplía la selección.");
+    return;
+  }
+  pool = shuffle(pool);
+  const nSel = $("#numQ").value;
+  const n = nSel === "all" ? pool.length : Math.min(parseInt(nSel, 10), pool.length);
+  S = {
+    qs: pool.slice(0, n).map(prepQ),
+    i: 0,
+    mode: getMode(),
+    stats: {resp:0, ok:0, racha:0},
+    answered: false,
+    results: []
+  };
+  showZone("sessionZone");
+  $("#quitBtn").style.display = "";
+  renderQ();
+}
+
+function renderQ(){
+  const q = S.qs[S.i];
+  S.answered = false;
+  $("#qTopic").textContent = TOPICS[q.t].n;
+  $("#qTopic").style.background = TOPICS[q.t].c;
+  $("#qCtx").textContent = CTXS[q.ctx].n;
+  $("#qCount").textContent = "Pregunta " + (S.i + 1) + " de " + S.qs.length + (S.mode === "exam" ? " · Modo examen" : "");
+  $("#progFill").style.width = (100 * S.i / S.qs.length) + "%";
+  updStats();
+  $("#qText").innerHTML = q.q;
+  const box = $("#opts"); box.innerHTML = "";
+  q.perm.forEach((p, idx) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "opt";
+    b.innerHTML = '<span class="key">' + "abcd"[idx] + ')</span> ' + p.txt;
+    b.onclick = () => pick(idx);
+    box.appendChild(b);
+  });
+  $("#exBox").style.display = "none";
+  $("#exBox").innerHTML = "";
+  $("#nextBtn").style.display = "none";
+  $("#nextBtn").textContent = (S.i === S.qs.length - 1) ? "Ver resultados" : "Siguiente pregunta";
+  typeset($("#sessionZone"));
+}
+
+function updStats(){
+  $("#stResp").textContent = S.stats.resp;
+  const hide = (S.mode === "exam");
+  $("#stOk").textContent = hide ? "—" : S.stats.ok;
+  $("#stRacha").textContent = hide ? "—" : S.stats.racha;
+  $("#stPrec").textContent = (!hide && S.stats.resp) ? Math.round(100 * S.stats.ok / S.stats.resp) + "%" : "—";
+}
+
+function pick(idx){
+  if(!S || S.answered) return;
+  S.answered = true;
+  const q = S.qs[S.i];
+  const ok = (idx === q.ci);
+  const btns = $$("#opts .opt");
+  btns.forEach(b => { b.disabled = true; });
+  if(S.mode === "study"){
+    btns.forEach((b, i) => {
+      if(i === q.ci) b.classList.add("correct");
+      else if(i === idx) b.classList.add("wrong");
+      else b.classList.add("dim");
+    });
+    const exb = $("#exBox");
+    exb.className = "exbox " + (ok ? "ok" : "bad");
+    exb.innerHTML = "<h4>" + (ok ? "Correcto." : "Incorrecto. La respuesta correcta es " + "abcd"[q.ci] + ").") + "</h4><p>" + q.ex + "</p>";
+    exb.style.display = "";
+    S.stats.ok += ok ? 1 : 0;
+    S.stats.racha = ok ? S.stats.racha + 1 : 0;
+    typeset(exb);
+  } else {
+    btns[idx].classList.add("picked");
+  }
+  S.stats.resp++;
+  S.results.push({q:q, picked:idx, ok:ok});
+  updStats();
+  $("#nextBtn").style.display = "";
+}
+
+function next(){
+  if(!S) return;
+  if(S.i < S.qs.length - 1){
+    S.i++;
+    renderQ();
+  } else {
+    finish();
+  }
+}
+
+/* ===================== RESULTADOS ===================== */
+function finish(){
+  const total = S.qs.length;
+  const okc = S.results.filter(r => r.ok).length;
+  const pct = total ? Math.round(100 * okc / total) : 0;
+  const best = getBest();
+  if(pct > best) setBest(pct);
+
+  $("#resPct").textContent = pct + "%";
+  $("#resScore").textContent = okc + " de " + total + " respuestas correctas";
+  let msg;
+  if(pct === 100)     msg = "Dominio total. Combina todos los temas en modo examen para consolidar.";
+  else if(pct >= 80)  msg = "Excelente dominio. Repasa solo los temas con errores y reintenta.";
+  else if(pct >= 60)  msg = "Buen avance. Consulta el repaso rápido de los temas con errores y vuelve a intentarlo.";
+  else if(pct >= 40)  msg = "Vas por buen camino. Estudia el repaso rápido y practica tema por tema antes de combinar.";
+  else                msg = "Conviene estudiar de nuevo el repaso rápido y practicar cada tema por separado.";
+  $("#resMsg").textContent = msg;
+  $("#resBest").textContent = "Mejor resultado registrado en este dispositivo: " + Math.max(pct, best) + "%.";
+
+  const stats = {};
+  S.results.forEach(r => {
+    const k = r.q.t;
+    stats[k] = stats[k] || {ok:0, t:0};
+    stats[k].t++; if(r.ok) stats[k].ok++;
+  });
+  const tb = $("#resTopics"); tb.innerHTML = "";
+  Object.keys(TOPICS).forEach(k => {
+    if(!stats[k]) return;
+    const st = stats[k], p = Math.round(100 * st.ok / st.t);
+    const row = document.createElement("div");
+    row.className = "trow";
+    row.innerHTML = '<div class="tname">' + TOPICS[k].n + '</div>'
+      + '<div class="tbar"><div style="width:' + p + '%;background:' + TOPICS[k].c + '"></div></div>'
+      + '<div class="tnum">' + st.ok + '/' + st.t + '</div>';
+    tb.appendChild(row);
+  });
+
+  const wrong = S.results.filter(r => !r.ok);
+  $("#perfectBox").style.display = wrong.length ? "none" : "";
+  $("#wrongBox").style.display = wrong.length ? "" : "none";
+  const wr = $("#resWrong"); wr.innerHTML = "";
+  wrong.forEach(r => {
+    const d = document.createElement("div");
+    d.className = "rev";
+    const pickTxt = (r.picked != null && r.q.perm[r.picked]) ? r.q.perm[r.picked].txt : "—";
+    d.innerHTML = '<div class="rev-top">'
+      + '<span class="mini" style="background:' + TOPICS[r.q.t].c + '">' + TOPICS[r.q.t].n + '</span>'
+      + '<span class="mini ctx">' + CTXS[r.q.ctx].n + '</span>'
+      + '<span class="rev-state">Incorrecta</span></div>'
+      + '<p class="qq">' + r.q.q + '</p>'
+      + '<p class="ans bad">Tu respuesta: ' + pickTxt + '</p>'
+      + '<p class="ans good">Respuesta correcta: ' + r.q.perm[r.q.ci].txt + '</p>'
+      + '<p class="exp"><b>Explicación:</b> ' + r.q.ex + '</p>';
+    wr.appendChild(d);
+  });
+  typeset($("#resultZone"));
+  $("#retryBtn").textContent = "Repetir las " + wrong.length + " falladas";
+  $("#retryBtn").style.display = wrong.length ? "" : "none";
+  showZone("resultZone");
+}
+
+function retryWrong(){
+  const wrongQs = S.results.filter(r => !r.ok).map(r => r.q);
+  if(!wrongQs.length) return;
+  S = {
+    qs: shuffle(wrongQs).map(prepQ),
+    i: 0,
+    mode: S.mode,
+    stats: {resp:0, ok:0, racha:0},
+    answered: false,
+    results: []
+  };
+  showZone("sessionZone");
+  $("#quitBtn").style.display = "";
+  renderQ();
+}
+
+/* ===================== EVENTOS ===================== */
+$$("#segMode button").forEach(b => {
+  b.onclick = () => {
+    $$("#segMode button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+  };
+});
+$("#allT").onclick = () => $$("#topicChips .chip").forEach(b => b.classList.add("on"));
+$("#noneT").onclick = () => $$("#topicChips .chip").forEach(b => b.classList.remove("on"));
+$("#allC").onclick = () => $$("#ctxChips .chip").forEach(b => b.classList.add("on"));
+$("#noneC").onclick = () => $$("#ctxChips .chip").forEach(b => b.classList.remove("on"));
+$("#startBtn").onclick = startQuiz;
+$("#nextBtn").onclick = next;
+$("#retryBtn").onclick = retryWrong;
+$("#againBtn").onclick = startQuiz;
+$("#homeBtn").onclick = () => { buildSetup(); showZone("controls"); };
+$("#quitBtn").onclick = () => {
+  if(confirm("¿Abandonar la sesión actual? El progreso no respondido se perderá.")){
+    S = null;
+    buildSetup();
+    showZone("controls");
+  }
+};
+document.addEventListener("keydown", e => {
+  if(!S || $("#sessionZone").style.display === "none") return;
+  if(["1","2","3","4"].includes(e.key)){
+    const bs = $$("#opts .opt");
+    const i = parseInt(e.key, 10) - 1;
+    if(bs[i] && !S.answered) bs[i].click();
+  } else if(e.key === "Enter"){
+    if($("#nextBtn").style.display !== "none") $("#nextBtn").click();
+  }
+});
+
+buildSetup();
+showZone("controls");
+</script>
+</body>
+</html>
