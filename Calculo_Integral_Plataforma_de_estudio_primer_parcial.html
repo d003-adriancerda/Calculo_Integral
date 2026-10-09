@@ -190,15 +190,14 @@
 
 <header>
   <div class="wrap">
-    <div class="kicker">Cálculo integral de una variable · Práctica interactiva</div>
+    <div class="kicker">UNITI · LPID · Cálculo integral de una variable · Plataforma de Práctica interactiva</div>
     <h1>Primitivas, integración inmediata, sustitución, sumas de Riemann y área bajo la curva</h1>
-    <p class="sub">Ejercicios de opción múltiple para dominar los temas de la sesión, con fórmulas en LaTeX renderizadas con calidad tipográfica. Las opciones se barajan en cada intento: la respuesta correcta nunca ocupa siempre el mismo inciso. Contextos: matemáticas, programación, innovación y economía social solidaria.</p>
+    <p class="sub">Ejercicios de opción múltiple para dominar los temas del Primer Examen Parcial. Contextos: matemáticas, programación, innovación y economía social solidaria.</p>
     <div class="badges">
       <span class="badge" id="badgeTotal">— ejercicios</span>
-      <span class="badge">Opciones aleatorias a) b) c) d)</span>
-      <span class="badge">Fórmulas en LaTeX (KaTeX)</span>
+      <span class="badge">Opción Múltiple</span>
       <span class="badge">Explicación paso a paso</span>
-      <span class="badge">2 modos: práctica y examen</span>
+      <span class="badge">Modalidad: práctica y examen</span>
     </div>
   </div>
 </header>
@@ -206,9 +205,9 @@
 <div class="wrap">
 
   <details class="teoria" open>
-    <summary>Repaso rápido de los temas de la sesión <span class="chev">▶</span></summary>
+    <summary>Repaso rápido de la Teoría · temas básicos <span class="chev">▶</span></summary>
     <div class="teoria-body">
-      <p class="intro">Fórmulas e ideas clave de cada tema. Consúltalos antes de practicar si necesitas recordar algo; después intenta resolver sin mirar.</p>
+      <p class="intro">Fórmulas e ideas clave de cada tema. Consúltalos antes de practicar te servirásn si necesitas recordar algo; después resuelve con seguridad.</p>
       <div class="tgrid" id="theoryGrid"></div>
     </div>
   </details>
@@ -304,10 +303,10 @@
 
 /* TOPICS y CTXS — teoría con LaTeX (KaTeX) */
 const TOPICS = {
-  prim:{n:"Primitivas y antiderivadas", c:"#8b5cf6",
-    ref:String.raw`<p><b>Definición:</b> F es antiderivada (primitiva) de f en un intervalo si $F'(x) = f(x)$ para todo x de ese intervalo. Derivando F debes obtener exactamente f.</p><p><b>Familia:</b> si F es antiderivada de f, todas las demás son $F(x) + C$. La integral indefinida $\int f(x)\,dx = F(x) + C$ representa a toda la familia.</p><p><b>Condición inicial:</b> un dato como $F(0) = 3$ permite fijar la C y elegir una única antiderivada.</p>`},
+  prim:{n:"Primitivas o antiderivadas", c:"#8b5cf6",
+    ref:String.raw`<p><b>Definición:</b> F es antiderivada (o primitiva) de f en un intervalo si $F'(x) = f(x)$ para todo x de ese intervalo. En otras palabras, derivando F debes obtener exactamente f.</p><p><b>Familia:</b> si F es antiderivada de f, todas las demás son $F(x) + C$. La integral indefinida $$\int f(x)\,dx = F(x) + C$$ representa a toda la familia.</p><p><b>Condición inicial:</b> un dato como $F(0) = 3$ permite fijar el valor de la constante C y elegir una única antiderivada.</p>`},
   inme:{n:"Integración inmediata", c:"#0ea5e9",
-    ref:String.raw`<p><b>Potencia:</b> $\int x^{n}\,dx = \dfrac{x^{n+1}}{n+1} + C$ &nbsp;($n \neq -1$). <b>Base:</b> $\int dx = x + C$, $\int \frac{1}{x}\,dx = \ln|x| + C$, $\int e^{x}\,dx = e^{x} + C$.</p><p><b>Trigonométricas:</b> $\int \cos x\,dx = \sin x + C$, $\int \sin x\,dx = -\cos x + C$, $\int \sec^{2}x\,dx = \tan x + C$.</p><p><b>Linealidad:</b> las constantes salen y las sumas se separan: $\int [k\,f + g]\,dx = k\int f\,dx + \int g\,dx$.</p><p><b>Regla de oro:</b> deriva tu resultado; debes recuperar exactamente $f(x)$.</p>`},
+    ref:String.raw`<p><b>Potencia:</b> $\int x^{n}\,dx = \dfrac{x^{n+1}}{n+1} + C$ &nbsp;válida solo para ($n \neq -1$). </p><p><b>Base:</b> $\int dx = x + C$, $\int \frac{1}{x}\,dx = \ln|x| + C$, $\int e^{x}\,dx = e^{x} + C$.</p><p><b>Trigonométricas:</b> $\int \cos x\,dx = \sin x + C$, $\int \sin x\,dx = -\cos x + C$, $\int \sec^{2}x\,dx = \tan x + C$.</p><p><b>Linealidad:</b> las constantes salen y las sumas se separan: $\int [k\,f + g]\,dx = k\int f\,dx + \int g\,dx$.</p><p><b>Regla de oro:</b> deriva tu resultado; debes recuperar exactamente $f(x)$.</p>`},
   sust:{n:"Integración por sustitución", c:"#f59e0b",
     ref:String.raw`<p><b>Cuándo:</b> el integrando contiene una función compuesta $f(g(x))$ multiplicada (casi) por su derivada interna $g'(x)$.</p><p><b>Pasos:</b> 1) Elige $u = $ parte interna (lo de dentro del paréntesis, raíz, exponente o denominador). 2) Calcula $du = g'(x)\,dx$. 3) Reescribe la integral solo con $u$ y $du$. 4) Integra con reglas inmediatas. 5) Regresa a la variable original.</p><p><b>Constantes faltantes:</b> si tienes $x\,dx$ pero $du = 2x\,dx$, compensa: $x\,dx = \frac{du}{2}$.</p>`},
   rie:{n:"Sumas de Riemann", c:"#10b981",
