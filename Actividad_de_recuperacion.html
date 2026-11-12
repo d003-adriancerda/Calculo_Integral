@@ -45,7 +45,7 @@ a{color:var(--primary);text-decoration:none}
 
 /* ===== Layout ===== */
 .app{max-width:1100px;margin:0 auto;padding:16px}
-header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--btn-text);padding:18px 20px;border-radius:var(--radius);box-shadow:var(--shadow-lg);position:sticky;top:8px;z-index:100}
+header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--btn-text);padding:18px 20px;border-radius:var(--radius);box-shadow:var(--shadow-lg);position:relative;z-index:100}
 .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .topbar h1{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:8px}
 .topbar h1 .logo{font-size:1.4rem}
@@ -144,6 +144,7 @@ header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dar
 .actividad.respondida-incorrecta{border-color:var(--danger)}
 .act-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--primary);color:var(--btn-text);border-radius:50%;font-weight:700;font-size:.85rem;margin-right:8px}
 .act-enunciado{font-size:.98rem;margin-bottom:12px;line-height:1.6}
+.act-enunciado .math{font-family:'Cambria Math','Times New Roman',serif;font-style:italic}
 .opciones{display:flex;flex-direction:column;gap:8px}
 .opcion{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
 .opcion:hover{border-color:var(--primary);background:var(--primary-light)}
@@ -231,7 +232,7 @@ header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dar
 .formula-ref{font-size:.88rem}
 .formula-ref table{width:100%;border-collapse:collapse}
 .formula-ref td{padding:6px 8px;border-bottom:1px solid var(--border)}
-.formula-ref td:first-child{font-size:1rem;background:var(--surface-2);font-weight:600;width:45%}
+.formula-ref td:first-child{font-family:'Cambria Math',serif;font-size:1rem;background:var(--surface-2);font-weight:600;width:45%}
 .formula-ref td:last-child{color:var(--text-muted)}
 
 .errores-list{font-size:.88rem}
@@ -266,6 +267,14 @@ header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dar
   .btn{padding:7px 11px;font-size:.85rem}
 }
 
+/* Math helpers */
+sub,sup{font-size:.7em}
+.math-block{font-family:'Cambria Math','Times New Roman',serif;background:var(--surface-2);padding:8px 14px;border-radius:6px;text-align:center;margin:8px 0;font-size:1.05rem}
+.frac{display:inline-block;vertical-align:middle;text-align:center}
+.frac .num{display:block;border-bottom:1px solid currentColor;padding:0 4px}
+.frac .den{display:block;padding:0 4px}
+.sqrt{border-top:1px solid currentColor;padding:0 2px}
+
 footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
 </style>
 </head>
@@ -273,7 +282,7 @@ footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
 <div class="app">
   <header class="topbar">
     <div class="topbar-row">
-      <h1><span class="logo">LPID</span> Recuperación de Cálculo Integral</h1>
+      <h1><span class="logo">∫</span> Recuperación de Cálculo Integral</h1>
       <div class="topbar-actions">
         <button class="btn btn-ghost btn-sm" onclick="toggleDarkMode()" id="btn-dark-mode" title="Cambiar modo claro/oscuro">🌙 <span class="btn-label">Modo oscuro</span></button>
         <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-formulas')" title="Tabla de fórmulas">📐 <span class="btn-label">Fórmulas</span></button>
@@ -335,7 +344,7 @@ footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
 
   <footer>
     Curso-taller de recuperación · Cálculo Integral · Diseñado para aprendizaje autosuficiente<br>
-    Tus datos se guardan solo en este navegador (localStorage) ·  Descarga tu portafolio para enviarlo (subirlo) a plataforma · J. Adrián Cerda R.  .
+    Tus datos se guardan solo en este navegador (localStorage). Descarga tu portafolio para enviarlo al docente.
   </footer>
 </div>
 
@@ -384,6 +393,7 @@ let ESTADO = {
   ultimoAcceso: new Date().toISOString()
 };
 
+// Inicializar estado de módulos
 function initModulosEstado() {
   MODULES.forEach(m => {
     if (!ESTADO.modulos[m.id]) {
@@ -402,6 +412,7 @@ function initModulosEstado() {
         ultimoAcceso: null
       };
     }
+    // contar actividades
     ESTADO.modulos[m.id].totalActividades = m.actividades.length;
   });
 }
@@ -419,6 +430,7 @@ function loadState() {
     if (raw) {
       const parsed = JSON.parse(raw);
       ESTADO = Object.assign(ESTADO, parsed);
+      // ensure modulos structure
       initModulosEstado();
     }
   } catch(e) { console.warn('No se pudo cargar:', e); }
@@ -435,69 +447,69 @@ const MODULES = [
   esDiagnostico:true,
   teoria:`<p>Contesta con honestidad. Estas preguntas NO te califican, solo nos ayudan a recomendarte por dónde empezar a reforzar.</p>`,
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"¿Cuál es la derivada de $f(x)=x^{5}$?", opciones:["$5x^{4}$","$\\dfrac{x^{4}}{4}$","$5x^{6}$","$\\dfrac{x^{5}}{5}$"], correcta:0, cat:"derivadas",
-      feedback:{correcto:"Correcto: la regla de la potencia para derivar dice $\\dfrac{d}{dx}[x^{n}]=n\\,x^{n-1}$.",errores:{1:"Esa sería la antiderivada, no la derivada.",2:"Subiste el exponente en vez de bajarlo.",3:"Confundiste derivar con integrar."}}},
-    {tipo:"opcion_multiple", enunciado:"$\\dfrac{d}{dx}[\\operatorname{sen} x] = ?$", opciones:["$\\cos x$","$-\\cos x$","$-\\operatorname{sen} x$","$\\sec x$"], correcta:0, cat:"derivadas",
-      feedback:{correcto:"Sí: la derivada de $\\operatorname{sen} x$ es $\\cos x$.",errores:{1:"Ese es $-\\dfrac{d}{dx}[\\cos x]$.",2:"Esa sería la derivada de $\\cos x$ con signo.",3:"No aparece secante al derivar seno."}}},
-    {tipo:"opcion_multiple", enunciado:"$\\dfrac{d}{dx}[\\ln x] = ?$", opciones:["$\\dfrac{1}{x}$","$x$","$x^{-1}+C$","$\\dfrac{1}{x^{2}}$"], correcta:0, cat:"derivadas",
-      feedback:{correcto:"Exacto: $\\dfrac{d}{dx}[\\ln|x|] = \\dfrac{1}{x}$.",errores:{1:"No sube el exponente.",2:"No hay $+C$ en derivadas.",3:"No es $\\dfrac{1}{x^{2}}$."}}},
-    {tipo:"opcion_multiple", enunciado:"Simplifica $x^{1/2}$.", opciones:["$\\sqrt{x}$","$\\dfrac{x}{2}$","$2x$","$x^{2}$"], correcta:0, cat:"exponentes",
-      feedback:{correcto:"Sí: exponente $1/2$ equivale a raíz cuadrada.",errores:{1:"No se divide entre 2.",2:"No se multiplica por 2.",3:"$x^{2}$ es $x\\cdot x$, no $x^{1/2}$."}}},
-    {tipo:"opcion_multiple", enunciado:"¿Cuánto es $x^{-2}$?", opciones:["$\\dfrac{1}{x^{2}}$","$-x^{2}$","$x\\cdot x$","$-2x$"], correcta:0, cat:"exponentes",
-      feedback:{correcto:"Bien: exponente negativo significa recíproco.",errores:{1:"No cambia el signo de $x$.",2:"$x^{2}$ es positivo.",3:"No se mezcla con coeficiente."}}},
-    {tipo:"opcion_multiple", enunciado:"¿Qué significa la notación $\\sum_{i=1}^{n} f(x_{i})$?", opciones:["Sumar $f(x_{i})$ desde $i=1$ hasta $i=n$","Multiplicar $f(x_{i})$ por $n$","El promedio de $f$","El máximo de $f$"], correcta:0, cat:"sigma",
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la derivada def(x)=x<sup>5</sup>?", opciones:["5x<sup>4</sup>","x<sup>4</sup>/4","5x<sup>6</sup>","x<sup>5</sup>/5"], correcta:0, cat:"derivadas",
+      feedback:{correcto:"Correcto: la regla de la potencia para derivar dice d/dx[x<sup>n</sup>]=n· x<sup>n-1</sup>.",errores:{1:"Esa sería la antiderivada, no la derivada.",2:"Subiste el exponente en vez de bajarlo.",3:"Confundiste derivar con integrar."}}},
+    {tipo:"opcion_multiple", enunciado:"d/dx[sen x] = ?", opciones:["cos x","-cos x","-sen x","sec x"], correcta:0, cat:"derivadas",
+      feedback:{correcto:"Sí: la derivada desenxescos x.",errores:{1:"Ese es -d/dx[cos x].",2:"Esa sería la derivada de\\cosxcon signo.",3:"No aparece secante al derivar seno."}}},
+    {tipo:"opcion_multiple", enunciado:"d/dx[ln x] = ?", opciones:["1/x","x","x<sup>-1</sup>+C","1/x<sup>2</sup>"], correcta:0, cat:"derivadas",
+      feedback:{correcto:"Exacto: d/dx[ln|x|] = 1/x.",errores:{1:"No sube el exponente.",2:"No hay +C en derivadas.",3:"No es1/x<sup>2</sup>."}}},
+    {tipo:"opcion_multiple", enunciado:"Simplificax<sup>1/2</sup>.", opciones:["√ x","x/2","2x","x<sup>2</sup>"], correcta:0, cat:"exponentes",
+      feedback:{correcto:"Sí: exponente 1/2 equivale a raíz cuadrada.",errores:{1:"No se divide entre 2.",2:"No se multiplica por 2.",3:"x<sup>2</sup>esx· x,no x^(1/2)."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuánto esx<sup>-2</sup>?", opciones:["1/x<sup>2</sup>","-x<sup>2</sup>","x· x","-2x"], correcta:0, cat:"exponentes",
+      feedback:{correcto:"Bien: exponente negativo significa reciproco.",errores:{1:"No cambia el signo de x.",2:"x<sup>2</sup>es positivo.",3:"No se mezcla con coeficiente."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Qué significa la notación ∑<sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)?", opciones:["Sumarf(x<sub>i</sub>)desde i=1 hasta i=n","Multiplicarf(x<sub>i</sub>)por n","El promedio de f","El máximo de f"], correcta:0, cat:"sigma",
       feedback:{correcto:"Correcto: la sigma indica suma iterada.",errores:{1:"No es multiplicación.",2:"No es promedio.",3:"No es máximo."}}},
-    {tipo:"opcion_multiple", enunciado:"Simplifica la fracción $\\dfrac{2x^{3}}{x^{2}}$.", opciones:["$2x$","$2x^{5}$","$\\dfrac{2}{x}$","$x$"], correcta:0, cat:"algebra",
-      feedback:{correcto:"Sí: al restar exponentes $3-2=1$ queda $2x$.",errores:{1:"No se suman los exponentes en división.",2:"No se invierte.",3:"Olvidaste el coeficiente 2."}}},
-    {tipo:"opcion_multiple", enunciado:"Si $f(x)=x^{2}+1$, ¿cuánto vale $f(3)$?", opciones:["$10$","$7$","$4$","$9$"], correcta:0, cat:"algebra",
-      feedback:{correcto:"Bien: $3^{2}+1 = 9+1 = 10$.",errores:{1:"Olvidaste elevar al cuadrado.",2:"Solo elevaste sin sumar 1.",3:"Olvidaste sumar el $+1$."}}}
+    {tipo:"opcion_multiple", enunciado:"Simplifica la fracción(2x<sup>3</sup>)/(x<sup>2</sup>).", opciones:["2x","2x<sup>5</sup>","2/x","x"], correcta:0, cat:"algebra",
+      feedback:{correcto:"Sí: al restar exponentes 3-2=1 queda 2x.",errores:{1:"No se suman los exponentes en división.",2:"No se inverte.",3:"Olvidaste el coeficiente 2."}}},
+    {tipo:"opcion_multiple", enunciado:"Sif(x)=x<sup>2</sup>+1,¿cuánto vale f(3)?", opciones:["10","7","4","9"], correcta:0, cat:"algebra",
+      feedback:{correcto:"Bien:3<sup>2</sup>+1 = 9+1 = 10.",errores:{1:"Olvidaste elevar al cuadrado.",2:"Solo elevaste sin sumar 1.",3:"Olvidaste sumar el +1."}}}
   ]
 },
 
 /* ===================== MÓDULO 1: ANTIDERIVADAS ===================== */
 {
   id:"m1", num:1, titulo:"Antiderivadas o primitivas", icono:"🌱",
-  objetivo:"Al terminar podrás verificar si una función es antiderivada de otra y construir la familia completa usando la constante $C$.",
+  objetivo:"Al terminar podrás verificar si una función es antiderivada de otra y construir la familia completa usando la constante C.",
   repaso:[],
   teoria:`
     <h4>¿Qué es una antiderivada?</h4>
-    <p>Una función <strong>$F(x)$</strong> es <em>antiderivada</em> (o primitiva) de <strong>$f(x)$</strong> cuando al derivar $F$ recuperas $f$:</p>
-    <div class="formula-box">$F'(x) = f(x) \\iff F$ es antiderivada de $f$</div>
-    <h4>La constante de integración $C$</h4>
-    <p>La derivada de cualquier constante es $0$. Entonces, si $F(x)$ es antiderivada de $f(x)$, también lo es <strong>$F(x)+C$</strong> para cualquier constante $C$. A este conjunto se le llama <em>familia de curvas</em>.</p>
-    <div class="formula-box">Si $F'(x)=f(x)$, entonces todas las antiderivadas son $F(x)+C$</div>
+    <p>Una función <strong>F(x)</strong> es <em>antiderivada</em> (o primitiva) de <strong>f(x)</strong> cuando al derivar F recuperas f:</p>
+    <div class="formula-box">F'(x) = f(x)   \\iffFes antiderivada de f</div>
+    <h4>La constante de integración C</h4>
+    <p>La derivada de cualquier constante es 0. Entonces, si F(x) es antiderivada de f(x), también lo es <strong>F(x)+C</strong> para cualquier constante C. A este conjunto se le llama <em>familia de curvas</em>.</p>
+    <div class="formula-box">Si F'(x)=f(x), entonces todas las antiderivadas son F(x)+C</div>
     <h4>Verificación</h4>
     <p>Para comprobar que tu respuesta es correcta, <strong>derívala</strong>: si el resultado es el integrando, acertaste.</p>
-    <div class="analogia"><strong>Analogía:</strong> integrar es como preguntar "¿qué función, al derivarse, da esta?" — es el proceso inverso a derivar, como reconstruir un objeto sabiendo su sombra.</div>
+    <div class="analogia"><strong>Analogy:</strong> integrar es como preguntar "¿qué función, al derivarse, da esta?" — es el proceso inverso a derivar, como reconstruir un objeto sabiendo su sombra.</div>
     <h4>Condición inicial</h4>
-    <p>Si te dan un valor específico, por ejemplo $F(0)=4$, puedes sustituir $x=0$ en $F(x)+C$ y despejar $C$. Así obtienes <em>una</em> antiderivada concreta, no la familia.</p>
+    <p>Si te dan un valor específico, por ejemplo F(0)=4, puedes sustituir x=0 en F(x)+C y despejar C. Así obtienes <em>una</em> antiderivada concreta, no la familia.</p>
   `,
   ejemplo:[
-    {num:1,titulo:"Identificar qué debemos integrar",contenido:"Necesitamos una $F$ tal que $F'(x)=6x^{2}$.",regla:"Definición de antiderivada"},
-    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivar $x^{n}$ da $n\\,x^{n-1}$, entonces integrar $6x^{2}$ implica subir el exponente: pensamos en $x^{3}$.",regla:"Regla de la potencia (inversa)"},
-    {num:3,titulo:"Ajustar coeficiente y añadir $C$",contenido:"$\\dfrac{d}{dx}[x^{3}]=3x^{2}$. Para obtener $6x^{2}$ multiplicamos por 2: $F(x)=2x^{3}+C$.",regla:"Linealidad y constante de integración"},
-    {num:4,titulo:"Verificar derivando",contenido:"$F'(x)=\\dfrac{d}{dx}[2x^{3}+C]=6x^{2}+0=6x^{2}$. ✓ Coincide con el integrando.",regla:"Verificación por derivación"}
+    {num:1,titulo:"Identificar qué debemos integrar",contenido:"Necesitamos una F tal queF'(x)=6x<sup>2</sup>.",regla:"Definición de antiderivada"},
+    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivarx<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar6x<sup>2</sup>implica subir el exponente: pensamos enx<sup>3</sup>.",regla:"Regla de la potencia (inversa)"},
+    {num:3,titulo:"Ajustar coeficiente y añadir C",contenido:"d/dx[x<sup>3</sup>]=3x<sup>2</sup>. Para obtener6x<sup>2</sup>multiplicamos por 2:F(x)=2x<sup>3</sup>+C.",regla:"Linealidad y constante de integración"},
+    {num:4,titulo:"Verificar derivando",contenido:"F'(x)=d/dx[2x<sup>3</sup>+C]=6x<sup>2</sup>+0=6x<sup>2</sup>. ✓ Coincide con el integrando.",regla:"Verificación por derivación"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"¿Cuál es la antiderivada general de $f(x)=3x^{2}$?", opciones:["$x^{3} + C$","$x^{3}$","$6x + C$","$\\dfrac{x^{3}}{3} + C$"], correcta:0,
-      feedback:{correcto:"Bien: al derivar $x^{3}+C$ recuperas $3x^{2}$.",errores:{1:"Casi: olvidaste la constante de integración $C$.",2:"Eso es la derivada, no la antiderivada.",3:"Revisa la regla de la potencia: divides entre $n+1$, no entre $n$."}}},
-    {tipo:"verdadero_falso", enunciado:"Si $F(x)=\\dfrac{x^{4}}{4} + C$, entonces $F'(x)=x^{3}$ para cualquier valor de $C$.", correcta:true,
-      feedback:{correcto:"Correcto: la derivada de $C$ es 0, así que $C$ desaparece al derivar.",errores:{0:"Piensa: ¿qué vale la derivada de una constante?"}}},
-    {tipo:"completar_hueco", enunciado:"La antiderivada de $6x$ es <input class='input-line' id='ch1-3' placeholder='escribe aquí'> $+\\,C$.", respuesta:["3x^2","3x**2","3x²","3x2"], feedbackCorrecto:"Sí: derivar $3x^{2}$ da $6x$. ✓", feedbackError:"Recuerda: si derivar $x^{n}$ da $n\\,x^{n-1}$, entonces integrar $6x$ implica llegar a una $x^{2}$. Ajusta el coeficiente para que al derivar recuperes $6x$."},
-    {tipo:"opcion_multiple", enunciado:"¿Por qué aparece la constante $C$ en toda antiderivada?", opciones:["Porque la derivada de cualquier constante es 0","Porque siempre hay una incógnita","Porque las integrales tienen solución única","Por convención estética"], correcta:0,
-      feedback:{correcto:"Exactamente: si $F$ es antiderivada, $F+C$ también lo es porque $\\dfrac{d}{dx}[C]=0$.",errores:{1:"No es una incógnita, es toda una familia de soluciones.",2:"Las antiderivadas NO son únicas, forman una familia.",3:"No es estética: es matemática."}}},
-    {tipo:"seleccion_multiple", enunciado:"Marca todas las funciones que sean antiderivadas de $\\cos x$:", opciones:["$\\operatorname{sen} x + C$","$\\operatorname{sen} x + 7$","$\\operatorname{sen} x$","$-\\operatorname{sen} x + C$","$-\\cos x$"], correctas:[0,1,2],
-      feedback:{correcto:"Perfecto: $\\operatorname{sen} x$, $\\operatorname{sen} x+C$ y $\\operatorname{sen} x+7$ son todas antiderivadas (difieren en $C$).",errores:{3:"$-\\operatorname{sen} x$ se deriva como $-\\cos x$, no como $\\cos x$. Revisa el signo.",4:"$-\\cos x$ es antiderivada de $\\operatorname{sen} x$, no de $\\cos x$."}}},
-    {tipo:"ordenar_pasos", enunciado:"Ordena los pasos para verificar que $F(x)=\\dfrac{x^{5}}{5}$ es antiderivada de $x^{4}$.",
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la antiderivada general def(x)=3x<sup>2</sup>?", opciones:["x<sup>3</sup> + C","x<sup>3</sup>","6x + C","x<sup>3</sup>/3 + C"], correcta:0,
+      feedback:{correcto:"Bien: al derivarx<sup>3</sup>+Crecuperas3x<sup>2</sup>.",errores:{1:"Casi: olvidaste la constante de integración C.",2:"Eso es la derivada, no la antiderivada.",3:"Revisa la regla de la potencia: divides entre n+1, no entre n."}}},
+    {tipo:"verdadero_falso", enunciado:"SiF(x)=x<sup>4</sup>/4 + C,entoncesF'(x)=x<sup>3</sup>para cualquier valor de C.", correcta:true,
+      feedback:{correcto:"Correcto: la derivada de C es 0, así que C desaparece al derivar.",errores:{0:"Piensa: ¿qué vale la derivada de una constante?"}}},
+    {tipo:"completar_hueco", enunciado:"La antiderivada de 6x es <input class='input-line' id='ch1-3' placeholder='escribe aquí'> + C.", respuesta:["3x^2","3x<sup>2</sup>","3x**2","3x2"], feedbackCorrecto:"Sí: derivar3x<sup>2</sup>da 6x. ✓", feedbackError:"Recuerda: si derivarx<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar 6x implica llegar a unax<sup>2</sup>. Ajusta el coeficiente para que al derivar recuperes 6x."},
+    {tipo:"opcion_multiple", enunciado:"¿Por qué aparece la constante C en toda antiderivada?", opciones:["Porque la derivada de cualquier constante es 0","Porque siempre hay una incógnita","Porque integrales tienen solución única","Por convención estética"], correcta:0,
+      feedback:{correcto:"Exactamente: si F es antiderivada, F+C también lo es porque d/dx[C]=0.",errores:{1:"No es una incógnita, es toda una familia de soluciones.",2:"Las antiderivadas NO son únicas, forman una familia.",3:"No es estética: es matemática."}}},
+    {tipo:"seleccion_multiple", enunciado:"Marca todas las funciones que sean antiderivadas decos x:", opciones:["sen x + C","sen x + 7","sen x","-sen x + C","-cos x"], correctas:[0,1,2],
+      feedback:{correcto:"Perfecto:sen x, sen x+C y sen x+7son todas antiderivadas (difieren en C).",errores:{3:"-\\cosxse deriva como+sen x,no comocos x. Revisa el signo.",4:"-\\cosxes antiderivada desen x,no decos x."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena los pasos para verificar queF(x)=x<sup>5</sup>/5es antiderivada dex<sup>4</sup>.",
       pasos:[
-        {texto:"Derivar $F(x)=\\dfrac{x^{5}}{5}$", orden:1},
+        {texto:"DerivarF(x)=x<sup>5</sup>/5", orden:1},
         {texto:"Aplicar la regla de la potencia para derivar: bajar el 5", orden:2},
-        {texto:"Los 5 se cancelan: queda $x^{4}$", orden:3},
-        {texto:"Comparar con el integrando $x^{4}$ ✓", orden:4}
+        {texto:"Los 5 se cancelan: quedax<sup>4</sup>", orden:3},
+        {texto:"Comparar con el integrandox<sup>4</sup>✓", orden:4}
       ],
       feedback:{correcto:"Excelente secuencia. Ese es el método de verificación.",errores:"Revisa: primero derivas, luego aplicas la regla de la potencia, se cancelan coeficientes y finalmente comparas con el integrando."}},
-    {tipo:"completar_hueco", enunciado:"Si $F'(x)=2x$ y $F(0)=3$, entonces $F(x)=x^{2}+C$. Sustituyendo $x=0$: $F(0)=0+C=3$, por lo tanto $C=$ <input class='input-line' id='ch1-7' placeholder='número'>.", respuesta:["3"], feedbackCorrecto:"Correcto: $C=3$. La antiderivada específica es $F(x)=x^{2}+3$.", feedbackError:"Sustituye $x=0$ en $x^{2}+C$ y compara con $F(0)=3$."},
-    {tipo:"numerica", enunciado:"Si $F'(x)=5$ y $F(0)=2$, ¿cuál es el valor de $F(10)$?", respuesta:52, tolerancia:0.01, feedbackCorrecto:"Correcto: $F(x)=5x+2$, entonces $F(10)=52$.", feedbackError:"$F(x)=5x+C$; con $F(0)=2 \\Rightarrow C=2$; por tanto $F(10)=5\\cdot 10+2=52$."}
+    {tipo:"completar_hueco", enunciado:"Si F'(x)=2x y F(0)=3, entoncesF(x)=x<sup>2</sup>+C. Sustituyendo x=0: F(0)=0+C=3, por lo tanto C=<input class='input-line' id='ch1-7' placeholder='número'>.", respuesta:["3"], feedbackCorrecto:"Correcto: C=3. La antiderivada específica esF(x)=x<sup>2</sup>+3.", feedbackError:"Sustituye x=0 enx<sup>2</sup>+Cycompara con F(0)=3."},
+    {tipo:"numerica", enunciado:"Si F'(x)=5 y F(0)=2, ¿cuál es el valor de F(10)?", respuesta:52, tolerancia:0.01, feedbackCorrecto:"Correcto: F(x)=5x+2, entonces F(10)=52.", feedbackError:"F(x)=5x+C; conF(0)=2 →  C=2; por tantoF(10)=5· 10+2=52."}
   ],
   criterioDominio:0.8
 },
@@ -505,55 +517,57 @@ const MODULES = [
 /* ===================== MÓDULO 2: INTEGRAL INDEFINIDA ===================== */
 {
   id:"m2", num:2, titulo:"Integral indefinida", icono:"∫",
-  objetivo:"Al terminar podrás usar la notación $\\int$, aplicar la linealidad y resolver integrales con constantes y sumas.",
+  objetivo:"Al terminar podrás usar la notación∫ ,aplicar la linealidad y resolver integrales con constantes y sumas.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M1) La antiderivada de $f(x)=2x$ es:", opciones:["$x^{2}+C$","$2+C$","$2x^{2}+C$","$x+C$"], correcta:0, feedback:{correcto:"Bien: $x^{2}+C$ al derivarse da $2x$.",errores:{1:"2 es constante.",2:"Demasiado grande.",3:"$x$ se deriva como 1."}}}
+    {tipo:"opcion_multiple", enunciado:"(Repaso M1) La antiderivada de f(x)=2x es:", opciones:["x<sup>2</sup>+C","2+C","2x<sup>2</sup>+C","x+C"], correcta:0, feedback:{correcto:"Bien:x<sup>2</sup>+Cal derivarse da 2x.",errores:{1:"2 es constante.",2:"Demasiado grande.",3:"x se deriva como 1."}}}
   ],
   teoria:`
     <h4>Notación</h4>
     <p>La integral indefinida es la operación inversa a la derivada. Se escribe:</p>
-    <div class="formula-box">$\\int f(x)\\,dx = F(x) + C$, donde $F'(x)=f(x)$</div>
-    <p>El símbolo $\\int$ indica "sumar antiderivadas", $f(x)$ es el <em>integrando</em>, y $dx$ indica con respecto a qué variable integramos.</p>
+    <div class="formula-box">∫  f(x) dx = F(x) + C ,donde F'(x)=f(x)</div>
+    <p>El símbolo\\intindica "sumar antiderivadas", f(x) es el <em>integrando</em>, y dx indica con respecto a qué variable integramos.</p>
     <h4>Linealidad</h4>
     <p>La integral respeta sumas, restas y múltiplos constantes:</p>
-    <div class="formula-box">$\\int [a\\cdot f(x) + b\\cdot g(x)]\\,dx = a\\int f(x)\\,dx + b\\int g(x)\\,dx$</div>
+    <div class="formula-box">
+∫  [a· f(x) + b· g(x)] dx = a· ∫ f(x)dx + b· ∫ g(x)dx
+    </div>
     <h4>Caso especial: integral de una constante</h4>
-    <div class="formula-box">$\\int k\\,dx = k\\,x + C$</div>
-    <div class="analogia"><strong>Intuición:</strong> integrar es como "des-derivar". Mientras derivar $x^{2}$ da $2x$, integrar $2x$ devuelve $x^{2}$ ($+C$). La linealidad permite atacar término a término, como distribuir una suma.</div>
+    <div class="formula-box">∫  k dx = k· x + C</div>
+    <div class="analogia"><strong>Intuición:</strong> integrar es como "desderiv". Mientras derivarx<sup>2</sup>da 2x, integrar 2x devuelvex<sup>2</sup> (+C). La linealidad permite atacar término a término, como distribuir una suma.</div>
   `,
   ejemplo:[
-    {num:1,titulo:"Separar por linealidad",contenido:"$\\int (3x^{2} + 2x - 5)\\,dx = 3\\int x^{2}\\,dx + 2\\int x\\,dx - 5\\int dx$",regla:"Linealidad de la integral"},
-    {num:2,titulo:"Aplicar regla de la potencia a cada término",contenido:"$\\int x^{2}\\,dx = \\dfrac{x^{3}}{3}$ ; $\\int x\\,dx = \\dfrac{x^{2}}{2}$ ; $\\int dx = x$",regla:"Regla de la potencia"},
-    {num:3,titulo:"Sustituir coeficientes",contenido:"$= 3\\cdot\\dfrac{x^{3}}{3} + 2\\cdot\\dfrac{x^{2}}{2} - 5x = x^{3} + x^{2} - 5x$",regla:"Aritmética"},
-    {num:4,titulo:"Añadir $C$",contenido:"Resultado: $x^{3} + x^{2} - 5x + C$",regla:"Constante de integración"}
+    {num:1,titulo:"Separar por linealidad",contenido:"∫ (3x<sup>2</sup> + 2x - 5) dx = 3∫ x<sup>2</sup>dx + 2∫ x dx - 5∫ dx",regla:"Linealidad de la integral"},
+    {num:2,titulo:"Aplicar regla de la potencia a cada término",contenido:"∫ x<sup>2</sup>dx = x<sup>3</sup>/3 ; ∫ x dx = x<sup>2</sup>/2 ; ∫ dx = x",regla:"Regla de la potencia"},
+    {num:3,titulo:"Sustituir coeficientes",contenido:"= 3· (x<sup>3</sup>/3) + 2· (x<sup>2</sup>/2) - 5· x = x<sup>3</sup> + x<sup>2</sup> - 5x",regla:"Aritmética"},
+    {num:4,titulo:"Añadir C",contenido:"Resultado:x<sup>3</sup> + x<sup>2</sup> - 5x + C",regla:"Constante de integración"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"$\\int 5\\,dx = ?$", opciones:["$5x + C$","$5 + C$","$5$","$\\dfrac{x}{5} + C$"], correcta:0,
-      feedback:{correcto:"Sí: la integral de una constante $k$ es $kx+C$.",errores:{1:"Eso sería integrar 0.",2:"Falta la variable $x$.",3:"Estás dividiendo en lugar de multiplicar."}}},
-    {tipo:"verdadero_falso", enunciado:"$\\int (f(x)+g(x))\\,dx = \\int f(x)\\,dx + \\int g(x)\\,dx$", correcta:true,
+    {tipo:"opcion_multiple", enunciado:"∫  5 dx =?", opciones:["5x + C","5 + C","5","x/5 + C"], correcta:0,
+      feedback:{correcto:"Sí: la integral de una constante k es kx+C.",errores:{1:"Eso sería integrar 0.",2:"Falta la variable x.",3:"Estás dividiendo en lugar de multiplicar."}}},
+    {tipo:"verdadero_falso", enunciado:"∫ (f(x)+g(x))dx = ∫ f(x)dx + ∫ g(x)dx", correcta:true,
       feedback:{correcto:"Sí: la integral es lineal, así que la suma se respeta.",errores:{0:"Piensa: la derivada también distribuye sobre sumas. La integral hace lo mismo."}}},
-    {tipo:"completar_hueco", enunciado:"$\\int (2x+3)\\,dx = x^{2} +$ <input class='input-line' id='ch2-3' placeholder='término'> $+\\,C$.", respuesta:["3x","3*x"], feedbackCorrecto:"Correcto: $\\int 3\\,dx=3x$.", feedbackError:"$\\int (\\text{constante})\\,dx = \\text{constante}\\cdot x$. Aquí $\\int 3\\,dx=3x$."},
-    {tipo:"opcion_multiple", enunciado:"$\\int (3x^{2} - 4x + 1)\\,dx = ?$", opciones:["$x^{3} - 2x^{2} + x + C$","$3x^{3} - 4x^{2} + x + C$","$x^{3} - 4x^{2} + x$","$\\dfrac{x^{3}}{3} - 2x^{2} + x + C$"], correcta:0,
-      feedback:{correcto:"Bien aplicada la linealidad y la regla de la potencia.",errores:{1:"Olvidaste dividir entre el nuevo exponente en cada término.",2:"Olvidaste el $+C$.",3:"Olvidaste ajustar coeficientes ($3\\cdot\\dfrac{x^{3}}{3}=x^{3}$)."}}},
-    {tipo:"seleccion_multiple", enunciado:"¿Cuáles de estas igualdades son correctas por linealidad?", opciones:["$\\int 7\\cos x\\,dx = 7\\int \\cos x\\,dx$","$\\int (x+\\operatorname{sen} x)\\,dx = \\int x\\,dx + \\int \\operatorname{sen} x\\,dx$","$\\int (x\\cdot\\operatorname{sen} x)\\,dx = \\int x\\,dx \\cdot \\int \\operatorname{sen} x\\,dx$","$\\int \\left(\\dfrac{1}{x} + 1\\right)\\,dx = \\ln|x| + x + C$"], correctas:[0,1,3],
-      feedback:{correcto:"Perfecto: linealidad aplica a sumas y constantes, no a productos.",errores:{2:"La linealidad NO permite separar productos: $\\int (x\\cdot\\operatorname{sen} x)\\,dx \\neq \\int x\\,dx\\cdot\\int \\operatorname{sen} x\\,dx$. Eso requiere integración por partes."}}},
-    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de $\\int (x^{2}+2x)\\,dx$:",
+    {tipo:"completar_hueco", enunciado:"∫ (2x+3)dx = x<sup>2</sup> +<input class='input-line' id='ch2-3' placeholder='término'> + C.", respuesta:["3x","3*x"], feedbackCorrecto:"Correcto:∫ 3dx=3x.", feedbackError:"∫ (constante)dx = constante· x. Aquí∫ 3dx=3x."},
+    {tipo:"opcion_multiple", enunciado:"∫ (3x<sup>2</sup> - 4x + 1) dx =?", opciones:["x<sup>3</sup> - 2x<sup>2</sup> + x + C","3x<sup>3</sup> - 4x<sup>2</sup> + x + C","x<sup>3</sup> - 4x<sup>2</sup> + x","x<sup>3</sup>/3 - 2x<sup>2</sup> + x + C"], correcta:0,
+      feedback:{correcto:"Bien aplicada la linealidad y la regla de la potencia.",errores:{1:"Olvidaste dividir entre el nuevo exponente en cada término.",2:"Olvidaste el +C.",3:"Olvidaste ajustar coeficientes(3· x<sup>3</sup>/3=x<sup>3</sup>)."}}},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles de estas igualdades son correctas por linealidad?", opciones:["∫ 7· cos x dx = 7· ∫ cos x dx","∫ (x+sen x)dx = ∫ x dx + ∫ sen x dx","∫ (x· sen x)dx = ∫ x dx ·  ∫ sen x dx","∫ (1/x + 1)dx = ln|x| + x + C"], correctas:[0,1,3],
+      feedback:{correcto:"Perfecto: linealidad aplica a sumas y constantes, no a productos.",errores:{2:"La linealidad NO permite separar productos:∫ (x· sen x)dx ≠  ∫ x· ∫ sen x. Eso requiere integración por partes."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ (x<sup>2</sup>+2x)dx:",
       pasos:[
-        {texto:"Aplicar linealidad: $\\int x^{2}\\,dx + 2\\int x\\,dx$", orden:1},
-        {texto:"Aplicar regla de la potencia: $\\dfrac{x^{3}}{3} + 2\\cdot\\dfrac{x^{2}}{2}$", orden:2},
-        {texto:"Simplificar coeficientes: $\\dfrac{x^{3}}{3} + x^{2}$", orden:3},
-        {texto:"Añadir constante: $\\dfrac{x^{3}}{3} + x^{2} + C$", orden:4}
+        {texto:"Aplicar linealidad:∫ x<sup>2</sup>dx + 2∫ x dx", orden:1},
+        {texto:"Aplicar regla de la potencia:x<sup>3</sup>/3 + 2· (x<sup>2</sup>/2)", orden:2},
+        {texto:"Simplificar coeficientes:x<sup>3</sup>/3 + x<sup>2</sup>", orden:3},
+        {texto:"Añadir constante:x<sup>3</sup>/3 + x<sup>2</sup> + C", orden:4}
       ],
-      feedback:{correcto:"Buena secuencia: linealidad $\\to$ potencia $\\to$ simplificar $\\to C$.",errores:"Recuerda el orden: primero separar por linealidad, luego aplicar la regla a cada término, simplificar y finalmente añadir $C$."}},
-    {tipo:"completar_hueco", enunciado:"Si $\\int f(x)\\,dx = x^{3}+C$, entonces $\\int 5 f(x)\\,dx =$ <input class='input-line' id='ch2-7' placeholder='usa x'> $+\\,C$.", respuesta:["5x^3","5x**3","5x³"], feedbackCorrecto:"Correcto: por linealidad, $\\int 5f = 5\\int f = 5x^{3}$.", feedbackError:"Por linealidad: las constantes salen de la integral. Si $\\int f=x^{3}$, entonces $\\int 5f=5x^{3}$."},
+      feedback:{correcto:"Buena secuencia: linealidad\\topotencia\\tosimplificar→  C.",errores:"Recuerda el orden: primero separar por linealidad, luego aplicar la regla a cada término, simplificar y finalmente añadir C."}},
+    {tipo:"completar_hueco", enunciado:"Si∫ f(x)dx = x<sup>3</sup>+C,entonces∫ 5· f(x)dx =<input class='input-line' id='ch2-7' placeholder='usa x'> + C.", respuesta:["5x^3","5x<sup>3</sup>","5*x^3"], feedbackCorrecto:"Correcto: por linealidad, ∫ 5f=5· ∫ f=5x<sup>3</sup>.", feedbackError:"Por linealidad: las constantes salen de la integral. Si∫ f=x<sup>3</sup>,entonces∫ 5f=5· x<sup>3</sup>."},
     {tipo:"emparejar", enunciado:"Empareja cada integral con su resultado:",
       parejas:[
-        {izq:"$\\int dx$", der:"$x + C$"},
-        {izq:"$\\int x\\,dx$", der:"$\\dfrac{x^{2}}{2} + C$"},
-        {izq:"$\\int 7\\,dx$", der:"$7x + C$"},
-        {izq:"$\\int (x+1)\\,dx$", der:"$\\dfrac{x^{2}}{2} + x + C$"}
+        {izq:"∫ dx", der:"x + C"},
+        {izq:"∫ x dx", der:"x<sup>2</sup>/2 + C"},
+        {izq:"∫ 7 dx", der:"7x + C"},
+        {izq:"∫ (x+1)dx", der:"x<sup>2</sup>/2 + x + C"}
       ],
-      feedback:{correcto:"Todas correctas. La linealidad y la regla de la potencia son la base.",errores:"Recuerda: $\\int k\\,dx = kx+C$, $\\int x\\,dx = \\dfrac{x^{2}}{2}+C$. Los demás se deducen por linealidad."}}
+      feedback:{correcto:"Todas correctas. La linealidad y la regla de la potencia son la base.",errores:"Recuerda:∫ k dx =kx+C, ∫ x dx = x<sup>2</sup>/2+C. Los demás se deducen por linealidad."}}
   ],
   criterioDominio:0.8
 },
@@ -561,110 +575,110 @@ const MODULES = [
 /* ===================== MÓDULO 3: REGLA DE LA POTENCIA ===================== */
 {
   id:"m3", num:3, titulo:"Regla de la potencia", icono:"⚡",
-  objetivo:"Al terminar podrás aplicar $\\int x^{n}\\,dx = \\dfrac{x^{n+1}}{n+1} + C$ para cualquier $n \\neq -1$.",
+  objetivo:"Al terminar podrás aplicar∫ x<sup>n</sup>dx = x<sup>n+1</sup>/(n+1) +Cpara cualquiern≠  -1.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M2) $\\int (x+2)\\,dx = ?$", opciones:["$\\dfrac{x^{2}}{2} + 2x + C$","$x^{2} + 2x + C$","$\\dfrac{x^{2}}{2} + 2 + C$","$x + 2 + C$"], correcta:0, feedback:{correcto:"Sí: linealidad $+ \\int x = \\dfrac{x^{2}}{2}$, $\\int 2 = 2x$.",errores:{1:"Olvidaste dividir $x^{2}$ entre 2.",2:"$\\int 2$ no es 2, es $2x$.",3:"Confundiste integrar con derivar."}}},
-    {tipo:"opcion_multiple", enunciado:"(Repaso M2) $\\int 7\\,dx = ?$", opciones:["$7x+C$","$7+C$","$\\dfrac{x}{7}+C$","$7$"], correcta:0, feedback:{correcto:"Bien: $\\int k = kx+C$.",errores:{1:"Falta la $x$.",2:"Estás dividiendo.",3:"Falta $x$ y $C$."}}}
+    {tipo:"opcion_multiple", enunciado:"(RepasoM2) ∫ (x+2)dx =?", opciones:["x<sup>2</sup>/2 + 2x + C","x<sup>2</sup> + 2x + C","x<sup>2</sup>/2 + 2 + C","x + 2 + C"], correcta:0, feedback:{correcto:"Sí: linealidad+ ∫ x=x<sup>2</sup>/2, ∫ 2=2x.",errores:{1:"Olvidaste dividirx<sup>2</sup>entre 2.",2:"∫ 2no es 2, es 2x.",3:"Confundiste integrar con derivar."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM2) ∫ 7 dx =?", opciones:["7x+C","7+C","x/7+C","7"], correcta:0, feedback:{correcto:"Bien:∫ k=kx+C.",errores:{1:"Falta la x.",2:"Estás dividiendo.",3:"Falta x y C."}}}
   ],
   teoria:`
     <h4>La regla</h4>
-    <div class="formula-box">$\\int x^{n}\\,dx = \\dfrac{x^{n+1}}{n+1} + C$, para $n \\neq -1$</div>
+    <div class="formula-box">∫  x<sup>n</sup> dx = <span class="frac"><span class="num">x<sup>n+1</sup></span><span class="den">n+1</span></span> + C ,paran≠  -1</div>
     <h4>Procedimiento</h4>
-    <p>1. Sube el exponente en uno ($n \\to n+1$).<br>2. Divide entre el nuevo exponente.<br>3. Añade $+C$.</p>
+    <p>1. Sube el exponente en uno(n →  n+1).<br>2. Divide entre el nuevo exponente.<br>3. Añade +C.</p>
     <h4>Casos que debes dominar</h4>
     <ul>
-      <li><strong>Exponente positivo:</strong> $\\int x^{4}\\,dx = \\dfrac{x^{5}}{5} + C$</li>
-      <li><strong>Exponente negativo:</strong> $\\int x^{-3}\\,dx = \\dfrac{x^{-2}}{-2} + C = -\\dfrac{1}{2x^{2}} + C$</li>
-      <li><strong>Exponente fraccionario:</strong> $\\int x^{1/2}\\,dx = \\dfrac{x^{3/2}}{3/2} + C = \\dfrac{2}{3}x^{3/2} + C = \\dfrac{2}{3}x\\sqrt{x} + C$</li>
+      <li><strong>Exponente positivo:</strong>∫ x<sup>4</sup>dx = x<sup>5</sup>/5 + C</li>
+      <li><strong>Exponente negativo:</strong>∫ x<sup>-3</sup>dx = x<sup>-2</sup>/(-2) + C = -1/(2x<sup>2</sup>) + C</li>
+      <li><strong>Exponente fraccionario:</strong>∫ x<sup>1/2</sup>dx = x<sup>3/2</sup>/(3/2) + C = (2/3)x<sup>3/2</sup> + C = (2/3)x√ x + C</li>
     </ul>
-    <h4>El caso prohibido: $n = -1$</h4>
-    <p>Si $n=-1$, entonces $n+1=0$ y tendrías $\\dfrac{x^{0}}{0} = \\dfrac{1}{0}$, que <strong>no está definido</strong>. Ese caso se resuelve con el logaritmo (módulo 5):</p>
-    <div class="formula-box">$\\int x^{-1}\\,dx = \\int \\dfrac{1}{x}\\,dx = \\ln|x| + C$</div>
-    <div class="analogia"><strong>Intuición:</strong> la potencia "crece" al integrar. Es como subir un peldaño: si estabas en $x^{4}$, subes a $x^{5}$ y pagas "peaje" dividiendo entre 5.</div>
+    <h4>El caso prohibido: n = -1</h4>
+    <p>Si n=-1, entonces n+1=0 y tendríasx<sup>0</sup>/0 = 1/0,que <strong>no está definido</strong>. Ese caso se resuelve con el logaritmo (módulo 5):</p>
+    <div class="formula-box">∫  x<sup>-1</sup> dx = ∫  (1/x) dx = ln|x| + C</div>
+    <div class="analogia"><strong>Intuición:</strong> la potencia "crece" al integrar. Es como subir un peldaño: si estabas enx<sup>4</sup>,subesax<sup>5</sup>ypagas "peaje" dividiendo entre 5.</div>
   `,
   ejemplo:[
-    {num:1,titulo:"Identificar el exponente",contenido:"En $\\int x^{-3}\\,dx$ tenemos $n=-3$.",regla:"Reconocer la potencia"},
-    {num:2,titulo:"Subir el exponente en 1",contenido:"$n+1 = -3+1 = -2$, así que aparece $x^{-2}$.",regla:"Regla de la potencia"},
-    {num:3,titulo:"Dividir entre el nuevo exponente",contenido:"$\\int x^{-3}\\,dx = \\dfrac{x^{-2}}{-2} + C$",regla:"División entre $n+1$"},
-    {num:4,titulo:"Simplificar (opcional)",contenido:"$\\dfrac{x^{-2}}{-2} = -\\dfrac{1}{2x^{2}}$. Resultado: $-\\dfrac{1}{2x^{2}} + C$",regla:"Reescribir con exponente positivo"}
+    {num:1,titulo:"Identificar el exponente",contenido:"En∫ x<sup>-3</sup>dxtenemos n=-3.",regla:"Reconocer la potencia"},
+    {num:2,titulo:"Subir el exponente en 1",contenido:"n+1 = -3+1 = -2, así que aparecex<sup>-2</sup>.",regla:"Regla de la potencia"},
+    {num:3,titulo:"Dividir entre el nuevo exponente",contenido:"∫ x<sup>-3</sup>dx = x<sup>-2</sup>/(-2) + C",regla:"División entre n+1"},
+    {num:4,titulo:"Simplificar (opcional)",contenido:"x<sup>-2</sup>/(-2) = -1/(2x<sup>2</sup>). Resultado:-1/(2x<sup>2</sup>) + C",regla:"Reescribir con exponente positivo"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"$\\int x^{5}\\,dx = ?$", opciones:["$\\dfrac{x^{6}}{6} + C$","$x^{6} + C$","$5x^{6} + C$","$\\dfrac{x^{4}}{4} + C$"], correcta:0,
+    {tipo:"opcion_multiple", enunciado:"∫  x<sup>5</sup> dx =?", opciones:["x<sup>6</sup>/6 + C","x<sup>6</sup> + C","5x<sup>6</sup> + C","x<sup>4</sup>/4 + C"], correcta:0,
       feedback:{correcto:"Bien: subes a 6 y divides entre 6.",errores:{1:"Olvidaste dividir entre el nuevo exponente.",2:"Bajaste el exponente en vez de subirlo.",3:"Estás derivando, no integrando."}}},
-    {tipo:"completar_hueco", enunciado:"$\\int x^{7}\\,dx = \\dfrac{x^{\\square}}{8} + C$. Escribe solo el exponente en el hueco: <input class='input-line' id='ch3-2' placeholder='exponente'>", respuesta:["8"], feedbackCorrecto:"Correcto: $7+1=8$.", feedbackError:"El nuevo exponente es $n+1 = 7+1 = 8$."},
-    {tipo:"opcion_multiple", enunciado:"$\\int x^{-2}\\,dx = ?$", opciones:["$-x^{-1} + C$","$x^{-1} + C$","$\\dfrac{x^{-1}}{-1} + C$","$\\ln|x| + C$"], correcta:0,
-      feedback:{correcto:"Sí: $\\dfrac{x^{-1}}{-1} = -x^{-1} = -\\dfrac{1}{x}$.",errores:{1:"Olvidaste dividir entre el nuevo exponente ($-1$).",2:"Bien escrito pero no simplificado; revisa el signo.",3:"$\\ln|x|$ corresponde a $n=-1$, no a $n=-2$."}}},
-    {tipo:"completar_hueco", enunciado:"$\\int x^{1/3}\\,dx =$ <input class='input-line' id='ch3-4' placeholder='coeficiente·x^exp'> $+\\,C$. (Ejemplo de formato: 3/4x^(4/3))", respuesta:["3/4x^(4/3)","(3/4)x^(4/3)","3/4 x^(4/3)","3/4x^4/3"], feedbackCorrecto:"Perfecto: $(1/3)+1 = 4/3$; divides entre $4/3$, multiplicas por $3/4$.", feedbackError:"$n+1 = 1/3+1 = 4/3$. Dividir entre $4/3$ es multiplicar por $3/4$. Resultado: $\\dfrac{3}{4}x^{4/3}+C$."},
-    {tipo:"verdadero_falso", enunciado:"$\\int x^{-1}\\,dx = \\dfrac{x^{0}}{0} + C$", correcta:false,
-      feedback:{correcto:"Correcto: esa expresión NO es válida porque dividirías entre cero. El caso $n=-1$ se resuelve con $\\ln|x|$.",errores:{0:"Cuidado: $n=-1$ produce $1/0$, que no está definido. Es el caso especial que se resuelve con $\\ln|x|$."}}},
-    {tipo:"opcion_multiple", enunciado:"$\\int \\sqrt{x}\\,dx = ?$", opciones:["$\\dfrac{2}{3}x^{3/2} + C$","$\\dfrac{1}{2}x^{1/2} + C$","$x^{3/2} + C$","$2\\sqrt{x} + C$"], correcta:0,
-      feedback:{correcto:"Sí: $\\sqrt{x} = x^{1/2}$; subes a $3/2$ y multiplicas por $2/3$.",errores:{1:"Eso es derivar $\\sqrt{x}$.",2:"Olvidaste dividir entre el nuevo exponente.",3:"No se integra así una raíz."}}},
-    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de $\\int x^{-3}\\,dx$:",
+    {tipo:"completar_hueco", enunciado:"∫  x<sup>7</sup> dx = x<sup>___</sup>/8 + C. Escribe solo el exponente.", respuesta:["8"], feedbackCorrecto:"Correcto: 7+1=8.", feedbackError:"El nuevo exponente es n+1 = 7+1 = 8."},
+    {tipo:"opcion_multiple", enunciado:"∫  x<sup>-2</sup> dx =?", opciones:["-x<sup>-1</sup> + C","x<sup>-1</sup> + C","x<sup>-1</sup>/(-1) + C","ln|x| + C"], correcta:0,
+      feedback:{correcto:"Sí:x<sup>-1</sup>/(-1) = -x<sup>-1</sup> = -1/x.",errores:{1:"Olvidaste dividir entre el nuevo exponente (-1).",2:"Bien escrito pero no simplificado; revisa el signo.",3:"ln|x|corresponde a n=-1, no a n=-2."}}},
+    {tipo:"completar_hueco", enunciado:"∫  x<sup>1/3</sup> dx =<input class='input-line' id='ch3-4' placeholder='coeficiente· x^exp'> + C. (Ejemplo de formato: 3/4x^(4/3))", respuesta:["3/4x^(4/3)","(3/4)x^(4/3)","3/4 x^(4/3)","3/4x^4/3"], feedbackCorrecto:"Perfecto: (1/3)+1 = 4/3; divides entre4/3 \\tomultiplicas por 3/4.", feedbackError:"n+1 = 1/3+1 = 4/3. Dividir entre 4/3 es multiplicar por 3/4. Resultado: (3/4)x^(4/3)+C."},
+    {tipo:"verdadero_falso", enunciado:"∫  x<sup>-1</sup> dx = x<sup>0</sup>/0 + C", correcta:false,
+      feedback:{correcto:"Correcto: esa expresión NO es válida porque dividirías entre cero. El caso n=-1 se resuelve conln|x|.",errores:{0:"Cuidado: n=-1 produce 1/0, que no está definido. Es el caso especial que se resuelve conln|x|."}}},
+    {tipo:"opcion_multiple", enunciado:"∫  √ x dx =?", opciones:["(2/3)x<sup>3/2</sup> + C","(1/2)x<sup>1/2</sup> + C","x<sup>3/2</sup> + C","2√ x + C"], correcta:0,
+      feedback:{correcto:"Sí:√ x = x<sup>1/2</sup>; subes a 3/2 y multiplicas por 2/3.",errores:{1:"Eso es derivar√ x.",2:"Olvidaste dividir entre el nuevo exponente.",3:"No se integra así una raíz."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ x<sup>-3</sup>dx:",
       pasos:[
-        {texto:"Identificar $n=-3$", orden:1},
-        {texto:"Calcular $n+1=-2$", orden:2},
-        {texto:"Escribir $\\dfrac{x^{-2}}{-2}$", orden:3},
-        {texto:"Simplificar y añadir $C$: $-\\dfrac{1}{2x^{2}} + C$", orden:4}
+        {texto:"Identificar n=-3", orden:1},
+        {texto:"Calcular n+1=-2", orden:2},
+        {texto:"Escribirx<sup>-2</sup>/(-2)", orden:3},
+        {texto:"Simplificar y añadir C:-1/(2x<sup>2</sup>) + C", orden:4}
       ],
-      feedback:{correcto:"Buena secuencia.",errores:"Primero identificas $n$, luego calculas $n+1$, escribes la división y finalmente simplificas y añades $C$."}},
-    {tipo:"numerica", enunciado:"$\\int x^{2}\\,dx$ evaluada en $x=3$ (sin contar $C$) da:", respuesta:9, tolerancia:0.01, feedbackCorrecto:"Sí: $\\int x^{2} = \\dfrac{x^{3}}{3}$; al evaluar en $x=3 \\Rightarrow 27/3 = 9$.", feedbackError:"$\\int x^{2} = \\dfrac{x^{3}}{3}$; evaluado en 3: $\\dfrac{3^{3}}{3} = 27/3 = 9$."},
-    {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas de $x^{4}$?", opciones:["$\\dfrac{x^{5}}{5} + C$","$\\dfrac{x^{5}}{5} + 7$","$\\dfrac{x^{5}}{5}$","$x^{5} + C$","$\\dfrac{1}{5}x^{5}$"], correctas:[0,1,2,4],
-      feedback:{correcto:"Todas esas difieren solo en $C$, son antiderivadas válidas.",errores:{3:"Olvidaste dividir entre 5: la derivada de $x^{5}$ es $5x^{4}$, no $x^{4}$."}}}
+      feedback:{correcto:"Buena secuencia.",errores:"Primero identificas n, luego calculas n+1, escribes la división y finalmente simplificas y añades C."}},
+    {tipo:"numerica", enunciado:"∫ x<sup>2</sup>dxevaluada en x=3 (sin contar C) da:", respuesta:9, tolerancia:0.01, feedbackCorrecto:"Sí:∫ x<sup>2</sup>=x<sup>3</sup>/3; al evaluar enx=3 →  27/3 = 9.", feedbackError:"∫ x<sup>2</sup>=x<sup>3</sup>/3; evaluado en 3:3<sup>3</sup>/3 = 27/3 = 9."},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas dex<sup>4</sup>?", opciones:["x<sup>5</sup>/5 + C","x<sup>5</sup>/5 + 7","x<sup>5</sup>/5","x<sup>5</sup> + C","(1/5)x<sup>5</sup>"], correctas:[0,1,2,4],
+      feedback:{correcto:"Todas esas difieren solo en C, son antiderivadas válidas.",errores:{3:"Olvidaste dividir entre 5: la derivada dex<sup>5</sup>es5x<sup>4</sup>,nox<sup>4</sup>."}}}
   ],
   criterioDominio:0.8
 },
 
 /* ===================== MÓDULO 4: SEN Y COS ===================== */
 {
-  id:"m4", num:4, titulo:"Integrales de $\\operatorname{sen} x$ y $\\cos x$", icono:"🌊",
-  objetivo:"Al terminar podrás integrar $\\operatorname{sen} x$ y $\\cos x$ y entender por qué cambian los signos.",
+  id:"m4", num:4, titulo:"Integrales desen x y cos x", icono:"🌊",
+  objetivo:"Al terminar podrás integrarsen x y cos xyentender por qué cambian los signos.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M3) $\\int x^{4}\\,dx = ?$", opciones:["$\\dfrac{x^{5}}{5}+C$","$x^{5}+C$","$5x^{5}+C$","$\\dfrac{x^{3}}{3}+C$"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
-    {tipo:"opcion_multiple", enunciado:"(Repaso M1) $\\dfrac{d}{dx}[\\cos x] = ?$", opciones:["$-\\operatorname{sen} x$","$\\operatorname{sen} x$","$-\\cos x$","$\\cos x$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"Es la derivada de sen.",3:"No cambia."}}}
+    {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>4</sup>dx =?", opciones:["x<sup>5</sup>/5+C","x<sup>5</sup>+C","5x<sup>5</sup>+C","x<sup>3</sup>/3+C"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
+    {tipo:"opcion_multiple", enunciado:"(Repaso M1) d/dx[cos x] = ?", opciones:["-sen x","sen x","-cos x","cos x"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"Es la derivada desen.",3:"No cambia."}}}
   ],
   teoria:`
     <h4>Las dos fórmulas centrales</h4>
-    <div class="formula-box">$\\int \\operatorname{sen} x\\,dx = -\\cos x + C$</div>
-    <div class="formula-box">$\\int \\cos x\\,dx = \\operatorname{sen} x + C$</div>
-    <h4>¿Por qué cambia el signo en $\\int \\operatorname{sen} x$?</h4>
-    <p>Porque al verificar derivando: $\\dfrac{d}{dx}[-\\cos x] = -(-\\operatorname{sen} x) = \\operatorname{sen} x$ ✓. El signo negativo aparece para que, al derivar, los signos se cancelen.</p>
+    <div class="formula-box">∫  \{sen} x dx = -cos x + C</div>
+    <div class="formula-box">∫  cos x dx = \{sen} x + C</div>
+    <h4>¿Por qué cambia el signo en∫ sen x?</h4>
+    <p>Porque al verificar derivando: d/dx[-cos x] = -(-sen x) = sen x✓. El signo negativo aparece para que, al derivar, los signos se cancelen.</p>
     <h4>Con constantes y linealidad</h4>
-    <div class="formula-box">$\\int (a\\operatorname{sen} x + b\\cos x)\\,dx = -a\\cos x + b\\operatorname{sen} x + C$</div>
+    <div class="formula-box">∫ (a· \{sen} x + b· cos x)dx = -a· cos x + b· \{sen} x + C</div>
     <h4>Bonus (no obligatorio):</h4>
-    <div class="formula-box">$\\int \\sec^{2}x\\,dx = \\tan x + C$<br>$\\int \\sec x\\tan x\\,dx = \\sec x + C$</div>
+    <div class="formula-box">∫  sec<sup>2</sup>x dx = tan x + C<br>∫  sec x· tan x dx = sec x + C</div>
     <div class="analogia"><strong>Truco memoria:</strong> "seno integra con signo menos, coseno integra sin cambio". La palabra "menos" rima con "seno": te ayuda a recordar.</div>
   `,
   ejemplo:[
-    {num:1,titulo:"Separar por linealidad",contenido:"$\\int (2\\operatorname{sen} x - 3\\cos x)\\,dx = 2\\int \\operatorname{sen} x\\,dx - 3\\int \\cos x\\,dx$",regla:"Linealidad"},
-    {num:2,titulo:"Aplicar fórmulas básicas",contenido:"$\\int \\operatorname{sen} x\\,dx = -\\cos x$; $\\int \\cos x\\,dx = \\operatorname{sen} x$",regla:"Fórmulas trigonométricas"},
-    {num:3,titulo:"Sustituir",contenido:"$= 2(-\\cos x) - 3(\\operatorname{sen} x) = -2\\cos x - 3\\operatorname{sen} x$",regla:"Distribuir coeficientes"},
-    {num:4,titulo:"Añadir $C$ y verificar",contenido:"$= -2\\cos x - 3\\operatorname{sen} x + C$. Verificamos: $\\dfrac{d}{dx}[-2\\cos x - 3\\operatorname{sen} x] = 2\\operatorname{sen} x - 3\\cos x$ ✓",regla:"Constante y verificación"}
+    {num:1,titulo:"Separar por linealidad",contenido:"∫ (2sen x - 3cos x)dx = 2∫ sen x dx - 3∫ cos x dx",regla:"Linealidad"},
+    {num:2,titulo:"Aplicar fórmulas básicas",contenido:"∫ sen x dx = -cos x; ∫ cos x dx = sen x",regla:"Fórmulas trigonométricas"},
+    {num:3,titulo:"Sustituir",contenido:"= 2(-cos x) - 3(sen x) = -2cos x - 3sen x",regla:"Distribuir coeficientes"},
+    {num:4,titulo:"Añadir C y verificar",contenido:"= -2cos x - 3sen x + C. Verificamos: d/dx[-2cos x - 3sen x] = 2sen x - 3cos x ✓",regla:"Constante y verificación"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"$\\int \\cos x\\,dx = ?$", opciones:["$\\operatorname{sen} x + C$","$-\\cos x + C$","$-\\operatorname{sen} x + C$","$\\cos x + C$"], correcta:0,
-      feedback:{correcto:"Sí: al derivar $\\operatorname{sen} x$ da $\\cos x$.",errores:{1:"Esa es la integral de $\\operatorname{sen} x$, no de $\\cos x$.",2:"Estás confundiendo integrar con derivar.",3:"No se queda igual."}}},
-    {tipo:"completar_hueco", enunciado:"$\\int \\operatorname{sen} x\\,dx =$ <input class='input-line' id='ch4-2' placeholder='función trig'> $+\\,C$.", respuesta:["-cos x","-cosx","-cos(x)"], feedbackCorrecto:"Correcto: el signo menos es clave.", feedbackError:"Recuerda: $\\int \\operatorname{sen} x = -\\cos x+C$. Verifica derivando: $\\dfrac{d}{dx}[-\\cos x] = \\operatorname{sen} x$ ✓."},
-    {tipo:"verdadero_falso", enunciado:"$\\int \\operatorname{sen} x\\,dx = \\cos x + C$ (sin signo menos)", correcta:false,
-      feedback:{correcto:"Correcto rechazarla: $\\dfrac{d}{dx}[\\cos x]=-\\operatorname{sen} x$, no $\\operatorname{sen} x$. Falta el signo menos.",errores:{0:"Verifica: si $F=\\cos x$, entonces $F'=-\\operatorname{sen} x$, no $\\operatorname{sen} x$. Necesitas un menos."}}},
-    {tipo:"opcion_multiple", enunciado:"$\\int (\\operatorname{sen} x + \\cos x)\\,dx = ?$", opciones:["$-\\cos x + \\operatorname{sen} x + C$","$\\cos x - \\operatorname{sen} x + C$","$-\\cos x - \\operatorname{sen} x + C$","$\\cos x + \\operatorname{sen} x + C$"], correcta:0,
-      feedback:{correcto:"Sí: $\\int \\operatorname{sen} = -\\cos$, $\\int \\cos = \\operatorname{sen}$.",errores:{1:"Invertiste los signos.",2:"Confundiste ambos signos.",3:"Olvidaste el signo menos de $\\int \\operatorname{sen}$."}}},
-    {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas de $\\sec^{2}x$? (bonus)", opciones:["$\\tan x + C$","$\\tan x + 5$","$\\tan x$","$-\\sec x + C$","$\\sec^{2}x$"], correctas:[0,1,2],
-      feedback:{correcto:"Las tres primeras difieren solo en $C$ y son válidas.",errores:{3:"$-\\sec x$ no deriva como $\\sec^{2}x$.",4:"$\\sec^{2}x$ se deriva como $2\\sec^{2}x\\tan x$, no como $\\sec^{2}x$."}}},
+    {tipo:"opcion_multiple", enunciado:"∫  cos x dx =?", opciones:["sen x + C","-cos x + C","-sen x + C","cos x + C"], correcta:0,
+      feedback:{correcto:"Sí: al derivarsenxdacos x.",errores:{1:"Esa es la integral desen x,no decos x.",2:"Estás confundiendo integrar con derivar.",3:"No se queda igual."}}},
+    {tipo:"completar_hueco", enunciado:"∫  sen x dx =<input class='input-line' id='ch4-2' placeholder='función trig'> + C.", respuesta:["-cos x","-cosx","-cos x","-cos(x)"], feedbackCorrecto:"Correcto: el signo menos es clave.", feedbackError:"Recuerda:∫ sen x = -cos x+C. Verifica derivando: d/dx[-cos x] = sen x✓."},
+    {tipo:"verdadero_falso", enunciado:"∫  sen x dx = cos x + C (sinsigno menos)", correcta:false,
+      feedback:{correcto:"Correcto rechazarla: d/dx[cos x]=-sen x,nosen x. Falta el signo menos.",errores:{0:"Verifica: siF=cos x,entoncesF'=-sen x,nosen x. Necesitas un menos."}}},
+    {tipo:"opcion_multiple", enunciado:"∫ (sen x + cos x)dx =?", opciones:["-cos x + sen x + C","cos x - sen x + C","-cos x - sen x + C","cos x + sen x + C"], correcta:0,
+      feedback:{correcto:"Sí:∫ sen=-cos, ∫ cos=sen.",errores:{1:"Invertiste los signos.",2:"Confundiste ambos signos.",3:"Olvidaste el signo menos de∫ sen."}}},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas desec<sup>2</sup>x? (bonus)", opciones:["tan x + C","tan x + 5","tan x","-sec x + C","sec<sup>2</sup>x"], correctas:[0,1,2],
+      feedback:{correcto:"Las tres primeras difieren solo en C y son válidas.",errores:{3:"-\\secxno deriva comosec<sup>2</sup>x.",4:"sec<sup>2</sup>xse deriva como2sec<sup>2</sup>x· tan x,no comosec<sup>2</sup>x."}}},
     {tipo:"emparejar", enunciado:"Empareja integral con resultado:",
       parejas:[
-        {izq:"$\\int \\operatorname{sen} x\\,dx$", der:"$-\\cos x + C$"},
-        {izq:"$\\int \\cos x\\,dx$", der:"$\\operatorname{sen} x + C$"},
-        {izq:"$\\int \\sec^{2}x\\,dx$", der:"$\\tan x + C$"},
-        {izq:"$\\int \\sec x\\tan x\\,dx$", der:"$\\sec x + C$"}
+        {izq:"∫  sen x dx", der:"-cos x + C"},
+        {izq:"∫  cos x dx", der:"sen x + C"},
+        {izq:"∫  sec<sup>2</sup>x dx", der:"tan x + C"},
+        {izq:"∫  sec x· tan x dx", der:"sec x + C"}
       ],
-      feedback:{correcto:"Todas correctas.",errores:"Memoriza: $\\operatorname{sen}\\to -\\cos$, $\\cos\\to \\operatorname{sen}$, $\\sec^{2}\\to \\tan$, $\\sec\\tan\\to \\sec$."}},
-    {tipo:"completar_hueco", enunciado:"$\\int 3\\sec^{2}x\\,dx =$ <input class='input-line' id='ch4-7' placeholder='función'> $+\\,C$.", respuesta:["3tan x","3tanx","3 tan x","3*tan x"], feedbackCorrecto:"Sí: por linealidad, sale el 3.", feedbackError:"$\\int \\sec^{2}x = \\tan x+C$; con coeficiente 3: $3\\tan x+C$."},
-    {tipo:"ordenar_pasos", enunciado:"Ordena la verificación de $\\int \\operatorname{sen} x\\,dx = -\\cos x + C$:",
+      feedback:{correcto:"Todas correctas.",errores:"Memoriza:sen→ -cos, cos→ sen, sec<sup>2</sup>→ tan, sec· tan→ sec."}},
+    {tipo:"completar_hueco", enunciado:"∫  3sec<sup>2</sup>x dx =<input class='input-line' id='ch4-7' placeholder='función'> + C.", respuesta:["3tan x","3tanx","3 tan x","3*tan x"], feedbackCorrecto:"Sí: por linealidad, sale el 3.", feedbackError:"∫ sec<sup>2</sup>x=tan x+C; con coeficiente 3: 3tan x+C."},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la verificación de∫ sen x dx = -cos x + C:",
       pasos:[
-        {texto:"Derivar el candidato: $\\dfrac{d}{dx}[-\\cos x + C]$", orden:1},
-        {texto:"Aplicar regla: $-(-\\operatorname{sen} x) + 0$", orden:2},
-        {texto:"Simplificar: $\\operatorname{sen} x$", orden:3},
-        {texto:"Comparar con integrando: $\\operatorname{sen} x$ ✓", orden:4}
+        {texto:"Derivar el candidato: d/dx[-cos x + C]", orden:1},
+        {texto:"Aplicar regla:-(-sen x) + 0", orden:2},
+        {texto:"Simplificar:sen x", orden:3},
+        {texto:"Comparar con integrando:sen x✓", orden:4}
       ],
       feedback:{correcto:"Secuencia impecable.",errores:"Para verificar: derivas el candidato, aplicas la regla, simplificas y comparas."}}
   ],
@@ -673,50 +687,50 @@ const MODULES = [
 
 /* ===================== MÓDULO 5: LN|x| ===================== */
 {
-  id:"m5", num:5, titulo:"Integral de $\\dfrac{1}{x} \\to \\ln|x|$", icono:"📉",
-  objetivo:"Al terminar podrás integrar $\\dfrac{1}{x}$ y funciones de la forma $\\dfrac{f'}{f}$ usando $\\ln|f|$.",
+  id:"m5", num:5, titulo:"Integral de1/x →  ln|x|", icono:"📉",
+  objetivo:"Al terminar podrás integrar 1/x y funciones de la forma f'/f usandoln|f|.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M3) ¿Cuál exponente NO se puede integrar con la regla de la potencia?", opciones:["$-1$","$2$","$-3$","$1/2$"], correcta:0, feedback:{correcto:"$n=-1$ produce división entre 0.",errores:{1:"Sí se puede: $\\dfrac{x^{3}}{3}$.",2:"Sí: $\\dfrac{x^{-2}}{-2}$.",3:"Sí: $\\dfrac{2}{3}x^{3/2}$."}}},
-    {tipo:"opcion_multiple", enunciado:"(Repaso M4) $\\int \\operatorname{sen} x\\,dx = ?$", opciones:["$-\\cos x+C$","$\\cos x+C$","$\\operatorname{sen} x+C$","$\\tan x+C$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"No se queda igual.",3:"No es tangente."}}}
+    {tipo:"opcion_multiple", enunciado:"(Repaso M3) ¿Cuál exponente NO se puede integrar con la regla de la potencia?", opciones:["-1","2","-3","1/2"], correcta:0, feedback:{correcto:"n=-1 produce división entre 0.",errores:{1:"Sí se puede:x<sup>3</sup>/3.",2:"Sí: x⁻<sup>2</sup>/-2.",3:"Sí: (2/3)x^(3/2)."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM4) ∫ sen x dx =?", opciones:["-cos x+C","cos x+C","sen x+C","tan x+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"No se queda igual.",3:"No es tangente."}}}
   ],
   teoria:`
     <h4>La fórmula clave</h4>
-    <div class="formula-box">$\\int \\dfrac{1}{x}\\,dx = \\ln|x| + C$</div>
+    <div class="formula-box">∫  (1/x) dx = ln|x| + C</div>
     <h4>¿Por qué valor absoluto?</h4>
-    <p>Porque $\\ln x$ solo está definida para $x > 0$. Pero $\\dfrac{1}{x}$ existe para $x \\neq 0$, incluyendo valores negativos. Con $\\ln|x|$ cubrimos ambos lados:</p>
-    <p> Si $x > 0$: $\\dfrac{d}{dx}[\\ln x] = \\dfrac{1}{x}$ ✓<br> Si $x < 0$: $\\dfrac{d}{dx}[\\ln(-x)] = \\dfrac{1}{-x}\\cdot(-1) = \\dfrac{1}{x}$ ✓</p>
-    <h4>Regla de la cadena invertida ($f'/f$)</h4>
+    <p>Porque\\lnxsolo está definida para x > 0. Pero 1/x existe parax≠  0,incluyendo valores negativos. Conln|x|cubrimos ambos lados:</p>
+    <p> Si x > 0: d/dx[ln x] = 1/x ✓<br> Si x < 0: d/dx[ln(-x)] = (1/(-x))· (-1) = 1/x✓</p>
+    <h4>Regla de la cadena invertida (f'/f)</h4>
     <p>Si dentro de la integral tienes una fracción donde el numerador es la derivada del denominador, aplica:</p>
-    <div class="formula-box">$\\int \\dfrac{f'(x)}{f(x)}\\,dx = \\ln|f(x)| + C$</div>
-    <p>Ejemplo: $\\int \\dfrac{2x}{x^{2}+1}\\,dx$. Como $\\dfrac{d}{dx}[x^{2}+1]=2x$, el numerador es la derivada del denominador, así que: $= \\ln|x^{2}+1| + C$. (Aquí no se necesita $|\\;|$ porque $x^{2}+1$ siempre es positivo.)</p>
-    <div class="analogia"><strong>Intuición:</strong> $\\ln$ mide "cuántas veces multiplicas $e$ para llegar a $x$". Para $x$ negativo, $|x|$ voltea el signo y el logaritmo sigue funcionando.</div>
+    <div class="formula-box">∫  (f'(x) / f(x)) dx = ln|f(x)| + C</div>
+    <p>Ejemplo:∫ (2x/(x<sup>2</sup>+1))dx. Como d/dx[x<sup>2</sup>+1]=2x, el numerador es la derivada del denominador, así que:= ln|x<sup>2</sup>+1| + C. (Aquí no se necesita | | porquex<sup>2</sup>+1siempre es positivo.)</p>
+    <div class="analogia"><strong>Intuición:</strong>\\lnmide "cuántas veces multiplicas e para llegar a x". Para x negativo, |x| voltea el signo y el logaritmo sigue funcionando.</div>
   `,
   ejemplo:[
-    {num:1,titulo:"Identificar la forma $f'/f$",contenido:"$\\int \\dfrac{\\cos x}{\\operatorname{sen} x}\\,dx$. El denominador es $\\operatorname{sen} x$; su derivada es $\\cos x$. ¡Coincide con el numerador!",regla:"Reconocer patrón $f'/f$"},
-    {num:2,titulo:"Aplicar la fórmula",contenido:"$\\int \\dfrac{f'}{f}\\,dx = \\ln|f|+C$. Aquí $f=\\operatorname{sen} x$, $f'=\\cos x$.",regla:"Regla del logaritmo"},
-    {num:3,titulo:"Sustituir",contenido:"$= \\ln|\\operatorname{sen} x| + C$",regla:"Sustitución"},
-    {num:4,titulo:"Verificar derivando",contenido:"$\\dfrac{d}{dx}[\\ln|\\operatorname{sen} x|] = \\dfrac{1}{\\operatorname{sen} x}\\cdot\\cos x = \\dfrac{\\cos x}{\\operatorname{sen} x}$ ✓",regla:"Verificación por regla de la cadena"}
+    {num:1,titulo:"Identificar la forma f'/f",contenido:"∫ (cos x / sen x)dx. El denominador essen x; su derivada escos x. ¡Coincide con el numerador!",regla:"Reconocer patrón f'/f"},
+    {num:2,titulo:"Aplicar la fórmula",contenido:"∫ (f'/f)dx = ln|f|+C. Aquíf=sen x, f'=cos x.",regla:"Regla del logaritmo"},
+    {num:3,titulo:"Sustituir",contenido:"= ln|sen x| + C",regla:"Sustitución"},
+    {num:4,titulo:"Verificar derivando",contenido:"d/dx[ln|sen x|] = (1/sen x)· cos x = cos x/sen x✓",regla:"Verificación por regla de la cadena"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"$\\int \\dfrac{1}{x}\\,dx = ?$", opciones:["$\\ln|x| + C$","$\\ln x + C$","$\\dfrac{1}{x^{2}} + C$","$\\dfrac{x^{0}}{0} + C$"], correcta:0,
-      feedback:{correcto:"Perfecto: con valor absoluto.",errores:{1:"Te falta el valor absoluto: $\\ln x$ no funciona para $x<0$.",2:"Estás derivando.",3:"Es división entre 0, no definida."}}},
-    {tipo:"verdadero_falso", enunciado:"$\\int \\dfrac{1}{x}\\,dx = \\ln x + C$ (sin valor absoluto) es válida para todo $x \\neq 0$.", correcta:false,
-      feedback:{correcto:"Correcto: sin $|\\;|$ solo vale para $x>0$.",errores:{0:"$\\ln x$ no está definida para $x<0$. Necesitas $|x|$ para cubrir negativos."}}},
-    {tipo:"completar_hueco", enunciado:"$\\int \\dfrac{1}{2x}\\,dx = \\dfrac{1}{2}\\ln|$<input class='input-line' id='ch5-3' placeholder='variable'>$| + C$.", respuesta:["x"], feedbackCorrecto:"Sí: $\\int \\dfrac{1}{2x} = \\dfrac{1}{2}\\ln|x|+C$.", feedbackError:"$\\int \\dfrac{1}{2x}\\,dx = \\dfrac{1}{2}\\int \\dfrac{1}{x}\\,dx = \\dfrac{1}{2}\\ln|x|+C$."},
-    {tipo:"opcion_multiple", enunciado:"$\\int \\dfrac{\\cos x}{\\operatorname{sen} x}\\,dx = ?$", opciones:["$\\ln|\\operatorname{sen} x| + C$","$\\ln|\\cos x| + C$","$-\\ln|\\operatorname{sen} x| + C$","$\\tan x + C$"], correcta:0,
-      feedback:{correcto:"Sí: $f=\\operatorname{sen} x$, $f'=\\cos x$.",errores:{1:"El denominador es $\\operatorname{sen} x$, no $\\cos x$.",2:"El signo ya está considerado en la derivada.",3:"No es tangente."}}},
-    {tipo:"completar_hueco", enunciado:"Si $u=3x+1$, entonces $du=$ <input class='input-line' id='ch5-5' placeholder='número'>$\\,dx$, y $\\int \\dfrac{du}{u} = \\ln|\\;$<input class='input-line' id='ch5-5b' placeholder='argumento'>$\\;| + C$.", respuesta:["3|3x+1","3dx|3x+1","3|3x+1"], feedbackCorrecto:"Sí: $du=3\\,dx$, entonces $\\int \\dfrac{du}{u} = \\ln|3x+1|+C$.", feedbackError:"$u=3x+1 \\Rightarrow du/dx=3 \\Rightarrow du=3\\,dx$. La integral da $\\ln|3x+1|+C$."},
-    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de $\\int \\dfrac{2x}{x^{2}+1}\\,dx$:",
+    {tipo:"opcion_multiple", enunciado:"∫ (1/x)dx =?", opciones:["ln|x| + C","ln x + C","1/x<sup>2</sup> + C","x<sup>0</sup>/0 + C"], correcta:0,
+      feedback:{correcto:"Perfecto: con valor absoluto.",errores:{1:"Te falta el valor absoluto:\\lnxno funciona para x<0.",2:"Estás derivando.",3:"Es división entre 0, no definida."}}},
+    {tipo:"verdadero_falso", enunciado:"∫ (1/x)dx = ln x + C (sinvalor absoluto) es válida para todox≠  0.", correcta:false,
+      feedback:{correcto:"Correcto: sin | | solo vale para x>0.",errores:{0:"\\lnxno está definida para x<0. Necesitas |x| para cubrir negativos."}}},
+    {tipo:"completar_hueco", enunciado:"∫ (1/(2x))dx = (1/2)ln|<input class='input-line' id='ch5-3' placeholder='variable'>| + C.", respuesta:["x","2x"], feedbackCorrecto:"Sí:∫ 1/(2x)=(1/2)ln|x|+C.", feedbackError:"∫ (1/(2x))dx = (1/2)· ∫ (1/x)dx = (1/2)ln|x|+C."},
+    {tipo:"opcion_multiple", enunciado:"∫ (cos x / sen x)dx =?", opciones:["ln|sen x| + C","ln|cos x| + C","-ln|sen x| + C","tan x + C"], correcta:0,
+      feedback:{correcto:"Sí:f=sen x, f'=cos x.",errores:{1:"El denominador essen x,nocos x.",2:"El signo ya está considerado en la derivada.",3:"No es tangente."}}},
+    {tipo:"completar_hueco", enunciado:"Si u=3x+1, entonces du=<input class='input-line' id='ch5-5' placeholder='número'>dx, y ∫ du/u = ln|___| + C.", respuesta:["3","3dx"], feedbackCorrecto:"Sí: du=3dx, entonces∫ du/u = ln|3x+1|+C.", feedbackError:"u=3x+1 →  du/dx=3 →  du=3dx. La integral daln|3x+1|+C."},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ (2x/(x<sup>2</sup>+1))dx:",
       pasos:[
-        {texto:"Reconocer que $\\dfrac{d}{dx}[x^{2}+1]=2x$ (numerador)",orden:1},
-        {texto:"Aplicar $\\int \\dfrac{f'}{f}\\,dx = \\ln|f|+C$",orden:2},
-        {texto:"Sustituir $f=x^{2}+1$: $\\ln|x^{2}+1|+C$",orden:3},
-        {texto:"(Opcional) Quitar $|\\;|$ porque $x^{2}+1>0$ siempre",orden:4}
+        {texto:"Reconocer que d/dx[x<sup>2</sup>+1]=2x (numerador)",orden:1},
+        {texto:"Aplicar∫ f'/f dx = ln|f|+C",orden:2},
+        {texto:"Sustituirf=x<sup>2</sup>+1: ln|x<sup>2</sup>+1|+C",orden:3},
+        {texto:"(Opcional) Quitar | | porquex<sup>2</sup>+1>0 siempre",orden:4}
       ],
-      feedback:{correcto:"Secuencia correcta.",errores:"Primero identificas el patrón $f'/f$, aplicas la fórmula, sustituyes y finalmente consideras el signo del argumento."}},
-    {tipo:"verdadero_falso", enunciado:"$\\ln|x|$ está definida en $x=0$.", correcta:false,
-      feedback:{correcto:"Correcto: $\\ln(0)$ no está definido.",errores:{0:"$\\ln(0)$ no existe; $1/x$ tampoco. Por eso el dominio es $x \\neq 0$."}}},
-    {tipo:"numerica", enunciado:"$\\int_{1}^{2} \\dfrac{1}{x}\\,dx = \\ln(\\square)$ evaluado. Escribe el valor numérico aproximado (usa 0.693):", respuesta:0.693, tolerancia:0.01, feedbackCorrecto:"Sí: $\\ln|2|-\\ln|1| = \\ln 2 \\approx 0.693$.", feedbackError:"$\\int_{1}^{2}\\dfrac{1}{x}\\,dx = \\ln|2|-\\ln|1| = \\ln 2 - 0 = \\ln 2 \\approx 0.693$."}
+      feedback:{correcto:"Secuencia correcta.",errores:"Primero identificas el patrón f'/f, aplicas la fórmula, sustituyes y finalmente consideras el signo del argumento."}},
+    {tipo:"verdadero_falso", enunciado:"ln|x|está definida en x=0.", correcta:false,
+      feedback:{correcto:"Correcto:ln(0)no está definido.",errores:{0:"ln(0)no existe: 1/x tampoco. Por eso el dominio esx≠ 0."}}},
+    {tipo:"numerica", enunciado:"∫ <sub>1</sub><sup>2</sup> (1/x)dx = ln|<input class='input-line' id='ch5-8' style='display:inline;width:60px' placeholder='límite'>| evaluado (escribe el límite superior).", respuesta:2, tolerancia:0.01, feedbackCorrecto:"Sí:ln|2|-ln|1| = ln 2.", feedbackError:"∫ <sub>1</sub><sup>2</sup>(1/x)dx = ln|2|-ln|1| = ln 2 - 0 = ln 2 ≈  0.693."}
   ],
   criterioDominio:0.8
 },
@@ -724,55 +738,55 @@ const MODULES = [
 /* ===================== MÓDULO 6: SUMAS DE RIEMANN ===================== */
 {
   id:"m6", num:6, titulo:"Sumas de Riemann finitas", icono:"📊",
-  objetivo:"Al terminar podrás calcular sumas de Riemann por izquierda, derecha y punto medio con $n$ pequeño.",
+  objetivo:"Al terminar podrás calcular sumas de Riemann por izquierda, derecha y punto medio con n pequeño.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M3) $\\int x^{3}\\,dx = ?$", opciones:["$\\dfrac{x^{4}}{4}+C$","$x^{4}+C$","$3x^{2}+C$","$\\dfrac{x^{2}}{2}+C$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
-    {tipo:"opcion_multiple", enunciado:"(Repaso M5) $\\int \\dfrac{1}{x}\\,dx = ?$", opciones:["$\\ln|x|+C$","$\\ln x+C$","$x^{0}+C$","$\\dfrac{1}{x}+C$"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Te falta $|\\;|$.",2:"No es 1.",3:"No se queda igual."}}}
+    {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>3</sup>dx =?", opciones:["x<sup>4</sup>/4+C","x<sup>4</sup>+C","3x<sup>2</sup>+C","x<sup>2</sup>/2+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM5) ∫ (1/x)dx =?", opciones:["ln|x|+C","ln x+C","x<sup>0</sup>+C","1/x+C"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Te falta | |.",2:"No es 1.",3:"No se queda igual."}}}
   ],
   teoria:`
     <h4>Idea central</h4>
-    <p>Para aproximar el área bajo una curva $f(x)$ en $[a,b]$, dividimos el intervalo en $n$ subintervalos iguales y sumamos áreas de rectángulos.</p>
+    <p>Para aproximar el área bajo una curva f(x) en [a,b], dividimos el intervalo en n subintervalos iguales y sumamos áreas de rectángulos.</p>
     <h4>Elementos</h4>
-    <p> <strong>$\\Delta x$</strong> (ancho): $\\Delta x = \\dfrac{b-a}{n}$<br> <strong>Puntos</strong>: $x_{i} = a + i\\,\\Delta x$, con $i=0,1,\\dots,n$<br> <strong>Altura</strong>: evaluamos $f$ en un punto de cada subintervalo</p>
-    <div class="formula-box">$\\Delta x = \\dfrac{b - a}{n}$</div>
+    <p> <strong>Δ x</strong> (ancho):Δ x = (b-a)/n<br> <strong>Puntos</strong>:x<sub>i</sub> = a + i· Δ x,con i=0,1,...,n<br> <strong>Altura</strong>: evaluamos f en un punto de cada subintervalo</p>
+    <div class="formula-box">Δ x = (b - a) / n</div>
     <h4>Tres tipos</h4>
-    <p> <strong>Izquierda:</strong> $L_{n} = \\sum_{i=0}^{n-1} f(x_{i})\\,\\Delta x$ (usa el extremo izquierdo)<br> <strong>Derecha:</strong> $R_{n} = \\sum_{i=1}^{n} f(x_{i})\\,\\Delta x$ (usa el extremo derecho)<br> <strong>Punto medio:</strong> $M_{n} = \\sum_{i=1}^{n} f\\!\\left(\\dfrac{x_{i-1}+x_{i}}{2}\\right)\\Delta x$</p>
-    <div class="analogia"><strong>Intuición:</strong> imagina que rellenas el área bajo la curva con baldosas rectangulares. A más baldosas (mayor $n$), mejor se ajustan a la curva real.</div>
+    <p> <strong>Izquierda:</strong>L<sub>n</sub> = Σ <sub>i=0</sub><sup>n-1</sup> f(x<sub>i</sub>)· Δ x (usa el extremo izquierdo)<br> <strong>Derecha:</strong>R<sub>n</sub> = Σ <sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)· Δ x (usa el extremo derecho)<br> <strong>Punto medio:</strong>M<sub>n</sub> = Σ <sub>i=1</sub><sup>n</sup> f((x<sub>i-1</sub>+x<sub>i</sub>)/2)· Δ x</p>
+    <div class="analogia"><strong>Intuición:</strong> imagina que rellenas el área bajo la curva con baldosas rectangulares. A más baldosas (mayor n), mejor se ajustan a la curva real.</div>
     <h4>Notación sigma</h4>
-    <p>$\\sum_{i=1}^{n}$ significa "suma desde $i=1$ hasta $i=n$". Cada término se construye con el índice $i$.</p>
+    <p>Σ <sub>i=1</sub><sup>n</sup>significa "suma desde i=1 hasta i=n". Cada término se construye con el índice i.</p>
   `,
   ejemplo:[
-    {num:1,titulo:"Calcular $\\Delta x$",contenido:"$f(x)=x^{2}+1$ en $[0,2]$ con $n=4$. $\\Delta x = \\dfrac{2-0}{4} = 0.5$.",regla:"$\\Delta x=(b-a)/n$"},
-    {num:2,titulo:"Construir la tabla de puntos",contenido:"$x_{0}=0$, $x_{1}=0.5$, $x_{2}=1$, $x_{3}=1.5$, $x_{4}=2$.",regla:"$x_{i} = a + i\\,\\Delta x$"},
-    {num:3,titulo:"Evaluar $f$ en cada punto (suma izquierda usa $x_{0}..x_{3}$)",contenido:"$f(0)=1$, $f(0.5)=1.25$, $f(1)=2$, $f(1.5)=3.25$.",regla:"Sustituir en $f$"},
-    {num:4,titulo:"Sumar y multiplicar por $\\Delta x$",contenido:"$L_{4} = (1 + 1.25 + 2 + 3.25)\\cdot 0.5 = 7.5\\cdot 0.5 = 3.75$.",regla:"$\\sum f(x_{i})\\,\\Delta x$"}
+    {num:1,titulo:"CalcularΔ x",contenido:"f(x)=x<sup>2</sup>+1en [0,2] con n=4.Δ x = (2-0)/4 = 0.5.",regla:"Δ x=(b-a)/n"},
+    {num:2,titulo:"Construir la tabla de puntos",contenido:"x<sub>0</sub>=0, x<sub>1</sub>=0.5, x<sub>2</sub>=1, x<sub>3</sub>=1.5, x<sub>4</sub>=2.",regla:"x<sub>i</sub> = a + i· Δ x"},
+    {num:3,titulo:"Evaluar f en cada punto (suma izquierda usax<sub>0</sub>..x<sub>3</sub>)",contenido:"f(0)=1, f(0.5)=1.25, f(1)=2, f(1.5)=3.25.",regla:"Sustituir en f"},
+    {num:4,titulo:"Sumar y multiplicar porΔ x",contenido:"L<sub>4</sub> = (1 + 1.25 + 2 + 3.25)· 0.5 = 7.5· 0.5 = 3.75.",regla:"Σ f(x<sub>i</sub>)· Δ x"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"Para $[0,4]$ con $n=4$, ¿cuánto vale $\\Delta x$?", opciones:["$1$","$0.5$","$4$","$2$"], correcta:0,
-      feedback:{correcto:"Sí: $(4-0)/4=1$.",errores:{1:"Calculaste $(4-0)/8$.",2:"Eso es $n$, no $\\Delta x$.",3:"Olvidaste dividir entre $n$."}}},
-    {tipo:"numerica", enunciado:"Suma izquierda de $f(x)=x$ en $[0,2]$ con $n=4$ ($\\Delta x=0.5$; puntos $x_{0}=0$, $x_{1}=0.5$, $x_{2}=1$, $x_{3}=1.5$).", respuesta:1.5, tolerancia:0.01, feedbackCorrecto:"Sí: $(0+0.5+1+1.5)\\cdot 0.5 = 3\\cdot 0.5 = 1.5$.", feedbackError:"$L_{4} = (f(0)+f(0.5)+f(1)+f(1.5))\\cdot\\Delta x = (0+0.5+1+1.5)\\cdot 0.5 = 3\\cdot 0.5 = 1.5$."},
-    {tipo:"opcion_multiple", enunciado:"Suma derecha de $f(x)=x^{2}$ en $[0,1]$ con $n=2$ ($\\Delta x=0.5$; puntos $x_{1}=0.5$, $x_{2}=1$):", opciones:["$0.625$","$0.5$","$0.25$","$1.25$"], correcta:0,
-      feedback:{correcto:"Sí: $(0.25+1)\\cdot 0.5 = 0.625$.",errores:{1:"Olvidaste elevar al cuadrado el segundo.",2:"Olvidaste multiplicar por $\\Delta x$.",3:"Confundiste izquierda con derecha."}}},
-    {tipo:"completar_hueco", enunciado:"Si $[a,b]=[0,6]$ y $n=3$, entonces $\\Delta x=$ <input class='input-line' id='ch6-4' placeholder='número'>.", respuesta:["2"], feedbackCorrecto:"Sí: $(6-0)/3=2$.", feedbackError:"$\\Delta x=(b-a)/n = (6-0)/3 = 2$."},
+    {tipo:"opcion_multiple", enunciado:"Para [0,4] con n=4, ¿cuánto valeΔ x?", opciones:["1","0.5","4","2"], correcta:0,
+      feedback:{correcto:"Sí: (4-0)/4=1.",errores:{1:"Calculaste (4-0)/8.",2:"Eso es n, noΔ x.",3:"Olvidaste dividir entre n."}}},
+    {tipo:"numerica", enunciado:"Suma izquierda de f(x)=x en [0,2] conn=4 (Δ x=0.5; puntosx<sub>0</sub>=0,x<sub>1</sub>=0.5,x<sub>2</sub>=1,x<sub>3</sub>=1.5).", respuesta:1.5, tolerancia:0.01, feedbackCorrecto:"Sí: (0+0.5+1+1.5)· 0.5 = 3· 0.5 = 1.5.", feedbackError:"L<sub>4</sub> = (f(0)+f(0.5)+f(1)+f(1.5))· Δ x = (0+0.5+1+1.5)· 0.5 = 3· 0.5 = 1.5."},
+    {tipo:"opcion_multiple", enunciado:"Suma derecha def(x)=x<sup>2</sup>en [0,1] conn=2 (Δ x=0.5; puntosx<sub>1</sub>=0.5, x<sub>2</sub>=1):", opciones:["0.625","0.5","0.25","1.25"], correcta:0,
+      feedback:{correcto:"Sí: (0.25+1)· 0.5 = 0.625.",errores:{1:"Olvidaste elevar al cuadrado el segundo.",2:"Olvidaste multiplicar porΔ x.",3:"Confundiste izquierda con derecha."}}},
+    {tipo:"completar_hueco", enunciado:"Si [a,b]=[0,6] y n=3, entoncesΔ x=<input class='input-line' id='ch6-4' placeholder='número'>.", respuesta:["2"], feedbackCorrecto:"Sí: (6-0)/3=2.", feedbackError:"Δ x=(b-a)/n = (6-0)/3 = 2."},
     {tipo:"verdadero_falso", enunciado:"La suma por punto medio suele ser más precisa que izquierda o derecha para funciones suaves.", correcta:true,
       feedback:{correcto:"Sí: el punto medio reduce el error promedio.",errores:{0:"Para funciones suaves el punto medio equilibra los errores de ambos lados."}}},
     {tipo:"ordenar_pasos", enunciado:"Ordena el cálculo de una suma izquierda:",
       pasos:[
-        {texto:"Calcular $\\Delta x = \\dfrac{b-a}{n}$",orden:1},
-        {texto:"Listar los puntos $x_{0}, x_{1},\\dots, x_{n-1}$",orden:2},
-        {texto:"Evaluar $f$ en cada uno de esos puntos",orden:3},
-        {texto:"Multiplicar la suma por $\\Delta x$",orden:4}
+        {texto:"CalcularΔ x = (b-a)/n",orden:1},
+        {texto:"Listar los puntosx<sub>0</sub>, x<sub>1</sub>,..., x<sub>n-1</sub>",orden:2},
+        {texto:"Evaluar f en cada uno de esos puntos",orden:3},
+        {texto:"Multiplicar la suma porΔ x",orden:4}
       ],
-      feedback:{correcto:"Secuencia impecable.",errores:"Primero $\\Delta x$, luego los puntos, luego evaluas $f$ y finalmente multiplicas por $\\Delta x$."}},
-    {tipo:"emparejar", enunciado:"Empareja tipo de suma con su fórmula ($i=1..n$):",
+      feedback:{correcto:"Secuencia impecable.",errores:"PrimeroΔ x,luego los puntos, luego evaluas f y finalmente multiplicas porΔ x."}},
+    {tipo:"emparejar", enunciado:"Empareja tipo de suma con su fórmula (i=1..n):",
       parejas:[
-        {izq:"Izquierda",der:"$\\sum_{i=0}^{n-1} f(x_{i})\\,\\Delta x$"},
-        {izq:"Derecha",der:"$\\sum_{i=1}^{n} f(x_{i})\\,\\Delta x$"},
-        {izq:"Medio",der:"$\\sum_{i=1}^{n} f\\!\\left(\\dfrac{x_{i-1}+x_{i}}{2}\\right)\\Delta x$"},
-        {izq:"$\\Delta x$",der:"$\\dfrac{b-a}{n}$"}
+        {izq:"Izquierda",der:"Σ <sub>i=0</sub><sup>n-1</sup> f(x<sub>i</sub>)· Δ x"},
+        {izq:"Derecha",der:"Σ <sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)· Δ x"},
+        {izq:"Medio",der:"Σ <sub>i=1</sub><sup>n</sup> f((x<sub>i-1</sub>+x<sub>i</sub>)/2)· Δ x"},
+        {izq:"Δ x",der:"(b-a)/n"}
       ],
-      feedback:{correcto:"Todas correctas.",errores:"Izquierda usa $x_{0}..x_{n-1}$; derecha usa $x_{1}..x_{n}$; medio usa promedios; $\\Delta x=(b-a)/n$."}},
-    {tipo:"numerica", enunciado:"Suma derecha de $f(x)=x+1$ en $[0,2]$ con $n=2$ ($\\Delta x=1$; puntos $x_{1}=1$, $x_{2}=2$).", respuesta:5, tolerancia:0.01, feedbackCorrecto:"Sí: $(f(1)+f(2))\\cdot 1 = (2+3)\\cdot 1 = 5$.", feedbackError:"$R_{2} = (f(1)+f(2))\\cdot\\Delta x = (2+3)\\cdot 1 = 5$."}
+      feedback:{correcto:"Todas correctas.",errores:"Izquierda usax<sub>0</sub>..xₙ₋<sub>1</sub>; derecha usax<sub>1</sub>..xₙ; medio usa promedios;Δ x=(b-a)/n."}},
+    {tipo:"numerica", enunciado:"Suma derecha de f(x)=x+1 en [0,2] conn=2 (Δ x=1; puntosx<sub>1</sub>=1, x<sub>2</sub>=2).", respuesta:5, tolerancia:0.01, feedbackCorrecto:"Sí:(f(1)+f(2))· 1 = (2+3)· 1 = 5.", feedbackError:"R<sub>2</sub> = (f(1)+f(2))· Δ x = (2+3)· 1 = 5."}
   ],
   criterioDominio:0.8
 },
@@ -782,47 +796,47 @@ const MODULES = [
   id:"m7", num:7, titulo:"Área entre curvas", icono:"🎨",
   objetivo:"Al terminar podrás calcular el área entre dos curvas identificando intersecciones y qué función va arriba.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M6) ¿Cuál es $\\Delta x$ para $[a,b]$ con $n$ subintervalos?", opciones:["$\\dfrac{b-a}{n}$","$\\dfrac{b+a}{n}$","$\\dfrac{n}{b-a}$","$b-a$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"No se suman.",2:"Está invertido.",3:"Falta dividir."}}},
-    {tipo:"opcion_multiple", enunciado:"(Repaso M3) $\\int x^{2}\\,dx = ?$", opciones:["$\\dfrac{x^{3}}{3}+C$","$x^{3}+C$","$2x+C$","$\\dfrac{x^{2}}{2}+C$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}}
+    {tipo:"opcion_multiple", enunciado:"(Repaso M6) ¿Cuál es\\Deltaxpara [a,b] con n subintervalos?", opciones:["(b-a)/n","(b+a)/n","n/(b-a)","b-a"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"No se suman.",2:"Está invertido.",3:"Falta dividir."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>2</sup>dx =?", opciones:["x<sup>3</sup>/3+C","x<sup>3</sup>+C","2x+C","x<sup>2</sup>/2+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}}
   ],
   teoria:`
     <h4>Idea central</h4>
-    <p>El área entre dos curvas $y=f(x)$ e $y=g(x)$ en $[a,b]$ se calcula con:</p>
-    <div class="formula-box">$\\text{Área} = \\int_{a}^{b} (\\text{superior} - \\text{inferior})\\,dx$</div>
+    <p>El área entre dos curvas y=f(x) e y=g(x) en [a,b] se calcula con:</p>
+    <div class="formula-box">Área= ∫ <sub>a</sub><sup>b</sup> (superior - inferior) dx</div>
     <h4>Pasos</h4>
-    <p>1. <strong>Encontrar intersecciones</strong>: resolver $f(x)=g(x)$. Estas marcan los límites $a$, $b$.<br>2. <strong>Decidir cuál va arriba</strong>: evalúa un punto de prueba entre las intersecciones.<br>3. <strong>Restar</strong>: superior $-$ inferior (nunca al revés).<br>4. <strong>Integrar</strong> y evaluar.</p>
+    <p>1. <strong>Encontrar intersecciones</strong>: resolver f(x)=g(x). Estas marcan los límites a, b.<br>2. <strong>Decidir cuál va arriba</strong>: evalúa un punto de prueba entre las intersecciones.<br>3. <strong>Restar</strong>: superior - inferior (nunca al revés).<br>4. <strong>Integrar</strong> y evaluar.</p>
     <h4>Área con signo vs. área geométrica</h4>
-    <p> <strong>$\\int f\\,dx$</strong> da área <em>con signo</em>: las partes bajo el eje $x$ restan.<br> <strong>Área geométrica</strong> siempre es $\\neq 0$: si la curva pasa debajo del eje, integrar $|f|$ o partir el intervalo.</p>
+    <p> <strong>∫ f dx</strong> da área <em>con signo</em>: las partes bajo el eje x restan.<br> <strong>Área geométrica</strong> siempre es≠  0: si la curva pasa debajo del eje, integrar |f| o partir el intervalo.</p>
     <h4>Si las curvas se cruzan dentro del intervalo</h4>
     <p>En ese caso la función superior cambia. Hay que <strong>dividir el intervalo</strong> en los puntos de cruce y sumar las áreas por separado.</p>
     <div class="analogia"><strong>Intuición:</strong> piensa en dos colchonetas apiladas: el área entre ellas es lo que sobresale la de arriba respecto a la de abajo. Si se cruzan, "arriba" e "abajo" se intercambian.</div>
   `,
   ejemplo:[
-    {num:1,titulo:"Encontrar intersecciones",contenido:"Entre $y=x$ e $y=x^{2}$: $x=x^{2} \\Rightarrow x(x-1)=0 \\Rightarrow x=0,\\; x=1$. Límites: $[0,1]$.",regla:"Resolver $f=g$"},
-    {num:2,titulo:"Decidir superior/inferior",contenido:"En $x=0.5$: $f(0.5)=0.5$; $g(0.5)=0.25$. La línea $y=x$ va arriba.",regla:"Punto de prueba"},
-    {num:3,titulo:"Plantear la integral",contenido:"$\\text{Área} = \\int_{0}^{1} (x - x^{2})\\,dx$",regla:"superior $-$ inferior"},
-    {num:4,titulo:"Integrar y evaluar",contenido:"$= \\left[\\dfrac{x^{2}}{2} - \\dfrac{x^{3}}{3}\\right]_{0}^{1} = \\dfrac{1}{2} - \\dfrac{1}{3} = \\dfrac{1}{6} \\approx 0.1667$",regla:"Regla de la potencia y evaluar"}
+    {num:1,titulo:"Encontrar intersecciones",contenido:"Entrey=x y y=x<sup>2</sup>: x=x<sup>2</sup> →  x(x-1)=0 →  x=0, x=1. Límites: [0,1].",regla:"Resolver f=g"},
+    {num:2,titulo:"Decidir superior/inferior",contenido:"En x=0.5: f(0.5)=0.5; g(0.5)=0.25. La línea y=x va arriba.",regla:"Punto de prueba"},
+    {num:3,titulo:"Plantear la integral",contenido:"Área= ∫ <sub>0</sub>¹ (x - x<sup>2</sup>) dx",regla:"superior - inferior"},
+    {num:4,titulo:"Integrar y evaluar",contenido:"= [x<sup>2</sup>/2 - x<sup>3</sup>/3]<sub>0</sub>¹ = (1/2 - 1/3) - 0 = 1/6 ≈  0.1667",regla:"Regla de la potencia y evaluar"}
   ],
   actividades:[
-    {tipo:"opcion_multiple", enunciado:"Área entre $y=x^{2}$ y el eje $x$ ($y=0$) en $[0,2]$:", opciones:["$\\int_{0}^{2} x^{2}\\,dx = \\dfrac{8}{3}$","$\\int_{0}^{2} (0-x^{2})\\,dx$","$\\int_{0}^{2} 2x\\,dx$","$2$"], correcta:0,
-      feedback:{correcto:"Sí: $x^{2}$ está arriba de 0.",errores:{1:"Invertiste el orden; el área sería negativa.",2:"Estás derivando.",3:"No es la integral correcta."}}},
-    {tipo:"completar_hueco", enunciado:"Si $y_{\\text{sup}}=x^{2}$ e $y_{\\text{inf}}=0$, entonces $\\text{Área}=\\int$ <input class='input-line' id='ch7-2' placeholder='integrando'> $dx$ (escribe solo el integrando).", respuesta:["x^2","x**2","x²"], feedbackCorrecto:"Sí: superior $-$ inferior $= x^{2}-0 = x^{2}$.", feedbackError:"$\\text{Área} = \\int (\\text{superior}-\\text{inferior})\\,dx = \\int (x^{2}-0)\\,dx = \\int x^{2}\\,dx$."},
-    {tipo:"opcion_multiple", enunciado:"¿En qué $x$ se intersecan $y=x^{2}$ e $y=x+2$?", opciones:["$x=-1$ y $x=2$","$x=0$ y $x=1$","$x=1$ y $x=-1$","$x=2$ y $x=3$"], correcta:0,
-      feedback:{correcto:"Sí: $x^{2}=x+2 \\Rightarrow x^{2}-x-2=0 \\Rightarrow (x-2)(x+1)=0$.",errores:{1:"Esas son intersecciones de $y=x^{2}$ e $y=x$.",2:"Incorrecto.",3:"Incorrecto."}}},
-    {tipo:"verdadero_falso", enunciado:"El área entre curvas siempre es $\\neq 0$.", correcta:true,
-      feedback:{correcto:"Sí: se resta superior $-$ inferior, así que el integrando es $\\neq 0$.",errores:{0:"Aunque la integral con signo pueda ser negativa, el área geométrica siempre es $\\neq 0$."}}},
+    {tipo:"opcion_multiple", enunciado:"Área entrey=x<sup>2</sup>yel eje x (y=0) en [0,2]:", opciones:["∫ <sub>0</sub><sup>2</sup> x<sup>2</sup> dx = 8/3","∫ <sub>0</sub><sup>2</sup> (0-x<sup>2</sup>) dx","∫ <sub>0</sub><sup>2</sup> 2x dx","2"], correcta:0,
+      feedback:{correcto:"Sí:x<sup>2</sup>está arriba de 0.",errores:{1:"Invertiste el orden; el área sería negativa.",2:"Estás derivando.",3:"No es la integral correcta."}}},
+    {tipo:"completar_hueco", enunciado:"Siy<sub>sup</sub>=x<sup>2</sup> e y<sub>inf</sub>=0, entonces Área=∫<input class='input-line' id='ch7-2' placeholder='integrandos'> dx (escribe solo el integrando).", respuesta:["x^2","x<sup>2</sup>","x**2"], feedbackCorrecto:"Sí: superior-inferior= x<sup>2</sup>-0 = x<sup>2</sup>.", feedbackError:"Área= ∫ (superior-inferior)dx = ∫ (x<sup>2</sup>-0)dx = ∫ x<sup>2</sup>dx."},
+    {tipo:"opcion_multiple", enunciado:"¿En qué x se intersecany=x<sup>2</sup> e y=x+2?", opciones:["x=-1 y x=2","x=0 y x=1","x=1 y x=-1","x=2 y x=3"], correcta:0,
+      feedback:{correcto:"Sí:x<sup>2</sup>=x+2 →  x<sup>2</sup>-x-2=0 →  (x-2)(x+1)=0.",errores:{1:"Esas son intersecciones dey=x<sup>2</sup> e y=x.",2:"Incorrecto.",3:"Incorrecto."}}},
+    {tipo:"verdadero_falso", enunciado:"El área entre curvas siempre es≠  0.", correcta:true,
+      feedback:{correcto:"Sí: se resta superior-inferior, así que el integrando es≠ 0.",errores:{0:"Aunque la integral con signo pueda ser negativa, el área geométrica siempre es≠ 0."}}},
     {tipo:"ordenar_pasos", enunciado:"Ordena el cálculo del área entre dos curvas:",
       pasos:[
-        {texto:"Encontrar intersecciones resolviendo $f(x)=g(x)$",orden:1},
+        {texto:"Encontrar intersecciones resolviendo f(x)=g(x)",orden:1},
         {texto:"Decidir cuál función va arriba con un punto de prueba",orden:2},
-        {texto:"Plantear $\\int (\\text{superior}-\\text{inferior})\\,dx$ entre los límites",orden:3},
+        {texto:"Plantear∫ (superior-inferior)dx entre los límites",orden:3},
         {texto:"Integrar y evaluar en los límites",orden:4}
       ],
       feedback:{correcto:"Secuencia correcta.",errores:"Primero intersecciones, luego decidir arriba/abajo, plantear la integral y finalmente integrar y evaluar."}},
-    {tipo:"numerica", enunciado:"Área entre $y=x$ e $y=x^{2}$ en $[0,1]$ ($= \\int_{0}^{1}(x-x^{2})\\,dx$).", respuesta:0.1667, tolerancia:0.01, feedbackCorrecto:"Sí: $1/6 \\approx 0.1667$.", feedbackError:"$\\int_{0}^{1}(x-x^{2})\\,dx = \\left[\\dfrac{x^{2}}{2} - \\dfrac{x^{3}}{3}\\right]_{0}^{1} = \\dfrac{1}{2} - \\dfrac{1}{3} = \\dfrac{1}{6} \\approx 0.1667$."},
+    {tipo:"numerica", enunciado:"Área entrey=x e y=x<sup>2</sup>en [0,1](= ∫ <sub>0</sub>¹(x-x<sup>2</sup>)dx).", respuesta:0.1667, tolerancia:0.01, feedbackCorrecto:"Sí:1/6 ≈  0.1667.", feedbackError:"∫ <sub>0</sub>¹(x-x<sup>2</sup>)dx = [x<sup>2</sup>/2 - x<sup>3</sup>/3]<sub>0</sub>¹ = 1/2 - 1/3 = 1/6 ≈  0.1667."},
     {tipo:"opcion_multiple", enunciado:"Si las curvas se cruzan dentro del intervalo, ¿qué se hace?", opciones:["Dividir el intervalo en los puntos de cruce y sumar áreas","Tomar valor absoluto de toda la integral","Ignorar el cruce","Integrar solo la superior"], correcta:0,
-      feedback:{correcto:"Sí: hay que partir y sumar.",errores:{1:"No basta con $|\\cdot|$ sobre todo el intervalo.",2:"Eso da área negativa.",3:"Ignora la inferior."}}},
-    {tipo:"completar_hueco", enunciado:"Para $y=x+2$ arriba e $y=x^{2}$ abajo en $[-1,2]$, el área es $\\int_{-1}^{2}($ <input class='input-line' id='ch7-8' placeholder='integrando'> $)\\,dx$.", respuesta:["x+2-x^2","(x+2)-x^2","x+2-x**2"], feedbackCorrecto:"Sí: superior $-$ inferior $= (x+2)-x^{2}$.", feedbackError:"$\\text{Área} = \\int (\\text{superior}-\\text{inferior})\\,dx = \\int ((x+2)-x^{2})\\,dx$."}
+      feedback:{correcto:"Sí: hay que partir y sumar.",errores:{1:"No basta con|· |sobre todo el intervalo.",2:"Eso da área negativa.",3:"Ignora la inferior."}}},
+    {tipo:"completar_hueco", enunciado:"Para y=x+2 arribaey=x<sup>2</sup>abajo en [-1,2], el área es∫ <sub>-1</sub><sup>2</sup>(<input class='input-line' id='ch7-8' placeholder='integrando'>)dx.", respuesta:["x+2-x^2","x+2-x<sup>2</sup>","(x+2)-x^2"], feedbackCorrecto:"Sí: superior-inferior= (x+2)-x<sup>2</sup>.", feedbackError:"Área= ∫ (superior-inferior)dx = ∫ ((x+2)-x<sup>2</sup>)dx."}
   ],
   criterioDominio:0.8
 },
@@ -830,70 +844,70 @@ const MODULES = [
 /* ===================== MÓDULO 8: SUSTITUCIÓN ===================== */
 {
   id:"m8", num:8, titulo:"Método de sustitución", icono:"🔄",
-  objetivo:"Al terminar podrás resolver integrales por sustitución eligiendo $u$ correctamente y cambiando límites cuando sea definida.",
+  objetivo:"Al terminar podrás resolver integrales por sustitución eligiendo u correctamente y cambiando límites cuando sea definida.",
   repaso:[
-    {tipo:"opcion_multiple", enunciado:"(Repaso M5) $\\int \\dfrac{1}{x}\\,dx = ?$", opciones:["$\\ln|x|+C$","$\\ln x+C$","$x+C$","$\\dfrac{1}{x}+C$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta $|\\;|$.",2:"No es $x$.",3:"No se queda igual."}}},
-    {tipo:"opcion_multiple", enunciado:"(Repaso M2) $\\int (2x+1)\\,dx = ?$", opciones:["$x^{2}+x+C$","$2+C$","$x^{2}+C$","$2x^{2}+x+C$"], correcta:0, feedback:{correcto:"Sí: por linealidad.",errores:{1:"Falta integrar variable.",2:"Olvidaste el $2x$.",3:"Confundiste coeficientes."}}}
+    {tipo:"opcion_multiple", enunciado:"(RepasoM5) ∫ (1/x)dx =?", opciones:["ln|x|+C","ln x+C","x+C","1/x+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta | |.",2:"No es x.",3:"No se queda igual."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM2) ∫ (2x+1)dx =?", opciones:["x<sup>2</sup>+x+C","2+C","x<sup>2</sup>+C","2x<sup>2</sup>+x+C"], correcta:0, feedback:{correcto:"Sí: por linealidad.",errores:{1:"Falta integrar variable.",2:"Olvidaste el 2x.",3:"Confundiste coeficientes."}}}
   ],
   teoria:`
     <h4>Idea central</h4>
-    <p>La sustitución es la regla de la cadena al revés. Si dentro de la integral hay una función compuesta, reemplazamos la "función interna" por una nueva variable $u$.</p>
+    <p>La sustitución es la regla de la cadena al revés. Si dentro de la integral hay una función compuesta, reemplazamos la "función interna" por una nueva variable u.</p>
     <h4>Procedimiento</h4>
-    <p>1. <strong>Elegir $u$</strong>: típicamente la función interna (dentro de una potencia, argumento de $\\operatorname{sen}$, denominador, etc.).<br>2. <strong>Calcular $du$</strong>: si $u=g(x)$, entonces $du=g'(x)\\,dx$.<br>3. <strong>Reescribir la integral</strong> en términos de $u$. Debe desaparecer toda $x$ (incluido $dx$).<br>4. <strong>Integrar respecto a $u$</strong>.<br>5. <strong>Volver a $x$</strong> (en indefinidas) o <strong>cambiar límites</strong> (en definidas).</p>
-    <div class="formula-box">$\\int f(g(x))\\,g'(x)\\,dx = \\int f(u)\\,du$, con $u=g(x)$</div>
+    <p>1. <strong>Elegir u</strong>: típicamente la función interna (dentro de una potencia, argumento desen,denominador, etc.).<br>2. <strong>Calcular du</strong>: si u=g(x), entonces du=g'(x)dx.<br>3. <strong>Reescribir la integral</strong> en términos de u. Debe desaparecer toda x (incluido dx).<br>4. <strong>Integrar respecto a u</strong>.<br>5. <strong>Volver a x</strong> (en indefinidas) o <strong>cambiar límites</strong> (en definidas).</p>
+    <div class="formula-box">∫  f(g(x))· g'(x) dx = ∫  f(u) du ,con u=g(x)</div>
     <h4>Casos típicos</h4>
-    <p> <strong>Lineales</strong>: $\\int \\cos(3x)\\,dx \\to u=3x,\\; du=3\\,dx$<br> <strong>Potencias compuestas</strong>: $\\int 2x(x^{2}+1)^{5}\\,dx \\to u=x^{2}+1,\\; du=2x\\,dx$<br> <strong>Trigonométricas compuestas</strong>: $\\int \\operatorname{sen}(x^{2})\\cdot 2x\\,dx \\to u=x^{2}$</p>
+    <p> <strong>Lineales</strong>:∫ cos(3x)dx →  u=3x, du=3dx<br> <strong>Potencias compuestas</strong>:∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx →  u=x<sup>2</sup>+1, du=2xdx<br> <strong>Trigonométricas compuestas</strong>:∫ sen(x<sup>2</sup>)· 2x dx →  u=x<sup>2</sup></p>
     <h4>Caso definido: cambio de límites</h4>
-    <p>Si los límites están en $x$, puedes convertirlos a $u$: si $x=a$, entonces $u=g(a)$; si $x=b$, entonces $u=g(b)$. Así no necesitas volver a $x$.</p>
-    <div class="analogia"><strong>Intuición:</strong> la sustitución es como cambiar de idioma para que la integral se vuelva fácil. Si el "traductor" ($du$) aparece completo en el integrando, la traducción funciona.</div>
+    <p>Si los límites están en x, puedes convertirlos a u: si x=a, entonces u=g(a); si x=b, entonces u=g(b). Así no necesitas volver a x.</p>
+    <div class="analogia"><strong>Intuición:</strong> la sustitución es como cambiar de idioma para que la integral se vuelva fácil. Si el "traductor" (du) aparece completo en el integrando, la traducción funciona.</div>
   `,
   ejemplo:[
-    {num:1,titulo:"Elegir $u$ y calcular $du$",contenido:"$\\int 2x(x^{2}+1)^{5}\\,dx$. Elegimos $u=x^{2}+1$; $du=2x\\,dx$. ¡Aparece $2x\\,dx$ en el integrando!",regla:"$u =$ función interna"},
-    {num:2,titulo:"Reescribir en $u$",contenido:"El integrando se vuelve $u^{5}\\,du$.",regla:"Sustitución completa"},
-    {num:3,titulo:"Integrar respecto a $u$",contenido:"$\\int u^{5}\\,du = \\dfrac{u^{6}}{6} + C$",regla:"Regla de la potencia"},
-    {num:4,titulo:"Volver a $x$",contenido:"$= \\dfrac{(x^{2}+1)^{6}}{6} + C$",regla:"Reemplazar $u$ por $x^{2}+1$"}
+    {num:1,titulo:"Elegir u y calcular du",contenido:"∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx. Elegimosu=x<sup>2</sup>+1; du=2x dx. ¡Aparece 2x dx en el integrando!",regla:"u = función interna"},
+    {num:2,titulo:"Reescribir en u",contenido:"El integrando se vuelveu<sup>5</sup> du.",regla:"Sustitución completa"},
+    {num:3,titulo:"Integrar respecto a u",contenido:"∫ u<sup>5</sup>du = u<sup>6</sup>/6 + C",regla:"Regla de la potencia"},
+    {num:4,titulo:"Volver a x",contenido:"= (x<sup>2</sup>+1)<sup>6</sup>/6 + C",regla:"Reemplazar u porx<sup>2</sup>+1"}
   ],
   actividades:[
-    {tipo:"completar_hueco", enunciado:"Si $u=x^{2}+1$, entonces $du=$ <input class='input-line' id='ch8-1' placeholder='expresión'> $dx$.", respuesta:["2x"], feedbackCorrecto:"Sí: $du/dx=2x \\Rightarrow du=2x\\,dx$.", feedbackError:"$u=x^{2}+1 \\Rightarrow du/dx=2x \\Rightarrow du=2x\\,dx$."},
-    {tipo:"opcion_multiple", enunciado:"Para $\\int 2x(x^{2}+1)^{5}\\,dx$, ¿qué eliges como $u$?", opciones:["$x^{2}+1$","$x$","$x^{2}$","$2x$"], correcta:0,
-      feedback:{correcto:"Sí: la función interna; su derivada $2x$ aparece en el integrando.",errores:{1:"$u=x$ no aprovecha la estructura compuesta.",2:"Olvidaste el $+1$.",3:"$2x$ es justamente $du/dx$, no $u$."}}},
-    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de $\\int 2x(x^{2}+1)^{5}\\,dx$:",
+    {tipo:"completar_hueco", enunciado:"Siu=x<sup>2</sup>+1,entonces du=<input class='input-line' id='ch8-1' placeholder='número'>dx.", respuesta:["2"], feedbackCorrecto:"Sí:du/dx=2x →  du=2x dx.", feedbackError:"u=x<sup>2</sup>+1 →  du/dx=2x →  du=2x dx."},
+    {tipo:"opcion_multiple", enunciado:"Para∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx,¿qué eliges como u?", opciones:["x<sup>2</sup>+1","x","x<sup>2</sup>","2x"], correcta:0,
+      feedback:{correcto:"Sí: la función interna; su derivada 2x aparece en el integrando.",errores:{1:"u=x no aprovecha la estructura compuesta.",2:"Olvidaste el +1.",3:"2x es justamente du/dx, no u."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx:",
       pasos:[
-        {texto:"Elegir $u=x^{2}+1$, $du=2x\\,dx$",orden:1},
-        {texto:"Reescribir: $\\int u^{5}\\,du$",orden:2},
-        {texto:"Integrar: $\\dfrac{u^{6}}{6} + C$",orden:3},
-        {texto:"Volver a $x$: $\\dfrac{(x^{2}+1)^{6}}{6} + C$",orden:4}
+        {texto:"Elegiru=x<sup>2</sup>+1, du=2x dx",orden:1},
+        {texto:"Reescribir:∫ u<sup>5</sup> du",orden:2},
+        {texto:"Integrar:u<sup>6</sup>/6 + C",orden:3},
+        {texto:"Volver a x:(x<sup>2</sup>+1)<sup>6</sup>/6 + C",orden:4}
       ],
-      feedback:{correcto:"Secuencia impecable.",errores:"Primero eliges $u$ y calculas $du$, reescribes la integral en $u$, integras y finalmente vuelves a $x$."}},
-    {tipo:"completar_hueco", enunciado:"$\\int \\operatorname{sen}(3x)\\,dx$: $u=3x$, $du=3\\,dx$, entonces $\\dfrac{1}{3}\\int \\operatorname{sen}(u)\\,du = -\\dfrac{1}{3}\\cos($ <input class='input-line' id='ch8-4' placeholder='variable'> $)+C$.", respuesta:["u","3x"], feedbackCorrecto:"Sí: $\\dfrac{1}{3}\\cdot(-\\cos u) = -\\dfrac{\\cos(3x)}{3}$.", feedbackError:"$\\int \\operatorname{sen}(3x)\\,dx$: $u=3x$, $du=3\\,dx \\Rightarrow \\dfrac{1}{3}\\int \\operatorname{sen} u\\,du = \\dfrac{1}{3}(-\\cos u)+C = -\\dfrac{\\cos(3x)}{3}+C$."},
-    {tipo:"verdadero_falso", enunciado:"En una integral definida por sustitución, puedes cambiar los límites a $u$ o volver a $x$ antes de evaluar.", correcta:true,
+      feedback:{correcto:"Secuencia impecable.",errores:"Primero eliges u y calculas du, reescribes la integral en u, integras y finalmente vuelves a x."}},
+    {tipo:"completar_hueco", enunciado:"∫ sen(3x)dx: u=3x, du=3dx, entonces(1/3)∫ sen(u)du = -(1/3)cos(<input class='input-line' id='ch8-4' placeholder='variable'>)+C.", respuesta:["u","3x"], feedbackCorrecto:"Sí:(1/3)· (-cos u) = -cos(3x)/3.", feedbackError:"∫ sen(3x)dx: u=3x, du=3dx →  (1/3)∫ sen u du = (1/3)(-cos u)+C = -cos(3x)/3+C."},
+    {tipo:"verdadero_falso", enunciado:"En una integral definida por sustitución, puedes cambiar los límites a u o volver a x antes de evaluar.", correcta:true,
       feedback:{correcto:"Sí: ambas opciones son válidas y dan el mismo resultado.",errores:{0:"Ambas estrategias son correctas y equivalentes."}}},
-    {tipo:"numerica", enunciado:"$\\int_{0}^{1} 2x(x^{2}+1)^{3}\\,dx$ (sustitución $u=x^{2}+1$; límites: $u(0)=1$, $u(1)=2$).", respuesta:3.75, tolerancia:0.01, feedbackCorrecto:"Sí: $\\int_{1}^{2}u^{3}\\,du = \\left.\\dfrac{u^{4}}{4}\\right|_{1}^{2} = 16/4 - 1/4 = 15/4 = 3.75$.", feedbackError:"Con $u=x^{2}+1$, $du=2x\\,dx$; límites $u(0)=1$, $u(1)=2$. $\\int_{1}^{2}u^{3}\\,du = \\left.\\dfrac{u^{4}}{4}\\right|_{1}^{2} = 4 - 0.25 = 3.75$."},
-    {tipo:"opcion_multiple", enunciado:"¿Cuál $u$ es correcta para $\\int x\\,e^{x^{2}}\\,dx$?", opciones:["$u=x^{2}$","$u=x$","$u=e^{x}$","$u=x\\cdot e^{x}$"], correcta:0,
-      feedback:{correcto:"Sí: $u=x^{2} \\Rightarrow du=2x\\,dx$; falta un 2 que se ajusta con coeficiente.",errores:{1:"$u=x$ no simplifica la exponencial.",2:"$u=e^{x}$ no ayuda.",3:"No es sustitución útil."}}},
-    {tipo:"completar_hueco", enunciado:"$\\int (\\cos x)(\\operatorname{sen} x)\\,dx$ con $u=\\operatorname{sen} x$, $du=\\cos x\\,dx$, da <input class='input-line' id='ch8-8' placeholder='en u'> $+\\,C$ (en términos de $u$).", respuesta:["u^2/2","u**2/2","(1/2)u^2","u^2 / 2"], feedbackCorrecto:"Sí: $\\int u\\,du = \\dfrac{u^{2}}{2}+C = \\dfrac{\\operatorname{sen}^{2}x}{2}+C$.", feedbackError:"$u=\\operatorname{sen} x$, $du=\\cos x\\,dx \\Rightarrow \\int u\\,du = \\dfrac{u^{2}}{2}+C = \\dfrac{\\operatorname{sen}^{2}x}{2}+C$."}
+    {tipo:"numerica", enunciado:"∫ <sub>0</sub>¹ 2x(x<sup>2</sup>+1)<sup>3</sup>dx (sustituciónu=x<sup>2</sup>+1; límites: u(0)=1, u(1)=2).", respuesta:3.75, tolerancia:0.01, feedbackCorrecto:"Sí:∫ <sub>1</sub><sup>2</sup>u<sup>3</sup>du = u<sup>4</sup>/4 |<sub>1</sub><sup>2</sup> = 16/4 - 1/4 = 15/4 = 3.75.", feedbackError:"Conu=x<sup>2</sup>+1, du=2x dx; límites u(0)=1, u(1)=2.∫ <sub>1</sub><sup>2</sup>u<sup>3</sup>du = u<sup>4</sup>/4|<sub>1</sub><sup>2</sup> = 4 - 0.25 = 3.75."},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál u es correcta para∫ x· e<sup>x<sup>2</sup></sup>dx?", opciones:["u=x<sup>2</sup>","u=x","u=eˣ","u=x\\cdoteˣ"], correcta:0,
+      feedback:{correcto:"Sí:u=x<sup>2</sup> →  du=2x dx; falta un 2 que se ajusta con coeficiente.",errores:{1:"u=x no simplifica la exponencial.",2:"u=eˣ no ayuda.",3:"No es sustitución útil."}}},
+    {tipo:"completar_hueco", enunciado:"∫ (cos x)(sen x)dxconu=sen x, du=cos x dx,da <input class='input-line' id='ch8-8' placeholder='en u'>+C.", respuesta:["u^2/2","u<sup>2</sup>/2","(1/2)u^2","u^2 / 2"], feedbackCorrecto:"Sí:∫ u du = u<sup>2</sup>/2+C = sen<sup>2</sup>x/2+C.", feedbackError:"u=sen x, du=cos x dx →  ∫ u du = u<sup>2</sup>/2+C = sen<sup>2</sup>x/2+C."}
   ],
   criterioDominio:0.8
 }
 ];
 
-/* Fórmulas clave de referencia rápida */
+// Fórmulas clave de referencia rápida
 const FORMULAS_REFERENCIA = [
-  {f:"$\\int k\\,dx$", r:"$k\\,x + C$"},
-  {f:"$\\int x^{n}\\,dx$ ($n\\neq -1$)", r:"$\\dfrac{x^{n+1}}{n+1} + C$"},
-  {f:"$\\int \\dfrac{1}{x}\\,dx$", r:"$\\ln|x| + C$"},
-  {f:"$\\int \\operatorname{sen} x\\,dx$", r:"$-\\cos x + C$"},
-  {f:"$\\int \\cos x\\,dx$", r:"$\\operatorname{sen} x + C$"},
-  {f:"$\\int \\sec^{2}x\\,dx$", r:"$\\tan x + C$"},
-  {f:"$\\int \\sec x\\tan x\\,dx$", r:"$\\sec x + C$"},
-  {f:"$\\int \\dfrac{f'}{f}\\,dx$", r:"$\\ln|f| + C$"},
-  {f:"$\\int f(g(x))\\,g'(x)\\,dx$", r:"$\\int f(u)\\,du$, $u=g(x)$"},
-  {f:"$\\Delta x$ (Riemann)", r:"$\\dfrac{b-a}{n}$"},
-  {f:"Suma izquierda $L_{n}$", r:"$\\sum_{i=0}^{n-1} f(x_{i})\\,\\Delta x$"},
-  {f:"Suma derecha $R_{n}$", r:"$\\sum_{i=1}^{n} f(x_{i})\\,\\Delta x$"},
-  {f:"Área entre curvas", r:"$\\int_{a}^{b}(\\text{sup}-\\text{inf})\\,dx$"}
+  {f:"∫ k dx", r:"k· x + C"},
+  {f:"∫ x<sup>n</sup> dx (n≠ -1)", r:"x<sup>n+1</sup>/(n+1) + C"},
+  {f:"∫ x<sup>-1</sup> dx = ∫ (1/x) dx", r:"ln|x| + C"},
+  {f:"∫ sen x dx", r:"-cos x + C"},
+  {f:"∫ cos x dx", r:"sen x + C"},
+  {f:"∫ sec<sup>2</sup>x dx", r:"tan x + C"},
+  {f:"∫ sec x· tan x dx", r:"sec x + C"},
+  {f:"∫ (f'/f) dx", r:"ln|f| + C"},
+  {f:"∫ f(g(x))· g'(x) dx", r:"∫ f(u) du,  u=g(x)"},
+  {f:"Δ x (Riemann)", r:"(b-a)/n"},
+  {f:"Suma izquierdaL<sub>n</sub>", r:"Σ <sub>i=0</sub><sup>n-1</sup> f(x<sub>i</sub>)· Δ x"},
+  {f:"Suma derechaR<sub>n</sub>", r:"Σ <sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)· Δ x"},
+  {f:"Área entre curvas", r:"∫ <sub>a</sub><sup>b</sup>(sup-inf) dx"}
 ];
-  
+
 /* ============================================================
    UTILIDADES
    ============================================================ */
@@ -915,11 +929,148 @@ function renderMath(el){
     }catch(e){/* KaTeX not ready */}
   }
 }
-/* Set innerHTML and render math. Content is expected to contain $...$ LaTeX already. */
+/* Convert HTML math notation to LaTeX, then set innerHTML and render */
 function setHTML(el,html){
+  html=convertMathToLatex(html);
   el.innerHTML=html;
   renderMath(el);
 }
+
+/* Convert HTML/Unicode math notation to LaTeX with $...$ delimiters */
+function htmlToLatex(text){
+  return text
+    .replace(/<sup>(.*?)<\/sup>/g,function(m,c){return '^{'+htmlToLatex(c)+'}'})
+    .replace(/<sub>(.*?)<\/sub>/g,function(m,c){return '_{'+htmlToLatex(c)+'}'})
+    .replace(/<span class="frac"><span class="num">(.*?)<\/span><span class="den">(.*?)<\/span><\/span>/g,function(m,n,d){return '\\frac{'+n+'}{'+d+'}'})
+    .replace(/∫/g,'\\int ')
+    .replace(/√/g,'\\sqrt ')
+    .replace(/²/g,'^{2}').replace(/³/g,'^{3}').replace(/⁴/g,'^{4}')
+    .replace(/⁵/g,'^{5}').replace(/⁶/g,'^{6}')
+    .replace(/⁻¹/g,'^{-1}').replace(/⁻²/g,'^{-2}').replace(/⁻³/g,'^{-3}')
+    .replace(/π/g,'\\pi ').replace(/≠/g,'\\neq ').replace(/≤/g,'\\leq ')
+    .replace(/≥/g,'\\geq ').replace(/→/g,'\\to ').replace(/≈/g,'\\approx ')
+    .replace(/∞/g,'\\infty ').replace(/×/g,'\\times ').replace(/·/g,'\\cdot ')
+    .replace(/Σ/g,'\\sum ').replace(/Δ/g,'\\Delta ').replace(/½/g,'\\frac{1}{2}')
+    .replace(/₁/g,'_{1}').replace(/₂/g,'_{2}').replace(/₃/g,'_{3}')
+    .replace(/₄/g,'_{4}').replace(/₅/g,'_{5}').replace(/₆/g,'_{6}')
+    .replace(/₀/g,'_{0}').replace(/ᵢ/g,'_{i}')
+    .replace(/′/g,"'").replace(/⟺/g,'\\iff ').replace(/•/g,'')
+    .replace(/\bsen\b/g,'\\operatorname{sen}')
+    .replace(/\bcos\b/g,'\\cos').replace(/\btan\b/g,'\\tan')
+    .replace(/\bsec\b/g,'\\sec').replace(/\bln\b/g,'\\ln');
+}
+
+var MATH_WORDS_JS={sen:1,cos:1,tan:1,sec:1,cot:1,csc:1,sin:1,ln:1,log:1,dx:1,du:1,dv:1,dt:1,pi:1,infty:1,exp:1,lim:1,int:1,sum:1,frac:1,sqrt:1,Delta:1,cdot:1,times:1,neq:1,leq:1,geq:1,to:1,approx:1,iff:1};
+var MATH_CHARS_JS='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/=()|,\\^_\'{} ';
+
+function isMathChar(c){return MATH_CHARS_JS.indexOf(c)>=0}
+
+function extendLeftMath(text,pos){
+  var i=pos;
+  while(i>0){
+    var c=text[i-1];
+    if(/[a-zA-Z]/.test(c)){
+      var wordEnd=i;
+      while(i>0 && /[a-zA-Z]/.test(text[i-1])) i--;
+      var word=text.substring(i,wordEnd);
+      if(word.length>1 && !MATH_WORDS_JS[word.toLowerCase()]) return wordEnd;
+    }else if(isMathChar(c)){i--}
+    else return i;
+  }
+  return i;
+}
+
+function extendRightMath(text,pos){
+  var i=pos, n=text.length;
+  while(i<n){
+    var c=text[i];
+    if(/[a-zA-Z]/.test(c)){
+      var wordStart=i;
+      while(i<n && /[a-zA-Z]/.test(text[i])) i++;
+      var word=text.substring(wordStart,i);
+      if(word.length>1 && !MATH_WORDS_JS[word.toLowerCase()]) return wordStart;
+    }else if(isMathChar(c)){i++}
+    else return i;
+  }
+  return i;
+}
+
+function wrapInlineMath(text){
+  // Find math anchors: \command, ^{, _{
+  var anchors=[];
+  var cmdRe=/\\(operatorname\{sen\}|int|sqrt|pi|sum|Delta|frac|ln|cos|tan|sec|neq|leq|geq|to|approx|infty|times|cdot|iff|bullet)\b/g;
+  var m;
+  while((m=cmdRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  var supRe=/\^\{/g;
+  while((m=supRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  var subRe=/_\{/g;
+  while((m=subRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  
+  if(anchors.length===0) return text;
+  
+  // Extend each anchor
+  var segments=[];
+  for(var a=0;a<anchors.length;a++){
+    var left=extendLeftMath(text,anchors[a][0]);
+    var right=extendRightMath(text,anchors[a][1]);
+    segments.push([left,right]);
+  }
+  
+  // Sort by start
+  segments.sort(function(a,b){return a[0]-b[0]});
+  
+  // Merge overlapping
+  var merged=[];
+  for(var s=0;s<segments.length;s++){
+    if(merged.length>0 && segments[s][0]<=merged[merged.length-1][1]+1){
+      merged[merged.length-1][1]=Math.max(merged[merged.length-1][1],segments[s][1]);
+    }else{
+      merged.push([segments[s][0],segments[s][1]]);
+    }
+  }
+  
+  // Build result
+  var result='';
+  var lastEnd=0;
+  for(var s=0;s<merged.length;s++){
+    result+=text.substring(lastEnd,merged[s][0]);
+    var mathText=text.substring(merged[s][0],merged[s][1]).trim();
+    if(mathText.length>0){
+      if(mathText.charAt(0)==='{') result+='$ '+mathText+'$';
+      else result+='$'+mathText+'$';
+    }
+    lastEnd=merged[s][1];
+  }
+  result+=text.substring(lastEnd);
+  return result;
+}
+
+function convertMathToLatex(html){
+  // 1. Convert formula boxes to $$...$$ display math
+  html=html.replace(/<div class="formula-box">([\s\S]*?)<\/div>/g,function(m,content){
+    var latex=htmlToLatex(content).trim();
+    return '<div class="formula-box">$$'+latex+'$$</div>';
+  });
+  
+  // 2. Convert ALL math notation (sup, sub, Unicode, functions) to LaTeX on full HTML
+  html=htmlToLatex(html);
+  
+  // 3. Split by remaining HTML tags and wrap inline math in text segments
+  var parts=html.split(/(<[^>]+>)/);
+  var result='';
+  for(var i=0;i<parts.length;i++){
+    if(parts[i].length===0) continue;
+    if(parts[i].charAt(0)==='<' && parts[i].charAt(parts[i].length-1)==='>'){
+      // HTML tag - keep as-is
+      result+=parts[i];
+    }else{
+      // Text segment - wrap math expressions in $...$
+      result+=wrapInlineMath(parts[i]);
+    }
+  }
+  return result;
+}
+
 
 function normalizeStr(s){
   return String(s).toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/·/g,'*')
@@ -931,6 +1082,7 @@ function getModulo(id){return MODULES.find(m=>m.id===id)}
 function siguienteModulo(id){
   const idx = MODULES.findIndex(m=>m.id===id);
   if(idx<0||idx>=MODULES.length-1) return null;
+  // Skip m0
   for(let i=idx+1;i<MODULES.length;i++){
     if(MODULES[i].id!=='m0') return MODULES[i];
   }
@@ -977,6 +1129,7 @@ function renderDashboard(){
     }
     grid.appendChild(card);
   });
+  // Update global progress
   const mods=MODULES.filter(m=>m.id!=='m0');
   let totalDone=0,totalAct=0;
   mods.forEach(m=>{
@@ -984,11 +1137,13 @@ function renderDashboard(){
     totalDone+=e.scoreActividades;
     totalAct+=e.totalActividades;
   });
+  // Add consolidation bonus
   let dominatedCount=mods.filter(m=>ESTADO.modulos[m.id].dominado).length;
   let pct=Math.round(((totalDone/totalAct)*0.7 + (dominatedCount/mods.length)*0.3)*100);
   if(isNaN(pct))pct=0;
   $('progress-pct').textContent=pct+'%';
   $('progress-fill').style.width=pct+'%';
+  // Render side panels
   renderFormulaRef();
   renderErroresList();
   renderProgresoDetallado();
@@ -1006,6 +1161,45 @@ function irDashboard(){
   renderDashboard();
   window.scrollTo(0,0);
 }
+/* ============================================================
+   SELECCIÓN DE ACTIVIDADES POR SESIÓN
+   ============================================================ */
+// Semilla de sesión: cambia cada vez que se abre el archivo
+var SESSION_SEED = Math.floor(Math.random()*1000000);
+
+// Shuffle determinista con semilla (para que las 3 actividades no cambien al navegar dentro de la misma sesión)
+function shuffleWithSeed(arr,seed){
+  var s=seed;
+  for(var i=arr.length-1;i>0;i--){
+    s=(s*9301+49297)%233280;
+    var j=Math.floor((s/233280)*(i+1));
+    var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
+  }
+  return arr;
+}
+
+// Devuelve los índices de las 3 actividades a mostrar en esta sesión
+function getActividadesVisibles(modId){
+  var m=getModulo(modId);
+  if(!m||m.esDiagnostico) return m.actividades.map(function(_,i){return i});
+  var est=ESTADO.modulos[modId];
+  var todas=m.actividades.map(function(a,i){return {idx:i,answered:est.actividades[i]&&est.actividades[i].correcta}});
+  var sinResponder=todas.filter(function(t){return !t.answered});
+  var respondidas=todas.filter(function(t){return t.answered});
+  // Barajar con la semilla de sesión + id del módulo
+  shuffleWithSeed(sinResponder,SESSION_SEED+modId.charCodeAt(1)*1000);
+  shuffleWithSeed(respondidas,SESSION_SEED+modId.charCodeAt(1)*1000+7);
+  // Priorizar sin responder, hasta 3
+  var visibles=sinResponder.slice(0,3);
+  // Rellenar con respondidas si faltan
+  if(visibles.length<3){
+    visibles=visibles.concat(respondidas.slice(0,3-visibles.length));
+  }
+  // Ordenar por índice original
+  visibles.sort(function(a,b){return a.idx-b.idx});
+  return visibles.map(function(v){return v.idx});
+}
+
 function abrirModulo(id){
   const m=getModulo(id);
   if(!m)return;
@@ -1017,7 +1211,7 @@ function abrirModulo(id){
   const est=ESTADO.modulos[id];
   if(!est.primerAcceso)est.primerAcceso=fechaHora();
   est.ultimoAcceso=fechaHora();
-  $('bc-modulo').textContent='Módulo '+m.num+': '+m.titulo.replace(/\$[^$]*\$/g,'').replace(/\\([a-zA-Z]+)/g,'$1');
+  $('bc-modulo').textContent='Módulo '+m.num+': '+m.titulo;
   renderModuloContenido(id);
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   $('view-module').classList.add('active');
@@ -1033,6 +1227,7 @@ function renderModuloContenido(id){
       <h2><span style="font-size:1.6rem">${m.icono}</span> Módulo ${m.num}: ${m.titulo}</h2>
       <div class="objetivo"><strong>Objetivo:</strong> ${m.objetivo}</div>
     </div>`;
+  // M0: diagnóstico
   if(m.esDiagnostico){
     html+=`<div class="section"><h3>🧭 Preguntas de diagnóstico</h3>`;
     if(ESTADO.m0.completado){
@@ -1044,10 +1239,11 @@ function renderModuloContenido(id){
     }
     m.actividades.forEach((a,i)=>html+=renderActividad(a,id,i));
     html+=`</div>`;
-    setHTML(cont,html);
+    cont.innerHTML=html;
     attachActividadHandlers(id);
     return;
   }
+  // Repaso espaciado
   if(m.repaso && m.repaso.length>0 && !est.repasoHecho){
     html+=`<div class="section"><h3>🔁 Repaso espaciado <span class="badge">repaso</span></h3>
       <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:10px">Antes de empezar, repasamos conceptos de módulos anteriores.</p>`;
@@ -1057,6 +1253,7 @@ function renderModuloContenido(id){
     });
     html+=`<button class="btn btn-primary" onclick="marcarRepasoHecho('${id}')">✓ Repaso completado, continuar</button></div>`;
   }
+  // Teoría
   html+=`<div class="section">
     <h3>📚 Mini-teoría</h3>
     <div class="accordion">
@@ -1064,9 +1261,11 @@ function renderModuloContenido(id){
       <div class="acc-body"><div class="teoria-content">${m.teoria}</div></div>
     </div>
   </div>`;
+  // Ejemplo resuelto
   if(m.ejemplo && m.ejemplo.length>0){
     html+=`<div class="section"><h3>🧩 Ejemplo resuelto paso a paso</h3><div id="ejemplo-display"></div></div>`;
   }
+  // Generador de práctica (M3-M8)
   if(['m3','m4','m5','m6','m7','m8'].includes(id)){
     html+=`<div class="practice-gen">
       <h3>🎲 Generador de práctica infinita</h3>
@@ -1078,16 +1277,23 @@ function renderModuloContenido(id){
       <div class="gen-display" id="gen-display" style="display:none"></div>
     </div>`;
   }
-  html+=`<div class="section"><h3>✏️ Actividades <span class="badge">${m.actividades.length}</span></h3>`;
-  m.actividades.forEach((a,i)=>html+=renderActividad(a,id,i));
+  // Actividades (3 por sesión, seleccionadas aleatoriamente)
+  var visibles=getActividadesVisibles(id);
+  var totalMod=m.actividades.length;
+  html+=`<div class="section"><h3>✏️ Actividades <span class="badge">${visibles.length} de ${totalMod}</span></h3>`;
+  html+=`<p style="font-size:.82rem;color:var(--text-muted);margin-bottom:12px">Esta sesión muestra ${visibles.length} actividades. Al reopening el archivo verás otras distintas. ¡Sigue practicando!</p>`;
+  visibles.forEach(function(idx){
+    html+=renderActividad(m.actividades[idx],id,idx);
+  });
   html+=`</div>`;
+  // Consolidación
   html+=`<div class="consolidacion">
     <h3>🏆 Consolidación: resuélvelo tú</h3>
     <p>${getConsolidacion(id)}</p>
     <div class="autoeval">
       <p style="font-weight:600;margin-bottom:6px">Autoevaluación guiada:</p>
       <label><input type="checkbox" id="auto-1"> Identifiqué qué regla aplicar</label>
-      <label><input type="checkbox" id="auto-2"> Escribí el $+C$ (si es indefinida)</label>
+      <label><input type="checkbox" id="auto-2"> Escribí el +C (si es indefinida)</label>
       <label><input type="checkbox" id="auto-3"> Verifiqué derivando</label>
       <label><input type="checkbox" id="auto-4"> Mi respuesta coincide con la esperada</label>
     </div>
@@ -1104,14 +1310,14 @@ function renderModuloContenido(id){
 
 function getConsolidacion(id){
   const consolidaciones={
-    m1:'Calcula la antiderivada general de $f(x)=8x^{3}$ y verifica derivando. Luego encuentra la antiderivada específica sabiendo que $F(0)=5$.',
-    m2:'Resuelve $\\int (4x^{3}-6x+2)\\,dx$ mostrando cada paso.',
-    m3:'Calcula $\\int x^{-4}\\,dx$ y $\\int x^{2/3}\\,dx$. Verifica ambos derivando.',
-    m4:'Calcula $\\int (5\\operatorname{sen} x - 2\\cos x)\\,dx$ y verifica derivando.',
-    m5:'Calcula $\\int \\dfrac{6x}{3x^{2}+1}\\,dx$ identificando $f$ y $f\'$.',
-    m6:'Calcula la suma izquierda de $f(x)=2x$ en $[0,4]$ con $n=4$. Muestra la tabla de subintervalos.',
-    m7:'Calcula el área entre $y=x+3$ e $y=x^{2}$ en el intervalo donde se intersecan.',
-    m8:'Resuelve $\\int 3x^{2}(x^{3}+2)^{4}\\,dx$ por sustitución, mostrando $u$, $du$ y el regreso a $x$.'
+    m1:'Calcula la antiderivada general def(x)=8x<sup>3</sup>yverifica derivando. Luego encuentra la antiderivada específica sabiendo que F(0)=5.',
+    m2:'Resuelve∫ (4x<sup>3</sup>-6x+2)dxmostrando cada paso.',
+    m3:'Calcula∫ x<sup>-4</sup>dx y ∫ x<sup>2/3</sup>dx. Verifica ambos derivando.',
+    m4:'Calcula∫ (5sen x - 2cos x)dxyverifica derivando.',
+    m5:'Calcula∫ (6x/(3x<sup>2</sup>+1))dxidentificando f y f\'.',
+    m6:'Calcula la suma izquierda de f(x)=2x en [0,4] con n=4. Muestra la tabla de subintervalos.',
+    m7:'Calcula el área entrey=x+3 e y=x<sup>2</sup>en el intervalo donde se intersecan.',
+    m8:'Resuelve∫ 3x<sup>2</sup>(x<sup>3</sup>+2)<sup>4</sup>dxpor sustitución, mostrando u, du y el regreso a x.'
   };
   return consolidaciones[id]||'Resuelve el ejercicio final del módulo.';
 }
@@ -1153,6 +1359,7 @@ function marcarRepasoHecho(id){
    RENDERIZADORES DE ACTIVIDADES
    ============================================================ */
 function renderActividadSimple(act,modId,rId){
+  // Simplified renderer for repaso (no tracking)
   if(act.tipo==='opcion_multiple'){
     let opts=act.opciones.map((o,i)=>`<div class="opcion" onclick="seleccionarSimple(this,'${rId}',${i},${act.correcta})"><div class="marker">${String.fromCharCode(65+i)}</div><div>${o}</div></div>`).join('');
     return `<div class="actividad" id="${rId}"><div class="act-enunciado">${act.enunciado}</div><div class="opciones">${opts}</div><div class="feedback" id="fb-${rId}"></div></div>`;
@@ -1185,6 +1392,7 @@ function renderActividad(act,modId,idx){
   switch(act.tipo){
     case 'opcion_multiple':
     case 'verdadero_falso':{
+      // For verdadero_falso: ensure opciones exist and convert boolean correcta to index
       const opciones = act.opciones || ['Verdadero','Falso'];
       const correctIdx = (act.tipo==='verdadero_falso') ? (act.correcta?0:1) : act.correcta;
       let opts=opciones.map((o,i)=>{
@@ -1202,6 +1410,7 @@ function renderActividad(act,modId,idx){
         <div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarMulti('${aId}')">Verificar</button></div>`;
       break;
     case 'completar_hueco':
+      // enunciado already rendered above (contains the input)
       html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarHueco('${aId}',${idx})">Verificar</button></div>`;
       break;
     case 'ordenar_pasos':
@@ -1213,9 +1422,11 @@ function renderActividad(act,modId,idx){
       html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarEmparejar('${aId}',${idx})">Verificar emparejamientos</button></div>`;
       break;
     case 'numerica':
+      // enunciado already rendered above (contains the input)
       html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarNumerica('${aId}',${idx})">Verificar</button></div>`;
       break;
   }
+  // Hints (always show — generic hints generated if no explicit pistas)
   {
     html+=`<div class="hints">
       <button class="hint-btn" onclick="mostrarPista('${aId}',1)">💡 Pista 1</button>
@@ -1233,6 +1444,7 @@ function renderActividad(act,modId,idx){
 }
 
 function renderOrdenItems(pasos,aId){
+  // Shuffle
   let shuffled=[...pasos].sort(()=>Math.random()-0.5);
   return shuffled.map((p,i)=>`<div class="orden-item" data-orden="${p.orden}">
     <span class="pos">${i+1}</span>
@@ -1247,11 +1459,12 @@ function moverOrden(aId,i,dir){
   const j=i+dir;
   if(j<0||j>=items.length)return;
   list.insertBefore(items[j],items[i]);
+  // Update pos numbers
   [...list.querySelectorAll('.orden-item')].forEach((it,k)=>it.querySelector('.pos').textContent=k+1);
 }
 function renderEmparejar(parejas,aId){
   let lefts=parejas.map((p,i)=>`<div class="emp-item" data-side="L" data-idx="${i}" onclick="selEmp('${aId}','L',${i})">${p.izq}</div>`).join('');
-  let rights=[...parejas].sort(()=>Math.random()-0.5).map(p=>`<div class="emp-item" data-side="R" data-val="${escapeHtml(p.der)}" onclick="selEmp('${aId}','R',this)">${p.der}</div>`).join('');
+  let rights=[...parejas].sort(()=>Math.random()-0.5).map(p=>`<div class="emp-item" data-side="R" data-val="${p.der}" onclick="selEmp('${aId}','R',this)">${p.der}</div>`).join('');
   return `<div class="emparejar-grid">
     <div class="emp-col">${lefts}</div>
     <div class="emp-col" id="emp-right-${aId}">${rights}</div>
@@ -1267,10 +1480,12 @@ function selEmp(aId,side,idx){
     empSel[aId].L=idx;
     cont.querySelectorAll(`.emp-item[data-side="L"]`)[idx].classList.add('selected');
   }else{
+    // idx is the element
     idx.classList.add('selected');
     empSel[aId].Relem=idx;
   }
   if(empSel[aId].L!==undefined && empSel[aId].Relem){
+    // Match
     const act=getActFromElem(aId);
     const pareja=act.parejas[empSel[aId].L];
     const rightVal=empSel[aId].Relem.getAttribute('data-val');
@@ -1282,16 +1497,14 @@ function selEmp(aId,side,idx){
       empSel[aId].Relem.classList.remove('selected');
       empSel[aId]={};
       const matched=cont.querySelectorAll('.emp-item.matched').length;
-      const st=$('emp-status-'+aId);
-      if(st)st.textContent=`${matched}/${act.parejas.length} emparejados`;
+      $('emp-status-'+aId).textContent=`${matched}/${act.parejas.length} emparejados`;
     }else{
       const leftElem=cont.querySelectorAll('.emp-item[data-side="L"]')[empSel[aId].L];
       leftElem.classList.add('incorrect');
       empSel[aId].Relem.classList.add('incorrect');
-      const selRef=empSel[aId];
       setTimeout(()=>{
         leftElem.classList.remove('incorrect','selected');
-        if(selRef.Relem)selRef.Relem.classList.remove('incorrect','selected');
+        empSel[aId].Relem.classList.remove('incorrect','selected');
         empSel[aId]={};
       },800);
     }
@@ -1313,6 +1526,7 @@ function seleccionarOpcion(aId,sel){
   cont.querySelectorAll('.opcion').forEach(o=>o.classList.remove('selected'));
   cont.querySelectorAll('.opcion')[sel].classList.add('selected');
   cont.dataset.sel=sel;
+  // Auto-verify on selection
   verificarOpcion(aId);
 }
 function attachActividadHandlers(modId){
@@ -1325,6 +1539,7 @@ function verificarOpcion(aId){
   const act=getModulo(modId).actividades[idx];
   const sel=parseInt(cont.dataset.sel);
   if(sel===undefined||isNaN(sel)){toast('Selecciona una opción','info');return}
+  // For verdadero_falso, correcta is boolean: convert to index
   const correctIdx=(act.tipo==='verdadero_falso')?(act.correcta?0:1):act.correcta;
   const opciones=act.opciones||['Verdadero','Falso'];
   const fb=$('fb-'+aId);
@@ -1467,6 +1682,7 @@ function verificarEmparejar(aId,idx){
   }else{
     fb.className='feedback show err';
     setHTML(fb,`Llevas ${matched}/${act.parejas.length} correctos. `+(act.feedback.errores||'Sigue intentando.'));
+    if(matched>0)registrarIntento(modId,idx,false);
   }
   actualizarEstadoDominar(modId);
 }
@@ -1509,6 +1725,7 @@ function mostrarPista(aId,nivel){
   if(act.pistas && act.pistas[nivel-1]){
     pista=act.pistas[nivel-1];
   }else{
+    // Generate generic hints based on activity type
     pista=generarPistaGenerica(act,nivel,modId);
   }
   if(!pista)return;
@@ -1517,6 +1734,8 @@ function mostrarPista(aId,nivel){
 }
 function generarPistaGenerica(act,nivel,modId){
   const tipo=act.tipo;
+  const mod=getModulo(modId);
+  // Get the correct answer's text as a hint source (handle verdadero_falso and missing opciones)
   let correctaTxt='';
   if(act.tipo==='verdadero_falso'){
     correctaTxt=act.correcta?'Verdadero':'Falso';
@@ -1525,17 +1744,17 @@ function generarPistaGenerica(act,nivel,modId){
   }else if(act.respuesta){
     correctaTxt=Array.isArray(act.respuesta)?act.respuesta[0]:act.respuesta;
   }
-
+  
   if(nivel===1){
     const reminders={
       m1:'Piensa: ¿qué función, al derivarse, da el integrando? La antiderivada "deshace" la derivada.',
-      m2:'Aplica linealidad: separa término a término y usa las reglas básicas. No olvides $+C$.',
-      m3:'Regla de la potencia: sube el exponente en 1 ($n\\to n+1$) y divide entre el nuevo exponente. Cuidado con $n=-1$.',
-      m4:'$\\int \\operatorname{sen} x = -\\cos x$ (con signo menos); $\\int \\cos x = \\operatorname{sen} x$. Verifica derivando.',
-      m5:'Si el integrando es $\\dfrac{1}{x}$ o $f\'/f$, el resultado involucra $\\ln|\\cdot|$. Recuerda el valor absoluto.',
-      m6:'Para sumas de Riemann: calcula $\\Delta x=(b-a)/n$, lista los puntos, evalúa $f$ y multiplica por $\\Delta x$.',
-      m7:'Para área entre curvas: encuentra intersecciones, decide qué va arriba, integra (superior $-$ inferior).',
-      m8:'Elige $u$ como la función interna. Calcula $du$. Si $du$ aparece completo en el integrando, la sustitución funciona.'
+      m2:'Aplica linealidad: separa término a término y usa las reglas básicas. No olvides +C.',
+      m3:'Regla de la potencia: sube el exponente en 1 (n→n+1) y divide entre el nuevo exponente. Cuidado con n=−1.',
+      m4:'∫sen x=−cos x (con signo menos); ∫cos x=sen x. Verifica derivando.',
+      m5:'Si el integrando es 1/x o f′/f, el resultado involucra ln|...|. Recuerda el valor absoluto.',
+      m6:'Para sumas de Riemann: calcula Δx=(b−a)/n, lista los puntos, evalúa f y multiplica por Δx.',
+      m7:'Para área entre curvas: encuentra intersecciones, decide qué va arriba, integra (superior−inferior).',
+      m8:'Elige u como la función interna. Calcula du. Si du aparece completo en el integrando, la sustitución funciona.'
     };
     return reminders[modId]||'Revisa la teoría del módulo y aplica la regla correspondiente.';
   }
@@ -1556,7 +1775,7 @@ function generarPistaGenerica(act,nivel,modId){
   }
   if(nivel===3){
     if(tipo==='opcion_multiple'||tipo==='verdadero_falso'){
-      return 'La respuesta correcta está relacionada con: '+String(correctaTxt).replace(/\$[^$]*\$/g,'').substring(0,60)+'...';
+      return 'La respuesta correcta está relacionada con: '+String(correctaTxt).replace(/<[^>]+>/g,'').substring(0,60)+'...';
     }
     if(tipo==='completar_hueco'){
       return 'La respuesta empieza con: '+String(correctaTxt).substring(0,4)+'...';
@@ -1607,7 +1826,8 @@ function registrarError(modId,idx,enunciado,dada,correcta){
 function evalDiagnostico(){
   const m0=ESTADO.m0;
   m0.max=getModulo('m0').actividades.length;
-  m0.completado=Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).length>=m0.max;
+  m0.completado=m0.intentos.filter((_,i)=>typeof m0.intentos[i+'_ok']!=='undefined').length>=m0.max || Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).length>=m0.max;
+  // Generate recommendations based on categories
   const cats={derivadas:0,exponentes:0,sigma:0,algebra:0};
   const acts=getModulo('m0').actividades;
   Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).forEach(k=>{
@@ -1615,7 +1835,7 @@ function evalDiagnostico(){
     if(acts[i]&&acts[i].cat)cats[acts[i].cat]++;
   });
   m0.recomendaciones=[];
-  if(cats.derivadas<2)m0.recomendaciones.push('Refuerza derivadas básicas ($x^{n}$, $\\operatorname{sen}$, $\\cos$, $\\ln$) — las necesitas en todos los módulos.');
+  if(cats.derivadas<2)m0.recomendaciones.push('Refuerza derivadas básicas (x^n, sen, cos, ln) — las necesitas en todos los módulos.');
   if(cats.exponentes<2)m0.recomendaciones.push('Refuerza leyes de exponentes y radicales antes del módulo 3 (regla de la potencia).');
   if(cats.sigma<1)m0.recomendaciones.push('Repasa la notación sigma antes del módulo 6 (sumas de Riemann).');
   if(cats.algebra<2)m0.recomendaciones.push('Refuerza álgebra de fracciones — la usarás en sustitución y área entre curvas.');
@@ -1623,7 +1843,7 @@ function evalDiagnostico(){
   saveState();
 }
 function repetirDiagnostico(){
-  ESTADO.m0={completado:false,score:0,max:8,recomendaciones:[],intentos:[]};
+  ESTADO.m0={completado:false,score:0,max:6,recomendaciones:[],intentos:[]};
   saveState();
   abrirModulo('m0');
 }
@@ -1647,7 +1867,7 @@ function actualizarEstadoDominar(modId){
   }else{
     btn.disabled=true;
     let faltan=[];
-    if(!cumplePct)faltan.push(`alcanzar ${Math.round(m.criterioDominio*100)}% de aciertos (vas ${Math.round(pct*100)}%)`);
+    if(!cumplePct)faltan.push(`alcanzar ${Math.round(m.criterioDominio*100)}% de aciertos (vas ${est.scoreActividades}/${est.totalActividades} = ${Math.round(pct*100)}%)`);
     if(!cumpleConsolidacion)faltan.push('completar la consolidación');
     msg.textContent='Para marcar como dominado te falta: '+faltan.join(' y ')+'.';
   }
@@ -1657,10 +1877,11 @@ function marcarDominado(){
   const est=ESTADO.modulos[moduloActual];
   est.dominado=true;
   est.insignia=true;
+  // Unlock next
   const next=siguienteModulo(moduloActual);
   if(next){
     ESTADO.modulos[next.id].desbloqueado=true;
-    toast(`¡Módulo dominado! Insignia obtenida 🏅. Desbloqueado: ${next.titulo.replace(/\$[^$]*\$/g,'')}`,'success');
+    toast(`¡Módulo dominado! Insignia obtenida 🏅. Desbloqueado: ${next.titulo}`,'success');
   }else{
     toast('¡Módulo dominado! Has completado el curso. 🎉','success');
   }
@@ -1738,35 +1959,36 @@ function verificarPractica(){
 }
 
 function genPotencia(){
+  // Random exponent
   const tipos=['entero_pos','entero_neg','fraccion'];
   const tipo=tipos[Math.floor(Math.random()*tipos.length)];
   let n,nStr,solucion,acepta,problema,pista,explicacion;
   if(tipo==='entero_pos'){
     n=2+Math.floor(Math.random()*5);
-    nStr=`x^{${n}}`;
-    solucion=`$\\dfrac{x^{${n+1}}}{${n+1}} + C$`;
-    acepta=[`x^${n+1}/${n+1}`,`x^${n+1}/(${n+1})`,`1/${n+1}x^${n+1}`];
-    problema=`$\\int ${nStr}\\,dx$`;
-    pista='Recuerda: subir el exponente en 1 y dividir entre el nuevo exponente.';
+    nStr=`x<sup>${n}</sup>`;
+    solucion=`x<sup>${n+1}</sup>/${n+1} + C`;
+    acepta=[`x^${n+1}/${n+1}`,`x^${n+1}/(${n+1})`,`${n+1===1?'':`1/${n+1}`}x^${n+1}`];
+    problema=`∫ ${nStr} dx`;
+    pista=`Recuerda: subir el exponente en 1 y dividir entre el nuevo exponente.`;
     explicacion=`Subes ${n} a ${n+1} y divides entre ${n+1}.`;
   }else if(tipo==='entero_neg'){
     const k=2+Math.floor(Math.random()*3);
     n=-k;
-    nStr=`x^{-${k}}`;
-    solucion=`$\\dfrac{x^{-${k-1}}}{-${k-1}} + C = -\\dfrac{1}{${k-1}x^{${k-1}}} + C$`;
+    nStr=`x<sup>−${k}</sup>`;
+    solucion=`x<sup>−${k-1}</sup>/${-(k-1)} + C = −1/(${k-1}x<sup>${k-1}</sup>) + C`;
     acepta=[`x^${-k+1}/${-k+1}`,`x^-${k-1}/-${k-1}`,`-1/(${k-1}x^${k-1})`,`-1/${k-1}x^${k-1}`];
-    problema=`$\\int ${nStr}\\,dx$`;
-    pista=`$n+1 = -${k}+1 = -${k-1}$. Divide entre $-${k-1}$.`;
-    explicacion=`$n=-${k}$, $n+1=-${k-1}$. Resultado: $\\dfrac{x^{-${k-1}}}{-${k-1}} = -\\dfrac{1}{${k-1}x^{${k-1}}}$.`;
+    problema=`∫ ${nStr} dx`;
+    pista=`n+1 = −${k}+1 = −${k-1}. Divide entre −${k-1}.`;
+    explicacion=`n=−${k}, n+1=−${k-1}. Resultado: x^(−${k-1})/(−${k-1}) = −1/(${k-1}x^${k-1}).`;
   }else{
     const num=1+Math.floor(Math.random()*3);
     const den=2+Math.floor(Math.random()*3);
     const newNum=num+den;
-    solucion=`$\\dfrac{${den}}{${newNum}}x^{${newNum}/${den}} + C$`;
+    solucion=`(${den}/${newNum})x<sup>${newNum}/${den}</sup> + C`;
     acepta=[`${den}/${newNum}x^(${newNum}/${den})`,`(${den}/${newNum})x^(${newNum}/${den})`,`${den}/${newNum}x^${newNum}/${den}`];
-    problema=`$\\int x^{${num}/${den}}\\,dx$`;
-    pista=`$n+1 = ${num}/${den}+1 = ${newNum}/${den}$. Dividir entre $${newNum}/${den}$ = multiplicar por $${den}/${newNum}$.`;
-    explicacion=`$n=${num}/${den}$, $n+1=${newNum}/${den}$. Multiplicas por $${den}/${newNum}$.`;
+    problema=`∫ x<sup>${num}/${den}</sup> dx`;
+    pista=`n+1 = ${num}/${den}+1 = ${newNum}/${den}. Dividir entre ${newNum}/${den} = multiplicar por ${den}/${newNum}.`;
+    explicacion=`n=${num}/${den}, n+1=${newNum}/${den}. Multiplicas por ${den}/${newNum}.`;
   }
   return {tipo:'simbolica',problema,solucion,acepta,pista,explicacion};
 }
@@ -1775,83 +1997,115 @@ function genSenCos(){
   const a=1+Math.floor(Math.random()*5);
   const b=1+Math.floor(Math.random()*5);
   const signo=Math.random()<0.5?1:-1;
-  const sigStr=signo<0?'-':'+';
-  const problema=`$\\int (${a}\\operatorname{sen} x ${sigStr} ${b}\\cos x)\\,dx$`;
+  const sigStr=signo<0?'−':'+';
+  const problema=`∫ (${a}sen x ${sigStr} ${b}cos x) dx`;
+  const solucion=`${signo<0?'−':''}${a}cos x ${sigStr==='+'?'−':'+'} ${b}sen x + C`;
+  // Simplify: integral of a·sen − b·cos = −a·cos − b·sen; integral of a·sen + b·cos = −a·cos + b·sen
   let resA,resB;
-  if(signo===1){ resA=-a; resB=b; }
-  else{ resA=-a; resB=-b; }
-  const solStr=`$${resA}\\cos x ${resB>0?'+':'-'} ${Math.abs(resB)}\\operatorname{sen} x + C$`;
+  if(signo===1){ // +b·cos
+    resA=-a; resB=b; // -a·cos + b·sen
+  }else{ // -b·cos
+    resA=-a; resB=-b; // -a·cos - b·sen
+  }
+  const solStr=`${resA}cos x ${resB>0?'+':'−'} ${Math.abs(resB)}sen x + C`;
   const acepta=[
     `${resA}cos x ${resB>0?'+':'-'} ${Math.abs(resB)}sen x`,
     `${resA}cosx${resB>0?'+':'-'}${Math.abs(resB)}senx`,
     `${resA}*cos x ${resB>0?'+':'-'} ${Math.abs(resB)}*sen x`
   ];
-  return {tipo:'simbolica',problema,solucion:solStr,acepta,pista:'$\\int \\operatorname{sen}=-\\cos$, $\\int \\cos=\\operatorname{sen}$. Aplica linealidad.',explicacion:'La integral de $a\\operatorname{sen}$ es $-a\\cos$; la de $\\pm b\\cos$ es $\\pm b\\operatorname{sen}$.'};
+  return {tipo:'simbolica',problema,solucion:solStr,acepta,pista:'∫sen=−cos, ∫cos=sen. Aplica linealidad.',explicacion:'La integral de a·sen es −a·cos; la de ±b·cos es ±b·sen.'};
 }
 
 function genLn(){
+  const a=1+Math.floor(Math.random()*4);
+  const b=1+Math.floor(Math.random()*5);
+  const problema=`∫ ${a}x / (${a/2===Math.floor(a/2)?a/2:a}x<sup>2</sup>+${b}) dx`;
+  // Simplify: numerator is a·x, denom is (a/2)x²+b if a is even, else ax²+b... 
+  // Let's use: numerator = k·x, denom = k·x² + c, where k = numerator coefficient / 2... 
+  // Actually let's make it cleaner: num = 2m·x, denom = m·x² + c
   const m=1+Math.floor(Math.random()*3);
   const c=1+Math.floor(Math.random()*5);
   const num=2*m;
-  const prob=`$\\int \\dfrac{${num}x}{${m}x^{2}+${c}}\\,dx$`;
-  const solucion=`$\\ln|${m}x^{2}+${c}| + C$`;
+  const prob=`∫ (${num}x) / (${m}x<sup>2</sup>+${c}) dx`;
+  const solucion=`ln|${m}x<sup>2</sup>+${c}| + C`;
   const acepta=[
     `ln|${m}x^2+${c}|`,`ln(${m}x^2+${c})`,`ln|${m}x²+${c}|`,
     `ln(${m}x^2+${c})+c`,`ln|${m}x^2+${c}|+c`
   ];
-  return {tipo:'simbolica',problema:prob,solucion,acepta,pista:`¿El numerador es la derivada del denominador? $\\dfrac{d}{dx}[${m}x^{2}+${c}] = ${num}x$.`,explicacion:`$\\dfrac{d}{dx}[${m}x^{2}+${c}]=${num}x$ (numerador). Aplica $\\int \\dfrac{f'}{f} = \\ln|f|+C$.`};
+  return {tipo:'simbolica',problema:prob,solucion,acepta,pista:'¿El numerador es la derivada del denominador? d/dx[mx²+c] = 2mx.',explicacion:`d/dx[${m}x²+${c}]=${num}x (numerador). Aplica ∫f′/f = ln|f|+C.`};
 }
 
 function genRiemann(){
   const tipos=['izquierda','derecha'];
   const tipo=tipos[Math.floor(Math.random()*tipos.length)];
-  const n=2+Math.floor(Math.random()*3);
+  const n=2+Math.floor(Math.random()*3); // 2,3,4
   const a=Math.floor(Math.random()*2);
-  const b=a+n;
+  const b=a+n; // ensures integer Δx
   const dx=(b-a)/n;
-  const c=1+Math.floor(Math.random()*3);
+  const func=1+Math.floor(Math.random()*3); // f(x)=x+c
+  const c=func;
+  // f(x) = x + c
   let puntos=[],valores=[],suma=0;
-  for(let i=0;i<=n;i++){puntos.push(a+i*dx);}
+  for(let i=0;i<=n;i++){
+    const x=a+i*dx;
+    puntos.push(x);
+  }
   if(tipo==='izquierda'){
-    for(let i=0;i<n;i++){const x=puntos[i];const v=x+c;valores.push(v);suma+=v;}
+    for(let i=0;i<n;i++){
+      const x=puntos[i];
+      const v=x+c;
+      valores.push(v);
+      suma+=v;
+    }
   }else{
-    for(let i=1;i<=n;i++){const x=puntos[i];const v=x+c;valores.push(v);suma+=v;}
+    for(let i=1;i<=n;i++){
+      const x=puntos[i];
+      const v=x+c;
+      valores.push(v);
+      suma+=v;
+    }
   }
   suma*=dx;
   const tipoTxt=tipo==='izquierda'?'izquierda':'derecha';
-  const problema=`Suma por ${tipoTxt} de $f(x)=x+${c}$ en $[${a},${b}]$ con $n=${n}$.<br><small>$\\Delta x=${dx}$; puntos: ${puntos.map(p=>p.toFixed(2)).join(', ')}</small>`;
-  return {tipo:'numerica',problema,solucion:`$${suma.toFixed(4)}$`,acepta:[],respuesta:suma,tolerancia:0.01,pista:`Suma los valores de $f$ en los ${n} puntos (${tipoTxt}) y multiplica por $\\Delta x=${dx}$.`,explicacion:`Valores: ${valores.map(v=>v.toFixed(2)).join(' + ')} = ${valores.reduce((s,v)=>s+v,0).toFixed(2)}; $\\times ${dx} = ${suma.toFixed(4)}$`};
+  const problema=`Suma por ${tipoTxt} de f(x)=x+${c} en [${a},${b}] con n=${n}.<br>
+  <small>Δx=${dx}; puntos: ${puntos.map(p=>p.toFixed(2)).join(', ')}</small>`;
+  return {tipo:'numerica',problema,solucion:`${suma}`,acepta:[],respuesta:suma,tolerancia:0.01,pista:`Suma los valores de f en los ${n} puntos (${tipoTxt}) y multiplica por Δx=${dx}.`,explicacion:`Valores: ${valores.map(v=>v.toFixed(2)).join(' + ')} = ${valores.reduce((s,v)=>s+v,0).toFixed(2)}; × ${dx} = ${suma.toFixed(4)}`};
 }
 
 function genArea(){
+  // Area between y=x+c and y=x² on [0, k]
   const c=1+Math.floor(Math.random()*3);
-  const k=c;
+  const k=c; // intersections at x=0 and x=c
+  // On (0,c): x+c > x²
+  // Area = ∫₀ᵏ (x+c - x²) dx = [x²/2 + cx - x³/3]₀ᵏ = k²/2 + ck - k³/3
   const area=k*k/2+c*k-k*k*k/3;
-  const problema=`Área entre $y=x+${c}$ e $y=x^{2}$ en $[0,${k}]$.<br><small>Intersecciones en $x=0$ y $x=${k}$. Superior: $y=x+${c}$.</small>`;
-  return {tipo:'numerica',problema,solucion:`$${area.toFixed(4)}$`,acepta:[],respuesta:area,tolerancia:0.02,pista:`$\\int_{0}^{${k}} (x+${c}-x^{2})\\,dx = \\left[\\dfrac{x^{2}}{2} + ${c}x - \\dfrac{x^{3}}{3}\\right]_{0}^{${k}}$`,explicacion:`Evaluando: $\\dfrac{${k*k}}{2} + ${c}\\cdot${k} - \\dfrac{${k*k*k}}{3} = ${area.toFixed(4)}$`};
+  const problema=`Área entre y=x+${c} e y=x<sup>2</sup> en [0,${k}].<br><small>Intersecciones en x=0 y x=${k}. Superior: y=x+${c}.</small>`;
+  return {tipo:'numerica',problema,solucion:`${area.toFixed(4)}`,acepta:[],respuesta:area,tolerancia:0.02,pista:`∫₀${k} (x+${c}−x²) dx = [x²/2 + ${c}x − x³/3]₀${k}`,explicacion:`Evaluando: ${k*k}/2 + ${c}·${k} − ${k*k*k}/3 = ${area.toFixed(4)}`};
 }
 
 function genSustitucion(){
   const tipo=Math.random()<0.5?'potencia':'trig';
   if(tipo==='potencia'){
+    const k=1+Math.floor(Math.random()*4); // u = x^k + c... let's do u=x²+c
     const c=1+Math.floor(Math.random()*4);
     const p=2+Math.floor(Math.random()*4);
-    const problema=`$\\int 2x(x^{2}+${c})^{${p}}\\,dx$`;
-    const solucion=`$\\dfrac{(x^{2}+${c})^{${p+1}}}{${p+1}} + C$`;
+    // ∫ 2x (x²+c)^p dx = (x²+c)^(p+1)/(p+1) + C
+    const problema=`∫ 2x (x<sup>2</sup>+${c})<sup>${p}</sup> dx`;
+    const solucion=`(x<sup>2</sup>+${c})<sup>${p+1}</sup>/${p+1} + C`;
     const acepta=[
       `(x^2+${c})^${p+1}/${p+1}`,`(x^2+${c})^${p+1}/(${p+1})`,
       `(x²+${c})^${p+1}/${p+1}`,`(x^2+${c})^${p+1}/(${p+1})+c`
     ];
-    return {tipo:'simbolica',problema,solucion,acepta,pista:`$u=x^{2}+${c}$, $du=2x\\,dx$. Reescribe como $\\int u^{${p}}\\,du$.`,explicacion:`$u=x^{2}+${c}$, $du=2x\\,dx \\to \\int u^{${p}}\\,du = \\dfrac{u^{${p+1}}}{${p+1}} + C = \\dfrac{(x^{2}+${c})^{${p+1}}}{${p+1}} + C$`};
+    return {tipo:'simbolica',problema,solucion,acepta,pista:`u=x²+${c}, du=2x dx. Reescribe como ∫u^${p} du.`,explicacion:`u=x²+${c}, du=2x dx → ∫u^${p} du = u^${p+1}/${p+1} + C = (x²+${c})^${p+1}/${p+1} + C`};
   }else{
-    const k=2+Math.floor(Math.random()*4);
-    const problema=`$\\int \\operatorname{sen}(${k}x)\\,dx$`;
-    const solucion=`$-\\dfrac{\\cos(${k}x)}{${k}} + C$`;
+    const k=2+Math.floor(Math.random()*4); // ∫ sen(kx) dx
+    const problema=`∫ sen(${k}x) dx`;
+    const solucion=`−cos(${k}x)/${k} + C`;
     const acepta=[
       `-cos(${k}x)/${k}`,`-cos(${k}x)/${k}+c`,`-(1/${k})cos(${k}x)`,
       `-cos(${k}x)/${k}+c`,`-(1/${k})cos(${k}x)+c`,`-cos${k}x/${k}`
     ];
-    return {tipo:'simbolica',problema,solucion,acepta,pista:`$u=${k}x$, $du=${k}\\,dx$. Ajusta con $\\dfrac{1}{${k}}$.`,explicacion:`$u=${k}x$, $du=${k}\\,dx \\to \\dfrac{1}{${k}}\\int \\operatorname{sen} u\\,du = \\dfrac{1}{${k}}(-\\cos u) = -\\dfrac{\\cos(${k}x)}{${k}} + C$`};
+    return {tipo:'simbolica',problema,solucion,acepta,pista:`u=${k}x, du=${k} dx. Ajusta con 1/${k}.`,explicacion:`u=${k}x, du=${k}dx → (1/${k})∫sen u du = (1/${k})(−cos u) = −cos(${k}x)/${k} + C`};
   }
 }
 
@@ -1867,7 +2121,6 @@ function descargarTexto(filename,content,mime='text/plain'){
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-function stripDollar(s){return String(s).replace(/\$[^$]*\$/g,'').replace(/<[^>]+>/g,'')}
 function descargarEvidenciaActividad(modId,idx,correcta,enunciado,respuesta){
   const ts=fechaHora();
   const m=getModulo(modId);
@@ -1877,13 +2130,13 @@ Estudiante: ${ESTADO.usuario.nombre||'(sin nombre)'}
 Grupo: ${ESTADO.usuario.grupo||'(sin grupo)'}
 Fecha: ${ts}
 
-Módulo: ${m.num}. ${stripDollar(m.titulo)} (ID: ${modId})
+Módulo: ${m.num}. ${m.titulo} (ID: ${modId})
 Actividad #: ${idx+1}
 
 Enunciado:
-${stripDollar(enunciado)}
+${enunciado.replace(/<[^>]+>/g,'')}
 
-Respuesta del estudiante: ${stripDollar(respuesta)}
+Respuesta del estudiante: ${String(respuesta).replace(/<[^>]+>/g,'')}
 ¿Correcta?: ${correcta?'SÍ':'NO'}
 
 ---
@@ -1899,11 +2152,11 @@ function descargarReporteModulo(modId){
   const est=ESTADO.modulos[modId];
   const ts=fechaHora();
   const pct=Math.round((est.scoreActividades/est.totalActividades)*100);
-  let html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reporte ${stripDollar(m.titulo)}</title>
+  let html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reporte ${m.titulo}</title>
   <style>body{font-family:Arial,sans-serif;max-width:700px;margin:20px auto;padding:20px;color:#333;background:#fff}
   h1{color:#333}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:8px}
   .ok{color:#333;font-weight:bold}.err{color:#999}</style></head><body>
-  <h1>Reporte de módulo: ${stripDollar(m.titulo)}</h1>
+  <h1>Reporte de módulo: ${m.titulo}</h1>
   <p><strong>Estudiante:</strong> ${ESTADO.usuario.nombre||'(sin nombre)'}<br>
   <strong>Grupo:</strong> ${ESTADO.usuario.grupo||'(sin grupo)'}<br>
   <strong>Correo:</strong> ${ESTADO.usuario.correo||'—'}<br>
@@ -1929,7 +2182,7 @@ function descargarReporteModulo(modId){
   });
   html+=`</table>
   <h2>Objetivo del módulo</h2>
-  <p>${stripDollar(m.objetivo)}</p>
+  <p>${m.objetivo}</p>
   <hr>
   <p style="font-size:.8rem;color:#666">Generado por Curso-Taller de Recuperación de Cálculo Integral · ${ts}</p>
   </body></html>`;
@@ -1952,7 +2205,7 @@ function descargarPortafolioCompleto(){
     totalAct+=e.totalActividades;
     totalCorrect+=e.scoreActividades;
     htmlModulos+=`<tr>
-      <td>M${m.num}: ${stripDollar(m.titulo)}</td>
+      <td>M${m.num}: ${m.titulo}</td>
       <td>${e.desbloqueado?'Sí':'No'}</td>
       <td>${e.scoreActividades}/${e.totalActividades}</td>
       <td>${pct}%</td>
@@ -1980,7 +2233,7 @@ function descargarPortafolioCompleto(){
   <strong>Correo:</strong> ${ESTADO.usuario.correo||'—'}<br>
   <strong>Fecha de inicio:</strong> ${new Date(ESTADO.usuario.fechaInicio).toLocaleDateString('es-MX')}<br>
   <strong>Fecha de generación:</strong> ${ts}</p>
-
+  
   <div class="resumen">
   <h2>Resumen global</h2>
   <table>
@@ -1993,7 +2246,7 @@ function descargarPortafolioCompleto(){
   </table>
   </div>
 
-  ${ESTADO.m0.completado&&ESTADO.m0.recomendaciones.length>0?`<div class="resumen"><h2>Recomendaciones del diagnóstico</h2><ul>${ESTADO.m0.recomendaciones.map(r=>`<li>${stripDollar(r)}</li>`).join('')}</ul></div>`:''}
+  ${ESTADO.m0.completado&&ESTADO.m0.recomendaciones.length>0?`<div class="resumen"><h2>Recomendaciones del diagnóstico</h2><ul>${ESTADO.m0.recomendaciones.map(r=>`<li>${r}</li>`).join('')}</ul></div>`:''}
 
   <h2>Detalle por módulo</h2>
   <table>
@@ -2003,17 +2256,17 @@ function descargarPortafolioCompleto(){
 
   ${ESTADO.errores.length>0?`<h2>Errores frecuentes (para repaso)</h2>
   <table>
-  <tr><th>Módulo</th><th>Pregunta</th><th>Tu respuesta</th><th>Correcta</th><th>Fecha</th></tr>
+  <tr><th>Módulo</th><th>Pregunta</th><td>Tu respuesta</th><th>Correcta</th><th>Fecha</th></tr>
   ${ESTADO.errores.slice(-20).map(e=>`<tr>
-    <td>${e.mod}</td><td>${stripDollar(e.enunciado)}</td>
-    <td class="err">${stripDollar(e.respuestaDada)}</td>
-    <td class="ok">${stripDollar(e.respuestaCorrecta)}</td>
+    <td>${e.mod}</td><td>${e.enunciado}</td>
+    <td class="err">${e.respuestaDada}</td>
+    <td class="ok">${e.respuestaCorrecta}</td>
     <td>${e.fecha}</td>
   </tr>`).join('')}
   </table>`:''}
 
   <h2>Insignias obtenidas</h2>
-  <p>${mods.filter(m=>ESTADO.modulos[m.id].insignia).map(m=>`<span class="badge">${m.icono} ${stripDollar(m.titulo)}</span>`).join(' ')||'<em>Aún no has obtenido insignias. ¡Sigue practicando!</em>'}</p>
+  <p>${mods.filter(m=>ESTADO.modulos[m.id].insignia).map(m=>`<span class="badge">${m.icono} ${m.titulo}</span>`).join(' ')||'<em>Aún no has obtenido insignias. ¡Sigue practicando!</em>'}</p>
 
   <hr>
   <p style="font-size:.85rem;color:#666">
@@ -2022,10 +2275,11 @@ function descargarPortafolioCompleto(){
   Generado: ${ts}
   </p>
   </body></html>`;
-
+  
   const filename=`portafolio_calculo_integral_${(ESTADO.usuario.nombre||'estudiante').replace(/\s+/g,'_')}.html`;
   descargarTexto(filename,html,'text/html');
-
+  
+  // Also download JSON with raw data
   const jsonData={
     curso:'Recuperación de Cálculo Integral',
     estudiante:ESTADO.usuario,
@@ -2038,8 +2292,8 @@ function descargarPortafolioCompleto(){
   mods.forEach(m=>{
     const e=ESTADO.modulos[m.id];
     jsonData.modulos[m.id]={
-      titulo:stripDollar(m.titulo),
-      objetivo:stripDollar(m.objetivo),
+      titulo:m.titulo,
+      objetivo:m.objetivo,
       desbloqueado:e.desbloqueado,
       completado:e.completado,
       dominado:e.dominado,
@@ -2053,7 +2307,7 @@ function descargarPortafolioCompleto(){
     };
   });
   descargarTexto('portafolio_datos.json',JSON.stringify(jsonData,null,2),'application/json');
-
+  
   toast('Portafolio completo descargado (HTML + JSON)','success');
 }
 
@@ -2091,8 +2345,8 @@ function renderErroresList(){
     html+=`<div class="err-item">
       <div class="err-mod">Módulo ${e.mod} · Actividad ${e.idx+1}</div>
       <div class="err-q">${e.enunciado}</div>
-      <div>Tu respuesta: <span style="color:#999">${escapeHtml(e.respuestaDada)}</span></div>
-      <div>Correcta: <span style="color:#333;font-weight:bold">${escapeHtml(e.respuestaCorrecta)}</span></div>
+      <div>Tu respuesta: <span style="color:#999">${e.respuestaDada}</span></div>
+      <div>Correcta: <span style="color:#333;font-weight:bold">${e.respuestaCorrecta}</span></div>
       <div class="err-date">${e.fecha}</div>
     </div>`;
   });
@@ -2130,7 +2384,7 @@ function editarDatos(){
       <input class="input-line" id="dat-nombre" value="${escapeHtml(ESTADO.usuario.nombre)}" placeholder="Tu nombre" style="width:100%">
     </div>
     <div class="field">
-      <label> Carrera / Grupo</label>
+      <label>Grupo / sección</label>
       <input class="input-line" id="dat-grupo" value="${escapeHtml(ESTADO.usuario.grupo)}" placeholder="Ej: Cálculo Integral - Grupo B" style="width:100%">
     </div>
     <div class="field">
@@ -2214,7 +2468,7 @@ function confirmarReset(){
   localStorage.removeItem(STORAGE_KEY);
   ESTADO={
     usuario:{nombre:'',grupo:'',correo:'',fechaInicio:new Date().toISOString()},
-    m0:{completado:false,score:0,max:8,recomendaciones:[],intentos:[]},
+    m0:{completado:false,score:0,max:6,recomendaciones:[],intentos:[]},
     modulos:{},
     errores:[],
     evidencias:[],
@@ -2232,7 +2486,9 @@ function confirmarReset(){
 function init(){
   loadState();
   initModulosEstado();
+  // Ensure m0 is always accessible
   renderDashboard();
+  // First-time welcome
   if(!ESTADO.usuario.nombre && !localStorage.getItem(STORAGE_KEY+'_welcomed')){
     setTimeout(()=>{
       editarDatos();
@@ -2240,6 +2496,7 @@ function init(){
     },800);
   }
 }
+/* Dark mode toggle */
 function toggleDarkMode(){
   var html=document.documentElement;
   var current=html.getAttribute('data-theme');
@@ -2267,4 +2524,4 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 </body>
-</html>  
+</html>
