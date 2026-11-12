@@ -282,7 +282,7 @@ footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
 <div class="app">
   <header class="topbar">
     <div class="topbar-row">
-      <h1><span class="logo">∫</span> Recuperación de Cálculo Integral</h1>
+      <h1><span LPID</span> Recuperación de Cálculo Integral</h1>
       <div class="topbar-actions">
         <button class="btn btn-ghost btn-sm" onclick="toggleDarkMode()" id="btn-dark-mode" title="Cambiar modo claro/oscuro">🌙 <span class="btn-label">Modo oscuro</span></button>
         <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-formulas')" title="Tabla de fórmulas">📐 <span class="btn-label">Fórmulas</span></button>
@@ -299,7 +299,7 @@ footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
     <div class="welcome">
       <h2>Bienvenido de vuelta a tu recuperación 🎯</h2>
       <p>Esta plataforma-taller está diseñado para que retomes tu curso de Cálculo Integral a tu ritmo, en sesiones cortas, desde tu celular o computadora. No importa cuánto hayas perdido si te ausentaste: aquí empezamos de donde estás y avanzamos juntos, paso a paso.</p>
-      <div class="motiv">💡 <strong>Regla de oro:</strong> equivocarse aquí en esta plataforma no te penaliza ni te califica con menos puntos. Cada error se registra para repaso y te ayuda a aprender. Lo único que importa es no rendirse, si se comete un error primero lo reconoces aprendes de el y después simplemente ya no caes en el mismo, por el contrario avanzas con mayor seguridad.</div>
+      <div class="motiv">💡 <strong>Regla de oro:</strong> equivocarse aquí en esta plataforma no te penaliza ni te califica con menos puntos. Cada error se registra para repaso y te ayuda a aprender. Lo único que importa es no rendirse, si se comete un error primero lo reconoces aprendes de él y después simplemente ya no caes en el mismo error, por el contrario avanzas con mayor seguridad.</div>
     </div>
 
     <div class="progress-global">
@@ -474,7 +474,7 @@ const MODULES = [
   teoria:`
     <h4>¿Qué es una antiderivada?</h4>
     <p>Una función <strong>F(x)</strong> es <em>antiderivada</em> (o primitiva) de <strong>f(x)</strong> cuando al derivar F recuperas f:</p>
-    <div class="formula-box">F'(x) = f(x)   \\iffFes antiderivada de f</div>
+    <div class="formula-box">F'(x) = f(x)   \\iff F es antiderivada de f</div>
     <h4>La constante de integración C</h4>
     <p>La derivada de cualquier constante es 0. Entonces, si F(x) es antiderivada de f(x), también lo es <strong>F(x)+C</strong> para cualquier constante C. A este conjunto se le llama <em>familia de curvas</em>.</p>
     <div class="formula-box">Si F'(x)=f(x), entonces todas las antiderivadas son F(x)+C</div>
@@ -486,7 +486,7 @@ const MODULES = [
   `,
   ejemplo:[
     {num:1,titulo:"Identificar qué debemos integrar",contenido:"Necesitamos una F tal queF'(x)=6x<sup>2</sup>.",regla:"Definición de antiderivada"},
-    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivarx<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar6x<sup>2</sup>implica subir el exponente: pensamos enx<sup>3</sup>.",regla:"Regla de la potencia (inversa)"},
+    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivar x<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar6x<sup>2</sup>implica subir el exponente: pensamos enx<sup>3</sup>.",regla:"Regla de la potencia (inversa)"},
     {num:3,titulo:"Ajustar coeficiente y añadir C",contenido:"d/dx[x<sup>3</sup>]=3x<sup>2</sup>. Para obtener6x<sup>2</sup>multiplicamos por 2:F(x)=2x<sup>3</sup>+C.",regla:"Linealidad y constante de integración"},
     {num:4,titulo:"Verificar derivando",contenido:"F'(x)=d/dx[2x<sup>3</sup>+C]=6x<sup>2</sup>+0=6x<sup>2</sup>. ✓ Coincide con el integrando.",regla:"Verificación por derivación"}
   ],
