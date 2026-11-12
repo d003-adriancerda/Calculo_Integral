@@ -1,0 +1,2484 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperación de Cálculo Integral · Curso-Taller Interactivo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --primary:#4a4a4a;--primary-dark:#2a2a2a;--primary-light:#e0e0e0;
+  --accent:#6a6a6a;--accent-light:#f0f0f0;
+  --success:#3a3a3a;--success-light:#e8e8e8;
+  --danger:#6a6a6a;--danger-light:#f2f2f2;
+  --warning:#7a7a7a;--warning-light:#f5f5f5;
+  --bg:#f5f5f5;--surface:#ffffff;--surface-2:#ebebeb;
+  --text:#1a1a1a;--text-muted:#707070;--border:#d4d4d4;
+  --btn-text:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);
+  --shadow-lg:0 10px 25px -5px rgba(0,0,0,.12),0 8px 10px -6px rgba(0,0,0,.08);
+  --radius:14px;--radius-sm:8px;
+  --font:'Segoe UI',Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --primary:#666666;--primary-dark:#444444;--primary-light:#333333;
+  --accent:#888888;--accent-light:#2a2a2a;
+  --success:#555555;--success-light:#2a2a2a;
+  --danger:#888888;--danger-light:#2a2a2a;
+  --warning:#777777;--warning-light:#2a2a2a;
+  --bg:#1a1a1a;--surface:#252525;--surface-2:#303030;
+  --text:#e8e8e8;--text-muted:#999999;--border:#383838;
+  --btn-text:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
+  --shadow-lg:0 10px 25px -5px rgba(0,0,0,.5),0 8px 10px -6px rgba(0,0,0,.3);
+}
+html[data-theme="dark"] .katex{color:var(--text)}
+html[data-theme="dark"] .formula-box{background:var(--surface-2)!important}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;font-size:16px;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:1rem}
+a{color:var(--primary);text-decoration:none}
+
+/* ===== Layout ===== */
+.app{max-width:1100px;margin:0 auto;padding:16px}
+header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--btn-text);padding:18px 20px;border-radius:var(--radius);box-shadow:var(--shadow-lg);position:sticky;top:8px;z-index:100}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.topbar h1{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.topbar h1 .logo{font-size:1.4rem}
+.topbar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:600;transition:all .15s;background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn:hover{background:var(--surface-2);transform:translateY(-1px)}
+.btn-primary{background:var(--primary);color:var(--btn-text);border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--success);color:var(--btn-text);border-color:var(--success)}
+.btn-success:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:var(--btn-text);border-color:var(--accent)}
+.btn-accent:hover{background:var(--primary-dark)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text-muted)}
+.btn-ghost:hover{background:var(--surface-2);color:var(--text)}
+.btn-sm{padding:6px 10px;font-size:.82rem}
+.btn-lg{padding:12px 20px;font-size:1rem}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-download{background:linear-gradient(135deg,var(--accent),var(--primary-dark));color:var(--btn-text);border:none;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.btn-download:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+
+/* ===== Progress ===== */
+.progress-global{margin:14px 0;background:var(--surface);padding:12px 16px;border-radius:var(--radius-sm);box-shadow:var(--shadow)}
+.progress-global-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:.9rem}
+.progress-bar{height:10px;background:var(--surface-2);border-radius:50px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:50px;transition:width .6s ease;width:0}
+
+/* ===== Dashboard ===== */
+.welcome{background:var(--surface);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.welcome h2{font-size:1.3rem;margin-bottom:8px;color:var(--primary-dark)}
+.welcome p{color:var(--text-muted);font-size:.95rem}
+.welcome .motiv{margin-top:10px;padding:10px 14px;background:var(--accent-light);border-left:4px solid var(--accent);border-radius:6px;color:var(--text);font-size:.9rem}
+
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:16px}
+.module-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:2px solid var(--border);transition:all .2s;position:relative;overflow:hidden;cursor:pointer}
+.module-card:hover:not(.locked){border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.module-card.locked{opacity:.55;cursor:not-allowed;background:var(--surface-2)}
+.module-card.completed{border-color:var(--success)}
+.module-card .m-num{font-size:.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.module-card .m-title{font-size:1.05rem;font-weight:700;margin:4px 0 8px;color:var(--text)}
+.module-card .m-icon{font-size:1.6rem;position:absolute;top:12px;right:14px;opacity:.9}
+.module-card .m-status{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;padding:3px 8px;border-radius:12px;font-weight:600;margin-top:6px}
+.m-status.available{background:var(--primary-light);color:var(--primary-dark)}
+.m-status.locked{background:var(--surface-2);color:var(--text-muted)}
+.m-status.in-progress{background:var(--accent-light);color:var(--text)}
+.m-status.completed{background:var(--success-light);color:var(--text)}
+.module-card .m-progress{margin-top:10px}
+.mini-bar{height:6px;background:var(--surface-2);border-radius:50px;overflow:hidden;margin-top:4px}
+.mini-bar-fill{height:100%;background:var(--primary);border-radius:50px;transition:width .4s}
+
+/* ===== Module view ===== */
+.view{display:none}
+.view.active{display:block}
+.module-header{background:var(--surface);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.module-header h2{font-size:1.4rem;color:var(--primary-dark);display:flex;align-items:center;gap:10px}
+.objetivo{margin-top:8px;padding:10px 14px;background:var(--primary-light);border-radius:8px;color:var(--primary-dark);font-size:.92rem}
+.objetivo strong{color:var(--primary-dark)}
+
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--text-muted);margin-bottom:12px}
+.breadcrumb a{color:var(--primary);cursor:pointer}
+.breadcrumb span.sep{opacity:.5}
+
+.section{background:var(--surface);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.section h3{font-size:1.1rem;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--border);padding-bottom:8px}
+.section h3 .badge{font-size:.7rem;background:var(--accent);color:var(--btn-text);padding:2px 8px;border-radius:10px;font-weight:700}
+
+/* Accordion */
+.accordion{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.acc-head{padding:12px 16px;background:var(--surface-2);font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.acc-head:hover{background:var(--surface-2)}
+.acc-head .arrow{transition:transform .2s}
+.acc-head.open .arrow{transform:rotate(90deg)}
+.acc-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s}
+.acc-body.open{padding:16px;max-height:3000px}
+
+.teoria-content{font-size:.95rem;line-height:1.7}
+.teoria-content h4{color:var(--primary-dark);margin:10px 0 6px;font-size:1rem}
+.teoria-content p{margin-bottom:8px}
+.teoria-content .formula-box{background:var(--surface-2);border-left:4px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:1.05rem;text-align:center}
+.teoria-content .analogia{background:var(--accent-light);border-left:4px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.9rem}
+.teoria-content .analogia strong{color:var(--text)}
+
+/* Example steps */
+.ejemplo-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.paso-display{flex:1;background:var(--surface-2);border-radius:var(--radius-sm);padding:14px;min-height:80px}
+.paso-display .paso-num{font-size:.75rem;color:var(--primary);font-weight:700;text-transform:uppercase}
+.paso-display .paso-titulo{font-size:1rem;font-weight:700;margin:2px 0 6px}
+.paso-display .paso-content{font-size:.95rem}
+.paso-display .paso-regla{margin-top:8px;font-size:.82rem;color:var(--success);font-style:italic}
+.ejemplo-dots{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--primary);transform:scale(1.3)}
+
+/* Activities */
+.actividad{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px;transition:all .2s}
+.actividad.respondida-correcta{border-color:var(--success);background:linear-gradient(0deg,var(--success-light) 0%,var(--surface) 40%)}
+.actividad.respondida-incorrecta{border-color:var(--danger)}
+.act-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--primary);color:var(--btn-text);border-radius:50%;font-weight:700;font-size:.85rem;margin-right:8px}
+.act-enunciado{font-size:.98rem;margin-bottom:12px;line-height:1.6}
+.act-enunciado .math{font-family:'Cambria Math','Times New Roman',serif;font-style:italic}
+.opciones{display:flex;flex-direction:column;gap:8px}
+.opcion{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.opcion:hover{border-color:var(--primary);background:var(--primary-light)}
+.opcion.selected{border-color:var(--primary);background:var(--primary-light)}
+.opcion.correct{border-color:var(--success);background:var(--success-light)}
+.opcion.incorrect{border-color:var(--danger);background:var(--danger-light)}
+.opcion .marker{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700}
+.opcion.selected .marker{border-color:var(--primary);background:var(--primary);color:var(--btn-text)}
+.opcion.correct .marker{border-color:var(--success);background:var(--success);color:var(--btn-text)}
+.opcion.incorrect .marker{border-color:var(--danger);background:var(--danger);color:var(--btn-text)}
+
+.input-line{padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);width:100%;max-width:280px;font-size:1rem}
+.input-line:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+
+.feedback{margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);font-size:.9rem;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--success-light);color:var(--text);border-left:4px solid var(--success)}
+.feedback.err{background:var(--danger-light);color:var(--text);border-left:4px solid var(--danger)}
+
+.hints{margin-top:8px}
+.hint-btn{font-size:.78rem;color:var(--accent);font-weight:600;padding:4px 8px;border-radius:6px}
+.hint-btn:hover{background:var(--accent-light)}
+.hint-content{margin-top:6px;padding:8px 12px;background:var(--warning-light);border-left:3px solid var(--warning);border-radius:6px;font-size:.88rem;color:var(--text);display:none}
+.hint-content.show{display:block}
+.hint-content .hint-level{font-weight:700;color:var(--warning);font-size:.75rem;text-transform:uppercase;margin-right:6px}
+
+.act-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.act-stats{font-size:.75rem;color:var(--text-muted);margin-top:8px}
+
+/* Ordenar pasos */
+.orden-list{display:flex;flex-direction:column;gap:6px}
+.orden-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface-2);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.orden-item .pos{font-weight:700;color:var(--primary);min-width:24px}
+.orden-item .txt{flex:1;font-size:.92rem}
+.orden-item .up,.orden-item .down{padding:4px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border)}
+.orden-item .up:hover,.orden-item .down:hover{background:var(--primary-light)}
+
+/* Emparejar */
+.emparejar-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.emp-col{display:flex;flex-direction:column;gap:6px}
+.emp-item{padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;text-align:center;font-size:.9rem;transition:all .15s}
+.emp-item:hover{border-color:var(--primary)}
+.emp-item.selected{border-color:var(--primary);background:var(--primary-light)}
+.emp-item.matched{opacity:.4;cursor:not-allowed}
+.emp-item.correct{border-color:var(--success);background:var(--success-light)}
+
+/* Numérica */
+.numerica-input{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.numerica-input .input-line{max-width:200px}
+
+/* Practice generator */
+.practice-gen{background:linear-gradient(135deg,var(--primary-light),var(--surface));padding:16px;border-radius:var(--radius);border:2px dashed var(--primary);margin-bottom:16px}
+.practice-gen h3{color:var(--primary-dark);margin-bottom:8px;border:none}
+.gen-display{background:var(--surface);padding:14px;border-radius:var(--radius-sm);margin-top:10px;border:1px solid var(--border)}
+.gen-problem{font-size:1.05rem;text-align:center;margin:8px 0;font-family:'Cambria Math',serif}
+.gen-controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+/* Consolidación */
+.consolidacion{background:linear-gradient(135deg,var(--accent-light),var(--surface));padding:16px;border-radius:var(--radius);border:2px solid var(--accent);margin-bottom:16px}
+.consolidacion h3{color:var(--text);border:none}
+.autoeval{margin-top:12px;background:var(--surface);padding:12px;border-radius:var(--radius-sm)}
+.autoeval label{display:flex;align-items:center;gap:6px;margin:4px 0;font-size:.9rem;cursor:pointer}
+
+/* Insignia */
+.insignia{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,var(--accent),var(--primary));color:var(--btn-text);border-radius:20px;font-weight:700;font-size:.85rem;box-shadow:0 4px 12px rgba(0,0,0,.25);animation:pop .4s}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:20px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal h3{color:var(--primary-dark);margin-bottom:12px;font-size:1.2rem}
+.modal .field{margin-bottom:12px}
+.modal .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px;color:var(--text-muted)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+
+/* Panel lateral */
+.side-panel{position:fixed;top:0;right:-340px;width:330px;max-width:90vw;height:100vh;background:var(--surface);box-shadow:-4px 0 20px rgba(0,0,0,.15);transition:right .3s;z-index:150;overflow-y:auto;padding:16px}
+.side-panel.open{right:0}
+.side-panel h3{color:var(--primary-dark);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.side-panel-close{position:absolute;top:12px;right:12px;font-size:1.4rem;color:var(--text-muted);cursor:pointer}
+.overlay-bg{position:fixed;inset:0;background:rgba(0,0,0,.3);display:none;z-index:140}
+.overlay-bg.show{display:block}
+
+.formula-ref{font-size:.88rem}
+.formula-ref table{width:100%;border-collapse:collapse}
+.formula-ref td{padding:6px 8px;border-bottom:1px solid var(--border)}
+.formula-ref td:first-child{font-family:'Cambria Math',serif;font-size:1rem;background:var(--surface-2);font-weight:600;width:45%}
+.formula-ref td:last-child{color:var(--text-muted)}
+
+.errores-list{font-size:.88rem}
+.err-item{padding:8px;background:var(--danger-light);border-radius:6px;margin-bottom:6px;border-left:3px solid var(--danger)}
+.err-item .err-mod{font-weight:700;color:var(--text);font-size:.78rem}
+.err-item .err-q{font-size:.85rem;color:var(--text)}
+.err-item .err-date{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+
+/* M0 Diagnóstico */
+.diag-result{padding:14px;border-radius:var(--radius-sm);margin-top:14px}
+.diag-result.bajo{background:var(--danger-light);border-left:4px solid var(--danger)}
+.diag-result.medio{background:var(--accent-light);border-left:4px solid var(--accent)}
+.diag-result.alto{background:var(--success-light);border-left:4px solid var(--success)}
+.diag-rec{margin-top:8px;font-size:.88rem}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:var(--bg);padding:12px 20px;border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:300;opacity:0;transition:all .3s;font-size:.9rem}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.info{background:var(--primary)}
+
+/* Responsive */
+@media(max-width:640px){
+  .app{padding:8px}
+  .topbar{padding:12px}
+  .topbar h1{font-size:1rem}
+  .topbar-actions .btn-label{display:none}
+  .modules-grid{grid-template-columns:1fr}
+  .emparejar-grid{grid-template-columns:1fr}
+  .module-header h2{font-size:1.15rem}
+  .btn{padding:7px 11px;font-size:.85rem}
+}
+
+/* Math helpers */
+sub,sup{font-size:.7em}
+.math-block{font-family:'Cambria Math','Times New Roman',serif;background:var(--surface-2);padding:8px 14px;border-radius:6px;text-align:center;margin:8px 0;font-size:1.05rem}
+.frac{display:inline-block;vertical-align:middle;text-align:center}
+.frac .num{display:block;border-bottom:1px solid currentColor;padding:0 4px}
+.frac .den{display:block;padding:0 4px}
+.sqrt{border-top:1px solid currentColor;padding:0 2px}
+
+footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-row">
+      <h1><span class="logo">∫</span> Recuperación de Cálculo Integral</h1>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="toggleDarkMode()" id="btn-dark-mode" title="Cambiar modo claro/oscuro">🌙 <span class="btn-label">Modo oscuro</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-formulas')" title="Tabla de fórmulas">📐 <span class="btn-label">Fórmulas</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-errores')" title="Mis errores frecuentes">⚠️ <span class="btn-label">Errores</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-progreso')" title="Mi progreso detallado">📊 <span class="btn-label">Progreso</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="editarDatos()" title="Editar mis datos">👤 <span class="btn-label">Mis datos</span></button>
+        <button class="btn btn-download btn-sm" onclick="descargarPortafolioCompleto()">📦 <span class="btn-label">Descargar avance</span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard -->
+  <section id="view-dashboard" class="view active">
+    <div class="welcome">
+      <h2>Bienvenido de vuelta a tu recuperación 🎯</h2>
+      <p>Este taller está diseñado para que retomes Cálculo Integral a tu ritmo, en sesiones cortas, desde celular o computadora. No importa cuánto hayas perdido: aquí empezamos de donde estás y avanzamos juntos, paso a paso.</p>
+      <div class="motiv">💡 <strong>Regla de oro:</strong> equivocarse aquí no te penaliza. Cada error se registra para repaso y te ayuda a aprender. Lo único que importa es no rendirte.</div>
+    </div>
+
+    <div class="progress-global">
+      <div class="progress-global-top">
+        <strong>Progreso global del curso</strong>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <div class="modules-grid" id="modules-grid"></div>
+
+    <div class="section">
+      <h3>🗂️ Diagnóstico inicial (Módulo 0)</h3>
+      <p style="font-size:.92rem;color:var(--text-muted);margin-bottom:10px">Antes de empezar, contesta estas preguntas rápidas para identificar qué prerrequisitos necesitas reforzar. <strong>No bloquea ningún módulo</strong>, solo te da recomendaciones personalizadas.</p>
+      <button class="btn btn-primary" onclick="abrirModulo('m0')">Iniciar diagnóstico (6 preguntas)</button>
+    </div>
+
+    <div class="section">
+      <h3>📂 Opciones</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="importarEvidencias()">📥 Importar evidencias previas</button>
+        <button class="btn" onclick="reiniciarProgreso()">🔄 Reiniciar progreso</button>
+        <button class="btn" onclick="editarDatos()">✏️ Editar mis datos</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module view -->
+  <section id="view-module" class="view">
+    <div class="breadcrumb">
+      <a onclick="irDashboard()">← Dashboard</a>
+      <span class="sep">/</span>
+      <span id="bc-modulo">Módulo</span>
+    </div>
+    <div id="module-content"></div>
+    <div style="text-align:center;margin:20px 0">
+      <button class="btn btn-primary btn-lg" id="btn-dominar" onclick="marcarDominado()" disabled>🎓 Marcar módulo como dominado y descargar reporte</button>
+      <div id="dominar-msg" style="margin-top:8px;font-size:.85rem;color:var(--text-muted)"></div>
+    </div>
+  </section>
+
+  <footer>
+    Curso-taller de recuperación · Cálculo Integral · Diseñado para aprendizaje autosuficiente<br>
+    Tus datos se guardan solo en este navegador (localStorage). Descarga tu portafolio para enviarlo al docente.
+  </footer>
+</div>
+
+<!-- Side panels -->
+<div class="overlay-bg" id="overlay-bg" onclick="closePanels()"></div>
+
+<aside class="side-panel" id="panel-formulas">
+  <span class="side-panel-close" onclick="closePanels()">×</span>
+  <h3>📐 Fórmulas clave</h3>
+  <div class="formula-ref" id="formula-ref-content"></div>
+</aside>
+
+<aside class="side-panel" id="panel-errores">
+  <span class="side-panel-close" onclick="closePanels()">×</span>
+  <h3>⚠️ Mis errores frecuentes</h3>
+  <div class="errores-list" id="errores-list"></div>
+  <p style="font-size:.8rem;color:var(--text-muted);margin-top:10px">Los errores se guardan automáticamente para que los repases. No afectan tu calificación.</p>
+</aside>
+
+<aside class="side-panel" id="panel-progreso">
+  <span class="side-panel-close" onclick="closePanels()">×</span>
+  <h3>📊 Mi progreso detallado</h3>
+  <div id="progreso-detallado"></div>
+</aside>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ESTADO Y PERSISTENCIA
+   ============================================================ */
+const STORAGE_KEY = 'calc_integral_recuperacion_v1';
+
+let ESTADO = {
+  usuario: { nombre: '', grupo: '', correo: '', fechaInicio: new Date().toISOString() },
+  m0: { completado: false, score: 0, max: 6, recomendaciones: [], intentos: [] },
+  modulos: {},
+  errores: [],
+  evidencias: [],
+  ultimoAcceso: new Date().toISOString()
+};
+
+// Inicializar estado de módulos
+function initModulosEstado() {
+  MODULES.forEach(m => {
+    if (!ESTADO.modulos[m.id]) {
+      ESTADO.modulos[m.id] = {
+        desbloqueado: m.id === 'm1',
+        completado: false,
+        dominado: false,
+        actividades: {},
+        scoreActividades: 0,
+        totalActividades: 0,
+        consolidacionHecha: false,
+        intentosConsolidacion: 0,
+        insignia: false,
+        repasoHecho: false,
+        primerAcceso: null,
+        ultimoAcceso: null
+      };
+    }
+    // contar actividades
+    ESTADO.modulos[m.id].totalActividades = m.actividades.length;
+  });
+}
+
+function saveState() {
+  try {
+    ESTADO.ultimoAcceso = new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ESTADO));
+  } catch(e) { console.warn('No se pudo guardar:', e); }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      ESTADO = Object.assign(ESTADO, parsed);
+      // ensure modulos structure
+      initModulosEstado();
+    }
+  } catch(e) { console.warn('No se pudo cargar:', e); }
+}
+
+/* ============================================================
+   DATOS: MÓDULOS
+   ============================================================ */
+const MODULES = [
+/* ===================== MÓDULO 0: DIAGNÓSTICO ===================== */
+{
+  id:"m0", num:0, titulo:"Diagnóstico inicial", icono:"🧭",
+  objetivo:"Identificar prerrequisitos para que el curso se adapte a tu nivel real.",
+  esDiagnostico:true,
+  teoria:`<p>Contesta con honestidad. Estas preguntas NO te califican, solo nos ayudan a recomendarte por dónde empezar a reforzar.</p>`,
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la derivada def(x)=x<sup>5</sup>?", opciones:["5x<sup>4</sup>","x<sup>4</sup>/4","5x<sup>6</sup>","x<sup>5</sup>/5"], correcta:0, cat:"derivadas",
+      feedback:{correcto:"Correcto: la regla de la potencia para derivar dice d/dx[x<sup>n</sup>]=n· x<sup>n-1</sup>.",errores:{1:"Esa sería la antiderivada, no la derivada.",2:"Subiste el exponente en vez de bajarlo.",3:"Confundiste derivar con integrar."}}},
+    {tipo:"opcion_multiple", enunciado:"d/dx[sen x] = ?", opciones:["cos x","-cos x","-sen x","sec x"], correcta:0, cat:"derivadas",
+      feedback:{correcto:"Sí: la derivada desenxescos x.",errores:{1:"Ese es -d/dx[cos x].",2:"Esa sería la derivada de\\cosxcon signo.",3:"No aparece secante al derivar seno."}}},
+    {tipo:"opcion_multiple", enunciado:"d/dx[ln x] = ?", opciones:["1/x","x","x<sup>-1</sup>+C","1/x<sup>2</sup>"], correcta:0, cat:"derivadas",
+      feedback:{correcto:"Exacto: d/dx[ln|x|] = 1/x.",errores:{1:"No sube el exponente.",2:"No hay +C en derivadas.",3:"No es1/x<sup>2</sup>."}}},
+    {tipo:"opcion_multiple", enunciado:"Simplificax<sup>1/2</sup>.", opciones:["√ x","x/2","2x","x<sup>2</sup>"], correcta:0, cat:"exponentes",
+      feedback:{correcto:"Sí: exponente 1/2 equivale a raíz cuadrada.",errores:{1:"No se divide entre 2.",2:"No se multiplica por 2.",3:"x<sup>2</sup>esx· x,no x^(1/2)."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuánto esx<sup>-2</sup>?", opciones:["1/x<sup>2</sup>","-x<sup>2</sup>","x· x","-2x"], correcta:0, cat:"exponentes",
+      feedback:{correcto:"Bien: exponente negativo significa reciproco.",errores:{1:"No cambia el signo de x.",2:"x<sup>2</sup>es positivo.",3:"No se mezcla con coeficiente."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Qué significa la notación ∑<sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)?", opciones:["Sumarf(x<sub>i</sub>)desde i=1 hasta i=n","Multiplicarf(x<sub>i</sub>)por n","El promedio de f","El máximo de f"], correcta:0, cat:"sigma",
+      feedback:{correcto:"Correcto: la sigma indica suma iterada.",errores:{1:"No es multiplicación.",2:"No es promedio.",3:"No es máximo."}}},
+    {tipo:"opcion_multiple", enunciado:"Simplifica la fracción(2x<sup>3</sup>)/(x<sup>2</sup>).", opciones:["2x","2x<sup>5</sup>","2/x","x"], correcta:0, cat:"algebra",
+      feedback:{correcto:"Sí: al restar exponentes 3-2=1 queda 2x.",errores:{1:"No se suman los exponentes en división.",2:"No se inverte.",3:"Olvidaste el coeficiente 2."}}},
+    {tipo:"opcion_multiple", enunciado:"Sif(x)=x<sup>2</sup>+1,¿cuánto vale f(3)?", opciones:["10","7","4","9"], correcta:0, cat:"algebra",
+      feedback:{correcto:"Bien:3<sup>2</sup>+1 = 9+1 = 10.",errores:{1:"Olvidaste elevar al cuadrado.",2:"Solo elevaste sin sumar 1.",3:"Olvidaste sumar el +1."}}}
+  ]
+},
+
+/* ===================== MÓDULO 1: ANTIDERIVADAS ===================== */
+{
+  id:"m1", num:1, titulo:"Antiderivadas o primitivas", icono:"🌱",
+  objetivo:"Al terminar podrás verificar si una función es antiderivada de otra y construir la familia completa usando la constante C.",
+  repaso:[],
+  teoria:`
+    <h4>¿Qué es una antiderivada?</h4>
+    <p>Una función <strong>F(x)</strong> es <em>antiderivada</em> (o primitiva) de <strong>f(x)</strong> cuando al derivar F recuperas f:</p>
+    <div class="formula-box">F'(x) = f(x)   \\iffFes antiderivada de f</div>
+    <h4>La constante de integración C</h4>
+    <p>La derivada de cualquier constante es 0. Entonces, si F(x) es antiderivada de f(x), también lo es <strong>F(x)+C</strong> para cualquier constante C. A este conjunto se le llama <em>familia de curvas</em>.</p>
+    <div class="formula-box">Si F'(x)=f(x), entonces todas las antiderivadas son F(x)+C</div>
+    <h4>Verificación</h4>
+    <p>Para comprobar que tu respuesta es correcta, <strong>derívala</strong>: si el resultado es el integrando, acertaste.</p>
+    <div class="analogia"><strong>Analogy:</strong> integrar es como preguntar "¿qué función, al derivarse, da esta?" — es el proceso inverso a derivar, como reconstruir un objeto sabiendo su sombra.</div>
+    <h4>Condición inicial</h4>
+    <p>Si te dan un valor específico, por ejemplo F(0)=4, puedes sustituir x=0 en F(x)+C y despejar C. Así obtienes <em>una</em> antiderivada concreta, no la familia.</p>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar qué debemos integrar",contenido:"Necesitamos una F tal queF'(x)=6x<sup>2</sup>.",regla:"Definición de antiderivada"},
+    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivarx<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar6x<sup>2</sup>implica subir el exponente: pensamos enx<sup>3</sup>.",regla:"Regla de la potencia (inversa)"},
+    {num:3,titulo:"Ajustar coeficiente y añadir C",contenido:"d/dx[x<sup>3</sup>]=3x<sup>2</sup>. Para obtener6x<sup>2</sup>multiplicamos por 2:F(x)=2x<sup>3</sup>+C.",regla:"Linealidad y constante de integración"},
+    {num:4,titulo:"Verificar derivando",contenido:"F'(x)=d/dx[2x<sup>3</sup>+C]=6x<sup>2</sup>+0=6x<sup>2</sup>. ✓ Coincide con el integrando.",regla:"Verificación por derivación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la antiderivada general def(x)=3x<sup>2</sup>?", opciones:["x<sup>3</sup> + C","x<sup>3</sup>","6x + C","x<sup>3</sup>/3 + C"], correcta:0,
+      feedback:{correcto:"Bien: al derivarx<sup>3</sup>+Crecuperas3x<sup>2</sup>.",errores:{1:"Casi: olvidaste la constante de integración C.",2:"Eso es la derivada, no la antiderivada.",3:"Revisa la regla de la potencia: divides entre n+1, no entre n."}}},
+    {tipo:"verdadero_falso", enunciado:"SiF(x)=x<sup>4</sup>/4 + C,entoncesF'(x)=x<sup>3</sup>para cualquier valor de C.", correcta:true,
+      feedback:{correcto:"Correcto: la derivada de C es 0, así que C desaparece al derivar.",errores:{0:"Piensa: ¿qué vale la derivada de una constante?"}}},
+    {tipo:"completar_hueco", enunciado:"La antiderivada de 6x es <input class='input-line' id='ch1-3' placeholder='escribe aquí'> + C.", respuesta:["3x^2","3x<sup>2</sup>","3x**2","3x2"], feedbackCorrecto:"Sí: derivar3x<sup>2</sup>da 6x. ✓", feedbackError:"Recuerda: si derivarx<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar 6x implica llegar a unax<sup>2</sup>. Ajusta el coeficiente para que al derivar recuperes 6x."},
+    {tipo:"opcion_multiple", enunciado:"¿Por qué aparece la constante C en toda antiderivada?", opciones:["Porque la derivada de cualquier constante es 0","Porque siempre hay una incógnita","Porque integrales tienen solución única","Por convención estética"], correcta:0,
+      feedback:{correcto:"Exactamente: si F es antiderivada, F+C también lo es porque d/dx[C]=0.",errores:{1:"No es una incógnita, es toda una familia de soluciones.",2:"Las antiderivadas NO son únicas, forman una familia.",3:"No es estética: es matemática."}}},
+    {tipo:"seleccion_multiple", enunciado:"Marca todas las funciones que sean antiderivadas decos x:", opciones:["sen x + C","sen x + 7","sen x","-sen x + C","-cos x"], correctas:[0,1,2],
+      feedback:{correcto:"Perfecto:sen x, sen x+C y sen x+7son todas antiderivadas (difieren en C).",errores:{3:"-\\cosxse deriva como+sen x,no comocos x. Revisa el signo.",4:"-\\cosxes antiderivada desen x,no decos x."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena los pasos para verificar queF(x)=x<sup>5</sup>/5es antiderivada dex<sup>4</sup>.",
+      pasos:[
+        {texto:"DerivarF(x)=x<sup>5</sup>/5", orden:1},
+        {texto:"Aplicar la regla de la potencia para derivar: bajar el 5", orden:2},
+        {texto:"Los 5 se cancelan: quedax<sup>4</sup>", orden:3},
+        {texto:"Comparar con el integrandox<sup>4</sup>✓", orden:4}
+      ],
+      feedback:{correcto:"Excelente secuencia. Ese es el método de verificación.",errores:"Revisa: primero derivas, luego aplicas la regla de la potencia, se cancelan coeficientes y finalmente comparas con el integrando."}},
+    {tipo:"completar_hueco", enunciado:"Si F'(x)=2x y F(0)=3, entoncesF(x)=x<sup>2</sup>+C. Sustituyendo x=0: F(0)=0+C=3, por lo tanto C=<input class='input-line' id='ch1-7' placeholder='número'>.", respuesta:["3"], feedbackCorrecto:"Correcto: C=3. La antiderivada específica esF(x)=x<sup>2</sup>+3.", feedbackError:"Sustituye x=0 enx<sup>2</sup>+Cycompara con F(0)=3."},
+    {tipo:"numerica", enunciado:"Si F'(x)=5 y F(0)=2, ¿cuál es el valor de F(10)?", respuesta:52, tolerancia:0.01, feedbackCorrecto:"Correcto: F(x)=5x+2, entonces F(10)=52.", feedbackError:"F(x)=5x+C; conF(0)=2 →  C=2; por tantoF(10)=5· 10+2=52."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 2: INTEGRAL INDEFINIDA ===================== */
+{
+  id:"m2", num:2, titulo:"Integral indefinida", icono:"∫",
+  objetivo:"Al terminar podrás usar la notación∫ ,aplicar la linealidad y resolver integrales con constantes y sumas.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M1) La antiderivada de f(x)=2x es:", opciones:["x<sup>2</sup>+C","2+C","2x<sup>2</sup>+C","x+C"], correcta:0, feedback:{correcto:"Bien:x<sup>2</sup>+Cal derivarse da 2x.",errores:{1:"2 es constante.",2:"Demasiado grande.",3:"x se deriva como 1."}}}
+  ],
+  teoria:`
+    <h4>Notación</h4>
+    <p>La integral indefinida es la operación inversa a la derivada. Se escribe:</p>
+    <div class="formula-box">∫  f(x) dx = F(x) + C ,donde F'(x)=f(x)</div>
+    <p>El símbolo\\intindica "sumar antiderivadas", f(x) es el <em>integrando</em>, y dx indica con respecto a qué variable integramos.</p>
+    <h4>Linealidad</h4>
+    <p>La integral respeta sumas, restas y múltiplos constantes:</p>
+    <div class="formula-box">
+∫  [a· f(x) + b· g(x)] dx = a· ∫ f(x)dx + b· ∫ g(x)dx
+    </div>
+    <h4>Caso especial: integral de una constante</h4>
+    <div class="formula-box">∫  k dx = k· x + C</div>
+    <div class="analogia"><strong>Intuición:</strong> integrar es como "desderiv". Mientras derivarx<sup>2</sup>da 2x, integrar 2x devuelvex<sup>2</sup> (+C). La linealidad permite atacar término a término, como distribuir una suma.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Separar por linealidad",contenido:"∫ (3x<sup>2</sup> + 2x - 5) dx = 3∫ x<sup>2</sup>dx + 2∫ x dx - 5∫ dx",regla:"Linealidad de la integral"},
+    {num:2,titulo:"Aplicar regla de la potencia a cada término",contenido:"∫ x<sup>2</sup>dx = x<sup>3</sup>/3 ; ∫ x dx = x<sup>2</sup>/2 ; ∫ dx = x",regla:"Regla de la potencia"},
+    {num:3,titulo:"Sustituir coeficientes",contenido:"= 3· (x<sup>3</sup>/3) + 2· (x<sup>2</sup>/2) - 5· x = x<sup>3</sup> + x<sup>2</sup> - 5x",regla:"Aritmética"},
+    {num:4,titulo:"Añadir C",contenido:"Resultado:x<sup>3</sup> + x<sup>2</sup> - 5x + C",regla:"Constante de integración"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"∫  5 dx =?", opciones:["5x + C","5 + C","5","x/5 + C"], correcta:0,
+      feedback:{correcto:"Sí: la integral de una constante k es kx+C.",errores:{1:"Eso sería integrar 0.",2:"Falta la variable x.",3:"Estás dividiendo en lugar de multiplicar."}}},
+    {tipo:"verdadero_falso", enunciado:"∫ (f(x)+g(x))dx = ∫ f(x)dx + ∫ g(x)dx", correcta:true,
+      feedback:{correcto:"Sí: la integral es lineal, así que la suma se respeta.",errores:{0:"Piensa: la derivada también distribuye sobre sumas. La integral hace lo mismo."}}},
+    {tipo:"completar_hueco", enunciado:"∫ (2x+3)dx = x<sup>2</sup> +<input class='input-line' id='ch2-3' placeholder='término'> + C.", respuesta:["3x","3*x"], feedbackCorrecto:"Correcto:∫ 3dx=3x.", feedbackError:"∫ (constante)dx = constante· x. Aquí∫ 3dx=3x."},
+    {tipo:"opcion_multiple", enunciado:"∫ (3x<sup>2</sup> - 4x + 1) dx =?", opciones:["x<sup>3</sup> - 2x<sup>2</sup> + x + C","3x<sup>3</sup> - 4x<sup>2</sup> + x + C","x<sup>3</sup> - 4x<sup>2</sup> + x","x<sup>3</sup>/3 - 2x<sup>2</sup> + x + C"], correcta:0,
+      feedback:{correcto:"Bien aplicada la linealidad y la regla de la potencia.",errores:{1:"Olvidaste dividir entre el nuevo exponente en cada término.",2:"Olvidaste el +C.",3:"Olvidaste ajustar coeficientes(3· x<sup>3</sup>/3=x<sup>3</sup>)."}}},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles de estas igualdades son correctas por linealidad?", opciones:["∫ 7· cos x dx = 7· ∫ cos x dx","∫ (x+sen x)dx = ∫ x dx + ∫ sen x dx","∫ (x· sen x)dx = ∫ x dx ·  ∫ sen x dx","∫ (1/x + 1)dx = ln|x| + x + C"], correctas:[0,1,3],
+      feedback:{correcto:"Perfecto: linealidad aplica a sumas y constantes, no a productos.",errores:{2:"La linealidad NO permite separar productos:∫ (x· sen x)dx ≠  ∫ x· ∫ sen x. Eso requiere integración por partes."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ (x<sup>2</sup>+2x)dx:",
+      pasos:[
+        {texto:"Aplicar linealidad:∫ x<sup>2</sup>dx + 2∫ x dx", orden:1},
+        {texto:"Aplicar regla de la potencia:x<sup>3</sup>/3 + 2· (x<sup>2</sup>/2)", orden:2},
+        {texto:"Simplificar coeficientes:x<sup>3</sup>/3 + x<sup>2</sup>", orden:3},
+        {texto:"Añadir constante:x<sup>3</sup>/3 + x<sup>2</sup> + C", orden:4}
+      ],
+      feedback:{correcto:"Buena secuencia: linealidad\\topotencia\\tosimplificar→  C.",errores:"Recuerda el orden: primero separar por linealidad, luego aplicar la regla a cada término, simplificar y finalmente añadir C."}},
+    {tipo:"completar_hueco", enunciado:"Si∫ f(x)dx = x<sup>3</sup>+C,entonces∫ 5· f(x)dx =<input class='input-line' id='ch2-7' placeholder='usa x'> + C.", respuesta:["5x^3","5x<sup>3</sup>","5*x^3"], feedbackCorrecto:"Correcto: por linealidad, ∫ 5f=5· ∫ f=5x<sup>3</sup>.", feedbackError:"Por linealidad: las constantes salen de la integral. Si∫ f=x<sup>3</sup>,entonces∫ 5f=5· x<sup>3</sup>."},
+    {tipo:"emparejar", enunciado:"Empareja cada integral con su resultado:",
+      parejas:[
+        {izq:"∫ dx", der:"x + C"},
+        {izq:"∫ x dx", der:"x<sup>2</sup>/2 + C"},
+        {izq:"∫ 7 dx", der:"7x + C"},
+        {izq:"∫ (x+1)dx", der:"x<sup>2</sup>/2 + x + C"}
+      ],
+      feedback:{correcto:"Todas correctas. La linealidad y la regla de la potencia son la base.",errores:"Recuerda:∫ k dx =kx+C, ∫ x dx = x<sup>2</sup>/2+C. Los demás se deducen por linealidad."}}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 3: REGLA DE LA POTENCIA ===================== */
+{
+  id:"m3", num:3, titulo:"Regla de la potencia", icono:"⚡",
+  objetivo:"Al terminar podrás aplicar∫ x<sup>n</sup>dx = x<sup>n+1</sup>/(n+1) +Cpara cualquiern≠  -1.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(RepasoM2) ∫ (x+2)dx =?", opciones:["x<sup>2</sup>/2 + 2x + C","x<sup>2</sup> + 2x + C","x<sup>2</sup>/2 + 2 + C","x + 2 + C"], correcta:0, feedback:{correcto:"Sí: linealidad+ ∫ x=x<sup>2</sup>/2, ∫ 2=2x.",errores:{1:"Olvidaste dividirx<sup>2</sup>entre 2.",2:"∫ 2no es 2, es 2x.",3:"Confundiste integrar con derivar."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM2) ∫ 7 dx =?", opciones:["7x+C","7+C","x/7+C","7"], correcta:0, feedback:{correcto:"Bien:∫ k=kx+C.",errores:{1:"Falta la x.",2:"Estás dividiendo.",3:"Falta x y C."}}}
+  ],
+  teoria:`
+    <h4>La regla</h4>
+    <div class="formula-box">∫  x<sup>n</sup> dx = <span class="frac"><span class="num">x<sup>n+1</sup></span><span class="den">n+1</span></span> + C ,paran≠  -1</div>
+    <h4>Procedimiento</h4>
+    <p>1. Sube el exponente en uno(n →  n+1).<br>2. Divide entre el nuevo exponente.<br>3. Añade +C.</p>
+    <h4>Casos que debes dominar</h4>
+    <ul>
+      <li><strong>Exponente positivo:</strong>∫ x<sup>4</sup>dx = x<sup>5</sup>/5 + C</li>
+      <li><strong>Exponente negativo:</strong>∫ x<sup>-3</sup>dx = x<sup>-2</sup>/(-2) + C = -1/(2x<sup>2</sup>) + C</li>
+      <li><strong>Exponente fraccionario:</strong>∫ x<sup>1/2</sup>dx = x<sup>3/2</sup>/(3/2) + C = (2/3)x<sup>3/2</sup> + C = (2/3)x√ x + C</li>
+    </ul>
+    <h4>El caso prohibido: n = -1</h4>
+    <p>Si n=-1, entonces n+1=0 y tendríasx<sup>0</sup>/0 = 1/0,que <strong>no está definido</strong>. Ese caso se resuelve con el logaritmo (módulo 5):</p>
+    <div class="formula-box">∫  x<sup>-1</sup> dx = ∫  (1/x) dx = ln|x| + C</div>
+    <div class="analogia"><strong>Intuición:</strong> la potencia "crece" al integrar. Es como subir un peldaño: si estabas enx<sup>4</sup>,subesax<sup>5</sup>ypagas "peaje" dividiendo entre 5.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar el exponente",contenido:"En∫ x<sup>-3</sup>dxtenemos n=-3.",regla:"Reconocer la potencia"},
+    {num:2,titulo:"Subir el exponente en 1",contenido:"n+1 = -3+1 = -2, así que aparecex<sup>-2</sup>.",regla:"Regla de la potencia"},
+    {num:3,titulo:"Dividir entre el nuevo exponente",contenido:"∫ x<sup>-3</sup>dx = x<sup>-2</sup>/(-2) + C",regla:"División entre n+1"},
+    {num:4,titulo:"Simplificar (opcional)",contenido:"x<sup>-2</sup>/(-2) = -1/(2x<sup>2</sup>). Resultado:-1/(2x<sup>2</sup>) + C",regla:"Reescribir con exponente positivo"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"∫  x<sup>5</sup> dx =?", opciones:["x<sup>6</sup>/6 + C","x<sup>6</sup> + C","5x<sup>6</sup> + C","x<sup>4</sup>/4 + C"], correcta:0,
+      feedback:{correcto:"Bien: subes a 6 y divides entre 6.",errores:{1:"Olvidaste dividir entre el nuevo exponente.",2:"Bajaste el exponente en vez de subirlo.",3:"Estás derivando, no integrando."}}},
+    {tipo:"completar_hueco", enunciado:"∫  x<sup>7</sup> dx = x<sup>___</sup>/8 + C. Escribe solo el exponente.", respuesta:["8"], feedbackCorrecto:"Correcto: 7+1=8.", feedbackError:"El nuevo exponente es n+1 = 7+1 = 8."},
+    {tipo:"opcion_multiple", enunciado:"∫  x<sup>-2</sup> dx =?", opciones:["-x<sup>-1</sup> + C","x<sup>-1</sup> + C","x<sup>-1</sup>/(-1) + C","ln|x| + C"], correcta:0,
+      feedback:{correcto:"Sí:x<sup>-1</sup>/(-1) = -x<sup>-1</sup> = -1/x.",errores:{1:"Olvidaste dividir entre el nuevo exponente (-1).",2:"Bien escrito pero no simplificado; revisa el signo.",3:"ln|x|corresponde a n=-1, no a n=-2."}}},
+    {tipo:"completar_hueco", enunciado:"∫  x<sup>1/3</sup> dx =<input class='input-line' id='ch3-4' placeholder='coeficiente· x^exp'> + C. (Ejemplo de formato: 3/4x^(4/3))", respuesta:["3/4x^(4/3)","(3/4)x^(4/3)","3/4 x^(4/3)","3/4x^4/3"], feedbackCorrecto:"Perfecto: (1/3)+1 = 4/3; divides entre4/3 \\tomultiplicas por 3/4.", feedbackError:"n+1 = 1/3+1 = 4/3. Dividir entre 4/3 es multiplicar por 3/4. Resultado: (3/4)x^(4/3)+C."},
+    {tipo:"verdadero_falso", enunciado:"∫  x<sup>-1</sup> dx = x<sup>0</sup>/0 + C", correcta:false,
+      feedback:{correcto:"Correcto: esa expresión NO es válida porque dividirías entre cero. El caso n=-1 se resuelve conln|x|.",errores:{0:"Cuidado: n=-1 produce 1/0, que no está definido. Es el caso especial que se resuelve conln|x|."}}},
+    {tipo:"opcion_multiple", enunciado:"∫  √ x dx =?", opciones:["(2/3)x<sup>3/2</sup> + C","(1/2)x<sup>1/2</sup> + C","x<sup>3/2</sup> + C","2√ x + C"], correcta:0,
+      feedback:{correcto:"Sí:√ x = x<sup>1/2</sup>; subes a 3/2 y multiplicas por 2/3.",errores:{1:"Eso es derivar√ x.",2:"Olvidaste dividir entre el nuevo exponente.",3:"No se integra así una raíz."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ x<sup>-3</sup>dx:",
+      pasos:[
+        {texto:"Identificar n=-3", orden:1},
+        {texto:"Calcular n+1=-2", orden:2},
+        {texto:"Escribirx<sup>-2</sup>/(-2)", orden:3},
+        {texto:"Simplificar y añadir C:-1/(2x<sup>2</sup>) + C", orden:4}
+      ],
+      feedback:{correcto:"Buena secuencia.",errores:"Primero identificas n, luego calculas n+1, escribes la división y finalmente simplificas y añades C."}},
+    {tipo:"numerica", enunciado:"∫ x<sup>2</sup>dxevaluada en x=3 (sin contar C) da:", respuesta:9, tolerancia:0.01, feedbackCorrecto:"Sí:∫ x<sup>2</sup>=x<sup>3</sup>/3; al evaluar enx=3 →  27/3 = 9.", feedbackError:"∫ x<sup>2</sup>=x<sup>3</sup>/3; evaluado en 3:3<sup>3</sup>/3 = 27/3 = 9."},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas dex<sup>4</sup>?", opciones:["x<sup>5</sup>/5 + C","x<sup>5</sup>/5 + 7","x<sup>5</sup>/5","x<sup>5</sup> + C","(1/5)x<sup>5</sup>"], correctas:[0,1,2,4],
+      feedback:{correcto:"Todas esas difieren solo en C, son antiderivadas válidas.",errores:{3:"Olvidaste dividir entre 5: la derivada dex<sup>5</sup>es5x<sup>4</sup>,nox<sup>4</sup>."}}}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 4: SEN Y COS ===================== */
+{
+  id:"m4", num:4, titulo:"Integrales desen x y cos x", icono:"🌊",
+  objetivo:"Al terminar podrás integrarsen x y cos xyentender por qué cambian los signos.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>4</sup>dx =?", opciones:["x<sup>5</sup>/5+C","x<sup>5</sup>+C","5x<sup>5</sup>+C","x<sup>3</sup>/3+C"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
+    {tipo:"opcion_multiple", enunciado:"(Repaso M1) d/dx[cos x] = ?", opciones:["-sen x","sen x","-cos x","cos x"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"Es la derivada desen.",3:"No cambia."}}}
+  ],
+  teoria:`
+    <h4>Las dos fórmulas centrales</h4>
+    <div class="formula-box">∫  \{sen} x dx = -cos x + C</div>
+    <div class="formula-box">∫  cos x dx = \{sen} x + C</div>
+    <h4>¿Por qué cambia el signo en∫ sen x?</h4>
+    <p>Porque al verificar derivando: d/dx[-cos x] = -(-sen x) = sen x✓. El signo negativo aparece para que, al derivar, los signos se cancelen.</p>
+    <h4>Con constantes y linealidad</h4>
+    <div class="formula-box">∫ (a· \{sen} x + b· cos x)dx = -a· cos x + b· \{sen} x + C</div>
+    <h4>Bonus (no obligatorio):</h4>
+    <div class="formula-box">∫  sec<sup>2</sup>x dx = tan x + C<br>∫  sec x· tan x dx = sec x + C</div>
+    <div class="analogia"><strong>Truco memoria:</strong> "seno integra con signo menos, coseno integra sin cambio". La palabra "menos" rima con "seno": te ayuda a recordar.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Separar por linealidad",contenido:"∫ (2sen x - 3cos x)dx = 2∫ sen x dx - 3∫ cos x dx",regla:"Linealidad"},
+    {num:2,titulo:"Aplicar fórmulas básicas",contenido:"∫ sen x dx = -cos x; ∫ cos x dx = sen x",regla:"Fórmulas trigonométricas"},
+    {num:3,titulo:"Sustituir",contenido:"= 2(-cos x) - 3(sen x) = -2cos x - 3sen x",regla:"Distribuir coeficientes"},
+    {num:4,titulo:"Añadir C y verificar",contenido:"= -2cos x - 3sen x + C. Verificamos: d/dx[-2cos x - 3sen x] = 2sen x - 3cos x ✓",regla:"Constante y verificación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"∫  cos x dx =?", opciones:["sen x + C","-cos x + C","-sen x + C","cos x + C"], correcta:0,
+      feedback:{correcto:"Sí: al derivarsenxdacos x.",errores:{1:"Esa es la integral desen x,no decos x.",2:"Estás confundiendo integrar con derivar.",3:"No se queda igual."}}},
+    {tipo:"completar_hueco", enunciado:"∫  sen x dx =<input class='input-line' id='ch4-2' placeholder='función trig'> + C.", respuesta:["-cos x","-cosx","-cos x","-cos(x)"], feedbackCorrecto:"Correcto: el signo menos es clave.", feedbackError:"Recuerda:∫ sen x = -cos x+C. Verifica derivando: d/dx[-cos x] = sen x✓."},
+    {tipo:"verdadero_falso", enunciado:"∫  sen x dx = cos x + C (sinsigno menos)", correcta:false,
+      feedback:{correcto:"Correcto rechazarla: d/dx[cos x]=-sen x,nosen x. Falta el signo menos.",errores:{0:"Verifica: siF=cos x,entoncesF'=-sen x,nosen x. Necesitas un menos."}}},
+    {tipo:"opcion_multiple", enunciado:"∫ (sen x + cos x)dx =?", opciones:["-cos x + sen x + C","cos x - sen x + C","-cos x - sen x + C","cos x + sen x + C"], correcta:0,
+      feedback:{correcto:"Sí:∫ sen=-cos, ∫ cos=sen.",errores:{1:"Invertiste los signos.",2:"Confundiste ambos signos.",3:"Olvidaste el signo menos de∫ sen."}}},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas desec<sup>2</sup>x? (bonus)", opciones:["tan x + C","tan x + 5","tan x","-sec x + C","sec<sup>2</sup>x"], correctas:[0,1,2],
+      feedback:{correcto:"Las tres primeras difieren solo en C y son válidas.",errores:{3:"-\\secxno deriva comosec<sup>2</sup>x.",4:"sec<sup>2</sup>xse deriva como2sec<sup>2</sup>x· tan x,no comosec<sup>2</sup>x."}}},
+    {tipo:"emparejar", enunciado:"Empareja integral con resultado:",
+      parejas:[
+        {izq:"∫  sen x dx", der:"-cos x + C"},
+        {izq:"∫  cos x dx", der:"sen x + C"},
+        {izq:"∫  sec<sup>2</sup>x dx", der:"tan x + C"},
+        {izq:"∫  sec x· tan x dx", der:"sec x + C"}
+      ],
+      feedback:{correcto:"Todas correctas.",errores:"Memoriza:sen→ -cos, cos→ sen, sec<sup>2</sup>→ tan, sec· tan→ sec."}},
+    {tipo:"completar_hueco", enunciado:"∫  3sec<sup>2</sup>x dx =<input class='input-line' id='ch4-7' placeholder='función'> + C.", respuesta:["3tan x","3tanx","3 tan x","3*tan x"], feedbackCorrecto:"Sí: por linealidad, sale el 3.", feedbackError:"∫ sec<sup>2</sup>x=tan x+C; con coeficiente 3: 3tan x+C."},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la verificación de∫ sen x dx = -cos x + C:",
+      pasos:[
+        {texto:"Derivar el candidato: d/dx[-cos x + C]", orden:1},
+        {texto:"Aplicar regla:-(-sen x) + 0", orden:2},
+        {texto:"Simplificar:sen x", orden:3},
+        {texto:"Comparar con integrando:sen x✓", orden:4}
+      ],
+      feedback:{correcto:"Secuencia impecable.",errores:"Para verificar: derivas el candidato, aplicas la regla, simplificas y comparas."}}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 5: LN|x| ===================== */
+{
+  id:"m5", num:5, titulo:"Integral de1/x →  ln|x|", icono:"📉",
+  objetivo:"Al terminar podrás integrar 1/x y funciones de la forma f'/f usandoln|f|.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M3) ¿Cuál exponente NO se puede integrar con la regla de la potencia?", opciones:["-1","2","-3","1/2"], correcta:0, feedback:{correcto:"n=-1 produce división entre 0.",errores:{1:"Sí se puede:x<sup>3</sup>/3.",2:"Sí: x⁻<sup>2</sup>/-2.",3:"Sí: (2/3)x^(3/2)."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM4) ∫ sen x dx =?", opciones:["-cos x+C","cos x+C","sen x+C","tan x+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"No se queda igual.",3:"No es tangente."}}}
+  ],
+  teoria:`
+    <h4>La fórmula clave</h4>
+    <div class="formula-box">∫  (1/x) dx = ln|x| + C</div>
+    <h4>¿Por qué valor absoluto?</h4>
+    <p>Porque\\lnxsolo está definida para x > 0. Pero 1/x existe parax≠  0,incluyendo valores negativos. Conln|x|cubrimos ambos lados:</p>
+    <p> Si x > 0: d/dx[ln x] = 1/x ✓<br> Si x < 0: d/dx[ln(-x)] = (1/(-x))· (-1) = 1/x✓</p>
+    <h4>Regla de la cadena invertida (f'/f)</h4>
+    <p>Si dentro de la integral tienes una fracción donde el numerador es la derivada del denominador, aplica:</p>
+    <div class="formula-box">∫  (f'(x) / f(x)) dx = ln|f(x)| + C</div>
+    <p>Ejemplo:∫ (2x/(x<sup>2</sup>+1))dx. Como d/dx[x<sup>2</sup>+1]=2x, el numerador es la derivada del denominador, así que:= ln|x<sup>2</sup>+1| + C. (Aquí no se necesita | | porquex<sup>2</sup>+1siempre es positivo.)</p>
+    <div class="analogia"><strong>Intuición:</strong>\\lnmide "cuántas veces multiplicas e para llegar a x". Para x negativo, |x| voltea el signo y el logaritmo sigue funcionando.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar la forma f'/f",contenido:"∫ (cos x / sen x)dx. El denominador essen x; su derivada escos x. ¡Coincide con el numerador!",regla:"Reconocer patrón f'/f"},
+    {num:2,titulo:"Aplicar la fórmula",contenido:"∫ (f'/f)dx = ln|f|+C. Aquíf=sen x, f'=cos x.",regla:"Regla del logaritmo"},
+    {num:3,titulo:"Sustituir",contenido:"= ln|sen x| + C",regla:"Sustitución"},
+    {num:4,titulo:"Verificar derivando",contenido:"d/dx[ln|sen x|] = (1/sen x)· cos x = cos x/sen x✓",regla:"Verificación por regla de la cadena"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"∫ (1/x)dx =?", opciones:["ln|x| + C","ln x + C","1/x<sup>2</sup> + C","x<sup>0</sup>/0 + C"], correcta:0,
+      feedback:{correcto:"Perfecto: con valor absoluto.",errores:{1:"Te falta el valor absoluto:\\lnxno funciona para x<0.",2:"Estás derivando.",3:"Es división entre 0, no definida."}}},
+    {tipo:"verdadero_falso", enunciado:"∫ (1/x)dx = ln x + C (sinvalor absoluto) es válida para todox≠  0.", correcta:false,
+      feedback:{correcto:"Correcto: sin | | solo vale para x>0.",errores:{0:"\\lnxno está definida para x<0. Necesitas |x| para cubrir negativos."}}},
+    {tipo:"completar_hueco", enunciado:"∫ (1/(2x))dx = (1/2)ln|<input class='input-line' id='ch5-3' placeholder='variable'>| + C.", respuesta:["x","2x"], feedbackCorrecto:"Sí:∫ 1/(2x)=(1/2)ln|x|+C.", feedbackError:"∫ (1/(2x))dx = (1/2)· ∫ (1/x)dx = (1/2)ln|x|+C."},
+    {tipo:"opcion_multiple", enunciado:"∫ (cos x / sen x)dx =?", opciones:["ln|sen x| + C","ln|cos x| + C","-ln|sen x| + C","tan x + C"], correcta:0,
+      feedback:{correcto:"Sí:f=sen x, f'=cos x.",errores:{1:"El denominador essen x,nocos x.",2:"El signo ya está considerado en la derivada.",3:"No es tangente."}}},
+    {tipo:"completar_hueco", enunciado:"Si u=3x+1, entonces du=<input class='input-line' id='ch5-5' placeholder='número'>dx, y ∫ du/u = ln|___| + C.", respuesta:["3","3dx"], feedbackCorrecto:"Sí: du=3dx, entonces∫ du/u = ln|3x+1|+C.", feedbackError:"u=3x+1 →  du/dx=3 →  du=3dx. La integral daln|3x+1|+C."},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ (2x/(x<sup>2</sup>+1))dx:",
+      pasos:[
+        {texto:"Reconocer que d/dx[x<sup>2</sup>+1]=2x (numerador)",orden:1},
+        {texto:"Aplicar∫ f'/f dx = ln|f|+C",orden:2},
+        {texto:"Sustituirf=x<sup>2</sup>+1: ln|x<sup>2</sup>+1|+C",orden:3},
+        {texto:"(Opcional) Quitar | | porquex<sup>2</sup>+1>0 siempre",orden:4}
+      ],
+      feedback:{correcto:"Secuencia correcta.",errores:"Primero identificas el patrón f'/f, aplicas la fórmula, sustituyes y finalmente consideras el signo del argumento."}},
+    {tipo:"verdadero_falso", enunciado:"ln|x|está definida en x=0.", correcta:false,
+      feedback:{correcto:"Correcto:ln(0)no está definido.",errores:{0:"ln(0)no existe: 1/x tampoco. Por eso el dominio esx≠ 0."}}},
+    {tipo:"numerica", enunciado:"∫ <sub>1</sub><sup>2</sup> (1/x)dx = ln|<input class='input-line' id='ch5-8' style='display:inline;width:60px' placeholder='límite'>| evaluado (escribe el límite superior).", respuesta:2, tolerancia:0.01, feedbackCorrecto:"Sí:ln|2|-ln|1| = ln 2.", feedbackError:"∫ <sub>1</sub><sup>2</sup>(1/x)dx = ln|2|-ln|1| = ln 2 - 0 = ln 2 ≈  0.693."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 6: SUMAS DE RIEMANN ===================== */
+{
+  id:"m6", num:6, titulo:"Sumas de Riemann finitas", icono:"📊",
+  objetivo:"Al terminar podrás calcular sumas de Riemann por izquierda, derecha y punto medio con n pequeño.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>3</sup>dx =?", opciones:["x<sup>4</sup>/4+C","x<sup>4</sup>+C","3x<sup>2</sup>+C","x<sup>2</sup>/2+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM5) ∫ (1/x)dx =?", opciones:["ln|x|+C","ln x+C","x<sup>0</sup>+C","1/x+C"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Te falta | |.",2:"No es 1.",3:"No se queda igual."}}}
+  ],
+  teoria:`
+    <h4>Idea central</h4>
+    <p>Para aproximar el área bajo una curva f(x) en [a,b], dividimos el intervalo en n subintervalos iguales y sumamos áreas de rectángulos.</p>
+    <h4>Elementos</h4>
+    <p> <strong>Δ x</strong> (ancho):Δ x = (b-a)/n<br> <strong>Puntos</strong>:x<sub>i</sub> = a + i· Δ x,con i=0,1,...,n<br> <strong>Altura</strong>: evaluamos f en un punto de cada subintervalo</p>
+    <div class="formula-box">Δ x = (b - a) / n</div>
+    <h4>Tres tipos</h4>
+    <p> <strong>Izquierda:</strong>L<sub>n</sub> = Σ <sub>i=0</sub><sup>n-1</sup> f(x<sub>i</sub>)· Δ x (usa el extremo izquierdo)<br> <strong>Derecha:</strong>R<sub>n</sub> = Σ <sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)· Δ x (usa el extremo derecho)<br> <strong>Punto medio:</strong>M<sub>n</sub> = Σ <sub>i=1</sub><sup>n</sup> f((x<sub>i-1</sub>+x<sub>i</sub>)/2)· Δ x</p>
+    <div class="analogia"><strong>Intuición:</strong> imagina que rellenas el área bajo la curva con baldosas rectangulares. A más baldosas (mayor n), mejor se ajustan a la curva real.</div>
+    <h4>Notación sigma</h4>
+    <p>Σ <sub>i=1</sub><sup>n</sup>significa "suma desde i=1 hasta i=n". Cada término se construye con el índice i.</p>
+  `,
+  ejemplo:[
+    {num:1,titulo:"CalcularΔ x",contenido:"f(x)=x<sup>2</sup>+1en [0,2] con n=4.Δ x = (2-0)/4 = 0.5.",regla:"Δ x=(b-a)/n"},
+    {num:2,titulo:"Construir la tabla de puntos",contenido:"x<sub>0</sub>=0, x<sub>1</sub>=0.5, x<sub>2</sub>=1, x<sub>3</sub>=1.5, x<sub>4</sub>=2.",regla:"x<sub>i</sub> = a + i· Δ x"},
+    {num:3,titulo:"Evaluar f en cada punto (suma izquierda usax<sub>0</sub>..x<sub>3</sub>)",contenido:"f(0)=1, f(0.5)=1.25, f(1)=2, f(1.5)=3.25.",regla:"Sustituir en f"},
+    {num:4,titulo:"Sumar y multiplicar porΔ x",contenido:"L<sub>4</sub> = (1 + 1.25 + 2 + 3.25)· 0.5 = 7.5· 0.5 = 3.75.",regla:"Σ f(x<sub>i</sub>)· Δ x"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"Para [0,4] con n=4, ¿cuánto valeΔ x?", opciones:["1","0.5","4","2"], correcta:0,
+      feedback:{correcto:"Sí: (4-0)/4=1.",errores:{1:"Calculaste (4-0)/8.",2:"Eso es n, noΔ x.",3:"Olvidaste dividir entre n."}}},
+    {tipo:"numerica", enunciado:"Suma izquierda de f(x)=x en [0,2] conn=4 (Δ x=0.5; puntosx<sub>0</sub>=0,x<sub>1</sub>=0.5,x<sub>2</sub>=1,x<sub>3</sub>=1.5).", respuesta:1.5, tolerancia:0.01, feedbackCorrecto:"Sí: (0+0.5+1+1.5)· 0.5 = 3· 0.5 = 1.5.", feedbackError:"L<sub>4</sub> = (f(0)+f(0.5)+f(1)+f(1.5))· Δ x = (0+0.5+1+1.5)· 0.5 = 3· 0.5 = 1.5."},
+    {tipo:"opcion_multiple", enunciado:"Suma derecha def(x)=x<sup>2</sup>en [0,1] conn=2 (Δ x=0.5; puntosx<sub>1</sub>=0.5, x<sub>2</sub>=1):", opciones:["0.625","0.5","0.25","1.25"], correcta:0,
+      feedback:{correcto:"Sí: (0.25+1)· 0.5 = 0.625.",errores:{1:"Olvidaste elevar al cuadrado el segundo.",2:"Olvidaste multiplicar porΔ x.",3:"Confundiste izquierda con derecha."}}},
+    {tipo:"completar_hueco", enunciado:"Si [a,b]=[0,6] y n=3, entoncesΔ x=<input class='input-line' id='ch6-4' placeholder='número'>.", respuesta:["2"], feedbackCorrecto:"Sí: (6-0)/3=2.", feedbackError:"Δ x=(b-a)/n = (6-0)/3 = 2."},
+    {tipo:"verdadero_falso", enunciado:"La suma por punto medio suele ser más precisa que izquierda o derecha para funciones suaves.", correcta:true,
+      feedback:{correcto:"Sí: el punto medio reduce el error promedio.",errores:{0:"Para funciones suaves el punto medio equilibra los errores de ambos lados."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena el cálculo de una suma izquierda:",
+      pasos:[
+        {texto:"CalcularΔ x = (b-a)/n",orden:1},
+        {texto:"Listar los puntosx<sub>0</sub>, x<sub>1</sub>,..., x<sub>n-1</sub>",orden:2},
+        {texto:"Evaluar f en cada uno de esos puntos",orden:3},
+        {texto:"Multiplicar la suma porΔ x",orden:4}
+      ],
+      feedback:{correcto:"Secuencia impecable.",errores:"PrimeroΔ x,luego los puntos, luego evaluas f y finalmente multiplicas porΔ x."}},
+    {tipo:"emparejar", enunciado:"Empareja tipo de suma con su fórmula (i=1..n):",
+      parejas:[
+        {izq:"Izquierda",der:"Σ <sub>i=0</sub><sup>n-1</sup> f(x<sub>i</sub>)· Δ x"},
+        {izq:"Derecha",der:"Σ <sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)· Δ x"},
+        {izq:"Medio",der:"Σ <sub>i=1</sub><sup>n</sup> f((x<sub>i-1</sub>+x<sub>i</sub>)/2)· Δ x"},
+        {izq:"Δ x",der:"(b-a)/n"}
+      ],
+      feedback:{correcto:"Todas correctas.",errores:"Izquierda usax<sub>0</sub>..xₙ₋<sub>1</sub>; derecha usax<sub>1</sub>..xₙ; medio usa promedios;Δ x=(b-a)/n."}},
+    {tipo:"numerica", enunciado:"Suma derecha de f(x)=x+1 en [0,2] conn=2 (Δ x=1; puntosx<sub>1</sub>=1, x<sub>2</sub>=2).", respuesta:5, tolerancia:0.01, feedbackCorrecto:"Sí:(f(1)+f(2))· 1 = (2+3)· 1 = 5.", feedbackError:"R<sub>2</sub> = (f(1)+f(2))· Δ x = (2+3)· 1 = 5."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 7: ÁREA ENTRE CURVAS ===================== */
+{
+  id:"m7", num:7, titulo:"Área entre curvas", icono:"🎨",
+  objetivo:"Al terminar podrás calcular el área entre dos curvas identificando intersecciones y qué función va arriba.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M6) ¿Cuál es\\Deltaxpara [a,b] con n subintervalos?", opciones:["(b-a)/n","(b+a)/n","n/(b-a)","b-a"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"No se suman.",2:"Está invertido.",3:"Falta dividir."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>2</sup>dx =?", opciones:["x<sup>3</sup>/3+C","x<sup>3</sup>+C","2x+C","x<sup>2</sup>/2+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}}
+  ],
+  teoria:`
+    <h4>Idea central</h4>
+    <p>El área entre dos curvas y=f(x) e y=g(x) en [a,b] se calcula con:</p>
+    <div class="formula-box">Área= ∫ <sub>a</sub><sup>b</sup> (superior - inferior) dx</div>
+    <h4>Pasos</h4>
+    <p>1. <strong>Encontrar intersecciones</strong>: resolver f(x)=g(x). Estas marcan los límites a, b.<br>2. <strong>Decidir cuál va arriba</strong>: evalúa un punto de prueba entre las intersecciones.<br>3. <strong>Restar</strong>: superior - inferior (nunca al revés).<br>4. <strong>Integrar</strong> y evaluar.</p>
+    <h4>Área con signo vs. área geométrica</h4>
+    <p> <strong>∫ f dx</strong> da área <em>con signo</em>: las partes bajo el eje x restan.<br> <strong>Área geométrica</strong> siempre es≠  0: si la curva pasa debajo del eje, integrar |f| o partir el intervalo.</p>
+    <h4>Si las curvas se cruzan dentro del intervalo</h4>
+    <p>En ese caso la función superior cambia. Hay que <strong>dividir el intervalo</strong> en los puntos de cruce y sumar las áreas por separado.</p>
+    <div class="analogia"><strong>Intuición:</strong> piensa en dos colchonetas apiladas: el área entre ellas es lo que sobresale la de arriba respecto a la de abajo. Si se cruzan, "arriba" e "abajo" se intercambian.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Encontrar intersecciones",contenido:"Entrey=x y y=x<sup>2</sup>: x=x<sup>2</sup> →  x(x-1)=0 →  x=0, x=1. Límites: [0,1].",regla:"Resolver f=g"},
+    {num:2,titulo:"Decidir superior/inferior",contenido:"En x=0.5: f(0.5)=0.5; g(0.5)=0.25. La línea y=x va arriba.",regla:"Punto de prueba"},
+    {num:3,titulo:"Plantear la integral",contenido:"Área= ∫ <sub>0</sub>¹ (x - x<sup>2</sup>) dx",regla:"superior - inferior"},
+    {num:4,titulo:"Integrar y evaluar",contenido:"= [x<sup>2</sup>/2 - x<sup>3</sup>/3]<sub>0</sub>¹ = (1/2 - 1/3) - 0 = 1/6 ≈  0.1667",regla:"Regla de la potencia y evaluar"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"Área entrey=x<sup>2</sup>yel eje x (y=0) en [0,2]:", opciones:["∫ <sub>0</sub><sup>2</sup> x<sup>2</sup> dx = 8/3","∫ <sub>0</sub><sup>2</sup> (0-x<sup>2</sup>) dx","∫ <sub>0</sub><sup>2</sup> 2x dx","2"], correcta:0,
+      feedback:{correcto:"Sí:x<sup>2</sup>está arriba de 0.",errores:{1:"Invertiste el orden; el área sería negativa.",2:"Estás derivando.",3:"No es la integral correcta."}}},
+    {tipo:"completar_hueco", enunciado:"Siy<sub>sup</sub>=x<sup>2</sup> e y<sub>inf</sub>=0, entonces Área=∫<input class='input-line' id='ch7-2' placeholder='integrandos'> dx (escribe solo el integrando).", respuesta:["x^2","x<sup>2</sup>","x**2"], feedbackCorrecto:"Sí: superior-inferior= x<sup>2</sup>-0 = x<sup>2</sup>.", feedbackError:"Área= ∫ (superior-inferior)dx = ∫ (x<sup>2</sup>-0)dx = ∫ x<sup>2</sup>dx."},
+    {tipo:"opcion_multiple", enunciado:"¿En qué x se intersecany=x<sup>2</sup> e y=x+2?", opciones:["x=-1 y x=2","x=0 y x=1","x=1 y x=-1","x=2 y x=3"], correcta:0,
+      feedback:{correcto:"Sí:x<sup>2</sup>=x+2 →  x<sup>2</sup>-x-2=0 →  (x-2)(x+1)=0.",errores:{1:"Esas son intersecciones dey=x<sup>2</sup> e y=x.",2:"Incorrecto.",3:"Incorrecto."}}},
+    {tipo:"verdadero_falso", enunciado:"El área entre curvas siempre es≠  0.", correcta:true,
+      feedback:{correcto:"Sí: se resta superior-inferior, así que el integrando es≠ 0.",errores:{0:"Aunque la integral con signo pueda ser negativa, el área geométrica siempre es≠ 0."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena el cálculo del área entre dos curvas:",
+      pasos:[
+        {texto:"Encontrar intersecciones resolviendo f(x)=g(x)",orden:1},
+        {texto:"Decidir cuál función va arriba con un punto de prueba",orden:2},
+        {texto:"Plantear∫ (superior-inferior)dx entre los límites",orden:3},
+        {texto:"Integrar y evaluar en los límites",orden:4}
+      ],
+      feedback:{correcto:"Secuencia correcta.",errores:"Primero intersecciones, luego decidir arriba/abajo, plantear la integral y finalmente integrar y evaluar."}},
+    {tipo:"numerica", enunciado:"Área entrey=x e y=x<sup>2</sup>en [0,1](= ∫ <sub>0</sub>¹(x-x<sup>2</sup>)dx).", respuesta:0.1667, tolerancia:0.01, feedbackCorrecto:"Sí:1/6 ≈  0.1667.", feedbackError:"∫ <sub>0</sub>¹(x-x<sup>2</sup>)dx = [x<sup>2</sup>/2 - x<sup>3</sup>/3]<sub>0</sub>¹ = 1/2 - 1/3 = 1/6 ≈  0.1667."},
+    {tipo:"opcion_multiple", enunciado:"Si las curvas se cruzan dentro del intervalo, ¿qué se hace?", opciones:["Dividir el intervalo en los puntos de cruce y sumar áreas","Tomar valor absoluto de toda la integral","Ignorar el cruce","Integrar solo la superior"], correcta:0,
+      feedback:{correcto:"Sí: hay que partir y sumar.",errores:{1:"No basta con|· |sobre todo el intervalo.",2:"Eso da área negativa.",3:"Ignora la inferior."}}},
+    {tipo:"completar_hueco", enunciado:"Para y=x+2 arribaey=x<sup>2</sup>abajo en [-1,2], el área es∫ <sub>-1</sub><sup>2</sup>(<input class='input-line' id='ch7-8' placeholder='integrando'>)dx.", respuesta:["x+2-x^2","x+2-x<sup>2</sup>","(x+2)-x^2"], feedbackCorrecto:"Sí: superior-inferior= (x+2)-x<sup>2</sup>.", feedbackError:"Área= ∫ (superior-inferior)dx = ∫ ((x+2)-x<sup>2</sup>)dx."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===================== MÓDULO 8: SUSTITUCIÓN ===================== */
+{
+  id:"m8", num:8, titulo:"Método de sustitución", icono:"🔄",
+  objetivo:"Al terminar podrás resolver integrales por sustitución eligiendo u correctamente y cambiando límites cuando sea definida.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(RepasoM5) ∫ (1/x)dx =?", opciones:["ln|x|+C","ln x+C","x+C","1/x+C"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Falta | |.",2:"No es x.",3:"No se queda igual."}}},
+    {tipo:"opcion_multiple", enunciado:"(RepasoM2) ∫ (2x+1)dx =?", opciones:["x<sup>2</sup>+x+C","2+C","x<sup>2</sup>+C","2x<sup>2</sup>+x+C"], correcta:0, feedback:{correcto:"Sí: por linealidad.",errores:{1:"Falta integrar variable.",2:"Olvidaste el 2x.",3:"Confundiste coeficientes."}}}
+  ],
+  teoria:`
+    <h4>Idea central</h4>
+    <p>La sustitución es la regla de la cadena al revés. Si dentro de la integral hay una función compuesta, reemplazamos la "función interna" por una nueva variable u.</p>
+    <h4>Procedimiento</h4>
+    <p>1. <strong>Elegir u</strong>: típicamente la función interna (dentro de una potencia, argumento desen,denominador, etc.).<br>2. <strong>Calcular du</strong>: si u=g(x), entonces du=g'(x)dx.<br>3. <strong>Reescribir la integral</strong> en términos de u. Debe desaparecer toda x (incluido dx).<br>4. <strong>Integrar respecto a u</strong>.<br>5. <strong>Volver a x</strong> (en indefinidas) o <strong>cambiar límites</strong> (en definidas).</p>
+    <div class="formula-box">∫  f(g(x))· g'(x) dx = ∫  f(u) du ,con u=g(x)</div>
+    <h4>Casos típicos</h4>
+    <p> <strong>Lineales</strong>:∫ cos(3x)dx →  u=3x, du=3dx<br> <strong>Potencias compuestas</strong>:∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx →  u=x<sup>2</sup>+1, du=2xdx<br> <strong>Trigonométricas compuestas</strong>:∫ sen(x<sup>2</sup>)· 2x dx →  u=x<sup>2</sup></p>
+    <h4>Caso definido: cambio de límites</h4>
+    <p>Si los límites están en x, puedes convertirlos a u: si x=a, entonces u=g(a); si x=b, entonces u=g(b). Así no necesitas volver a x.</p>
+    <div class="analogia"><strong>Intuición:</strong> la sustitución es como cambiar de idioma para que la integral se vuelva fácil. Si el "traductor" (du) aparece completo en el integrando, la traducción funciona.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Elegir u y calcular du",contenido:"∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx. Elegimosu=x<sup>2</sup>+1; du=2x dx. ¡Aparece 2x dx en el integrando!",regla:"u = función interna"},
+    {num:2,titulo:"Reescribir en u",contenido:"El integrando se vuelveu<sup>5</sup> du.",regla:"Sustitución completa"},
+    {num:3,titulo:"Integrar respecto a u",contenido:"∫ u<sup>5</sup>du = u<sup>6</sup>/6 + C",regla:"Regla de la potencia"},
+    {num:4,titulo:"Volver a x",contenido:"= (x<sup>2</sup>+1)<sup>6</sup>/6 + C",regla:"Reemplazar u porx<sup>2</sup>+1"}
+  ],
+  actividades:[
+    {tipo:"completar_hueco", enunciado:"Siu=x<sup>2</sup>+1,entonces du=<input class='input-line' id='ch8-1' placeholder='número'>dx.", respuesta:["2"], feedbackCorrecto:"Sí:du/dx=2x →  du=2x dx.", feedbackError:"u=x<sup>2</sup>+1 →  du/dx=2x →  du=2x dx."},
+    {tipo:"opcion_multiple", enunciado:"Para∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx,¿qué eliges como u?", opciones:["x<sup>2</sup>+1","x","x<sup>2</sup>","2x"], correcta:0,
+      feedback:{correcto:"Sí: la función interna; su derivada 2x aparece en el integrando.",errores:{1:"u=x no aprovecha la estructura compuesta.",2:"Olvidaste el +1.",3:"2x es justamente du/dx, no u."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ 2x(x<sup>2</sup>+1)<sup>5</sup>dx:",
+      pasos:[
+        {texto:"Elegiru=x<sup>2</sup>+1, du=2x dx",orden:1},
+        {texto:"Reescribir:∫ u<sup>5</sup> du",orden:2},
+        {texto:"Integrar:u<sup>6</sup>/6 + C",orden:3},
+        {texto:"Volver a x:(x<sup>2</sup>+1)<sup>6</sup>/6 + C",orden:4}
+      ],
+      feedback:{correcto:"Secuencia impecable.",errores:"Primero eliges u y calculas du, reescribes la integral en u, integras y finalmente vuelves a x."}},
+    {tipo:"completar_hueco", enunciado:"∫ sen(3x)dx: u=3x, du=3dx, entonces(1/3)∫ sen(u)du = -(1/3)cos(<input class='input-line' id='ch8-4' placeholder='variable'>)+C.", respuesta:["u","3x"], feedbackCorrecto:"Sí:(1/3)· (-cos u) = -cos(3x)/3.", feedbackError:"∫ sen(3x)dx: u=3x, du=3dx →  (1/3)∫ sen u du = (1/3)(-cos u)+C = -cos(3x)/3+C."},
+    {tipo:"verdadero_falso", enunciado:"En una integral definida por sustitución, puedes cambiar los límites a u o volver a x antes de evaluar.", correcta:true,
+      feedback:{correcto:"Sí: ambas opciones son válidas y dan el mismo resultado.",errores:{0:"Ambas estrategias son correctas y equivalentes."}}},
+    {tipo:"numerica", enunciado:"∫ <sub>0</sub>¹ 2x(x<sup>2</sup>+1)<sup>3</sup>dx (sustituciónu=x<sup>2</sup>+1; límites: u(0)=1, u(1)=2).", respuesta:3.75, tolerancia:0.01, feedbackCorrecto:"Sí:∫ <sub>1</sub><sup>2</sup>u<sup>3</sup>du = u<sup>4</sup>/4 |<sub>1</sub><sup>2</sup> = 16/4 - 1/4 = 15/4 = 3.75.", feedbackError:"Conu=x<sup>2</sup>+1, du=2x dx; límites u(0)=1, u(1)=2.∫ <sub>1</sub><sup>2</sup>u<sup>3</sup>du = u<sup>4</sup>/4|<sub>1</sub><sup>2</sup> = 4 - 0.25 = 3.75."},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál u es correcta para∫ x· e<sup>x<sup>2</sup></sup>dx?", opciones:["u=x<sup>2</sup>","u=x","u=eˣ","u=x\\cdoteˣ"], correcta:0,
+      feedback:{correcto:"Sí:u=x<sup>2</sup> →  du=2x dx; falta un 2 que se ajusta con coeficiente.",errores:{1:"u=x no simplifica la exponencial.",2:"u=eˣ no ayuda.",3:"No es sustitución útil."}}},
+    {tipo:"completar_hueco", enunciado:"∫ (cos x)(sen x)dxconu=sen x, du=cos x dx,da <input class='input-line' id='ch8-8' placeholder='en u'>+C.", respuesta:["u^2/2","u<sup>2</sup>/2","(1/2)u^2","u^2 / 2"], feedbackCorrecto:"Sí:∫ u du = u<sup>2</sup>/2+C = sen<sup>2</sup>x/2+C.", feedbackError:"u=sen x, du=cos x dx →  ∫ u du = u<sup>2</sup>/2+C = sen<sup>2</sup>x/2+C."}
+  ],
+  criterioDominio:0.8
+}
+];
+
+// Fórmulas clave de referencia rápida
+const FORMULAS_REFERENCIA = [
+  {f:"∫ k dx", r:"k· x + C"},
+  {f:"∫ x<sup>n</sup> dx (n≠ -1)", r:"x<sup>n+1</sup>/(n+1) + C"},
+  {f:"∫ x<sup>-1</sup> dx = ∫ (1/x) dx", r:"ln|x| + C"},
+  {f:"∫ sen x dx", r:"-cos x + C"},
+  {f:"∫ cos x dx", r:"sen x + C"},
+  {f:"∫ sec<sup>2</sup>x dx", r:"tan x + C"},
+  {f:"∫ sec x· tan x dx", r:"sec x + C"},
+  {f:"∫ (f'/f) dx", r:"ln|f| + C"},
+  {f:"∫ f(g(x))· g'(x) dx", r:"∫ f(u) du,  u=g(x)"},
+  {f:"Δ x (Riemann)", r:"(b-a)/n"},
+  {f:"Suma izquierdaL<sub>n</sub>", r:"Σ <sub>i=0</sub><sup>n-1</sup> f(x<sub>i</sub>)· Δ x"},
+  {f:"Suma derechaR<sub>n</sub>", r:"Σ <sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>)· Δ x"},
+  {f:"Área entre curvas", r:"∫ <sub>a</sub><sup>b</sup>(sup-inf) dx"}
+];
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function $(id){return document.getElementById(id)}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+/* Render LaTeX math in an element using KaTeX auto-render */
+function renderMath(el){
+  if(typeof renderMathInElement==='function'){
+    try{
+      renderMathInElement(el,{
+        delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ],
+        throwOnError:false,
+        errorColor:'#888888'
+      });
+    }catch(e){/* KaTeX not ready */}
+  }
+}
+/* Convert HTML math notation to LaTeX, then set innerHTML and render */
+function setHTML(el,html){
+  html=convertMathToLatex(html);
+  el.innerHTML=html;
+  renderMath(el);
+}
+
+/* Convert HTML/Unicode math notation to LaTeX with $...$ delimiters */
+function htmlToLatex(text){
+  return text
+    .replace(/<sup>(.*?)<\/sup>/g,function(m,c){return '^{'+htmlToLatex(c)+'}'})
+    .replace(/<sub>(.*?)<\/sub>/g,function(m,c){return '_{'+htmlToLatex(c)+'}'})
+    .replace(/<span class="frac"><span class="num">(.*?)<\/span><span class="den">(.*?)<\/span><\/span>/g,function(m,n,d){return '\\frac{'+n+'}{'+d+'}'})
+    .replace(/∫/g,'\\int ')
+    .replace(/√/g,'\\sqrt ')
+    .replace(/²/g,'^{2}').replace(/³/g,'^{3}').replace(/⁴/g,'^{4}')
+    .replace(/⁵/g,'^{5}').replace(/⁶/g,'^{6}')
+    .replace(/⁻¹/g,'^{-1}').replace(/⁻²/g,'^{-2}').replace(/⁻³/g,'^{-3}')
+    .replace(/π/g,'\\pi ').replace(/≠/g,'\\neq ').replace(/≤/g,'\\leq ')
+    .replace(/≥/g,'\\geq ').replace(/→/g,'\\to ').replace(/≈/g,'\\approx ')
+    .replace(/∞/g,'\\infty ').replace(/×/g,'\\times ').replace(/·/g,'\\cdot ')
+    .replace(/Σ/g,'\\sum ').replace(/Δ/g,'\\Delta ').replace(/½/g,'\\frac{1}{2}')
+    .replace(/₁/g,'_{1}').replace(/₂/g,'_{2}').replace(/₃/g,'_{3}')
+    .replace(/₄/g,'_{4}').replace(/₅/g,'_{5}').replace(/₆/g,'_{6}')
+    .replace(/₀/g,'_{0}').replace(/ᵢ/g,'_{i}')
+    .replace(/′/g,"'").replace(/⟺/g,'\\iff ').replace(/•/g,'')
+    .replace(/\bsen\b/g,'\\operatorname{sen}')
+    .replace(/\bcos\b/g,'\\cos').replace(/\btan\b/g,'\\tan')
+    .replace(/\bsec\b/g,'\\sec').replace(/\bln\b/g,'\\ln');
+}
+
+var MATH_WORDS_JS={sen:1,cos:1,tan:1,sec:1,cot:1,csc:1,sin:1,ln:1,log:1,dx:1,du:1,dv:1,dt:1,pi:1,infty:1,exp:1,lim:1,int:1,sum:1,frac:1,sqrt:1,Delta:1,cdot:1,times:1,neq:1,leq:1,geq:1,to:1,approx:1,iff:1};
+var MATH_CHARS_JS='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/=()|,\\^_\'{} ';
+
+function isMathChar(c){return MATH_CHARS_JS.indexOf(c)>=0}
+
+function extendLeftMath(text,pos){
+  var i=pos;
+  while(i>0){
+    var c=text[i-1];
+    if(/[a-zA-Z]/.test(c)){
+      var wordEnd=i;
+      while(i>0 && /[a-zA-Z]/.test(text[i-1])) i--;
+      var word=text.substring(i,wordEnd);
+      if(word.length>1 && !MATH_WORDS_JS[word.toLowerCase()]) return wordEnd;
+    }else if(isMathChar(c)){i--}
+    else return i;
+  }
+  return i;
+}
+
+function extendRightMath(text,pos){
+  var i=pos, n=text.length;
+  while(i<n){
+    var c=text[i];
+    if(/[a-zA-Z]/.test(c)){
+      var wordStart=i;
+      while(i<n && /[a-zA-Z]/.test(text[i])) i++;
+      var word=text.substring(wordStart,i);
+      if(word.length>1 && !MATH_WORDS_JS[word.toLowerCase()]) return wordStart;
+    }else if(isMathChar(c)){i++}
+    else return i;
+  }
+  return i;
+}
+
+function wrapInlineMath(text){
+  // Find math anchors: \command, ^{, _{
+  var anchors=[];
+  var cmdRe=/\\(operatorname\{sen\}|int|sqrt|pi|sum|Delta|frac|ln|cos|tan|sec|neq|leq|geq|to|approx|infty|times|cdot|iff|bullet)\b/g;
+  var m;
+  while((m=cmdRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  var supRe=/\^\{/g;
+  while((m=supRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  var subRe=/_\{/g;
+  while((m=subRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  
+  if(anchors.length===0) return text;
+  
+  // Extend each anchor
+  var segments=[];
+  for(var a=0;a<anchors.length;a++){
+    var left=extendLeftMath(text,anchors[a][0]);
+    var right=extendRightMath(text,anchors[a][1]);
+    segments.push([left,right]);
+  }
+  
+  // Sort by start
+  segments.sort(function(a,b){return a[0]-b[0]});
+  
+  // Merge overlapping
+  var merged=[];
+  for(var s=0;s<segments.length;s++){
+    if(merged.length>0 && segments[s][0]<=merged[merged.length-1][1]+1){
+      merged[merged.length-1][1]=Math.max(merged[merged.length-1][1],segments[s][1]);
+    }else{
+      merged.push([segments[s][0],segments[s][1]]);
+    }
+  }
+  
+  // Build result
+  var result='';
+  var lastEnd=0;
+  for(var s=0;s<merged.length;s++){
+    result+=text.substring(lastEnd,merged[s][0]);
+    var mathText=text.substring(merged[s][0],merged[s][1]).trim();
+    if(mathText.length>0){
+      if(mathText.charAt(0)==='{') result+='$ '+mathText+'$';
+      else result+='$'+mathText+'$';
+    }
+    lastEnd=merged[s][1];
+  }
+  result+=text.substring(lastEnd);
+  return result;
+}
+
+function convertMathToLatex(html){
+  // 1. Convert formula boxes to $$...$$ display math
+  html=html.replace(/<div class="formula-box">([\s\S]*?)<\/div>/g,function(m,content){
+    var latex=htmlToLatex(content).trim();
+    return '<div class="formula-box">$$'+latex+'$$</div>';
+  });
+  
+  // 2. Convert ALL math notation (sup, sub, Unicode, functions) to LaTeX on full HTML
+  html=htmlToLatex(html);
+  
+  // 3. Split by remaining HTML tags and wrap inline math in text segments
+  var parts=html.split(/(<[^>]+>)/);
+  var result='';
+  for(var i=0;i<parts.length;i++){
+    if(parts[i].length===0) continue;
+    if(parts[i].charAt(0)==='<' && parts[i].charAt(parts[i].length-1)==='>'){
+      // HTML tag - keep as-is
+      result+=parts[i];
+    }else{
+      // Text segment - wrap math expressions in $...$
+      result+=wrapInlineMath(parts[i]);
+    }
+  }
+  return result;
+}
+
+
+function normalizeStr(s){
+  return String(s).toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/·/g,'*')
+    .replace(/²/g,'^2').replace(/³/g,'^3').replace(/⁴/g,'^4').replace(/⁵/g,'^5').replace(/⁶/g,'^6')
+    .replace(/⁻¹/g,'^-1').replace(/⁻²/g,'^-2').replace(/⁻³/g,'^-3')
+    .replace(/√/g,'sqrt').replace(/π/g,'pi');
+}
+function getModulo(id){return MODULES.find(m=>m.id===id)}
+function siguienteModulo(id){
+  const idx = MODULES.findIndex(m=>m.id===id);
+  if(idx<0||idx>=MODULES.length-1) return null;
+  // Skip m0
+  for(let i=idx+1;i<MODULES.length;i++){
+    if(MODULES[i].id!=='m0') return MODULES[i];
+  }
+  return null;
+}
+function toast(msg,type='info'){
+  const t=$('toast');t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function hoy(){
+  const d=new Date();
+  return d.toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});
+}
+function fechaHora(){
+  return new Date().toLocaleString('es-MX');
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  const grid=$('modules-grid');
+  grid.innerHTML='';
+  MODULES.filter(m=>m.id!=='m0').forEach(m=>{
+    const est=ESTADO.modulos[m.id];
+    let estadoClase='locked',estadoTxt='🔒 Bloqueado',icono='🔒';
+    if(est.dominado){estadoClase='completed';estadoTxt='✅ Completado';icono=m.icono}
+    else if(est.completado){estadoClase='in-progress';estadoTxt='🎯 En curso';icono=m.icono}
+    else if(est.desbloqueado){estadoClase='available';estadoTxt='📖 Disponible';icono=m.icono}
+    const pct=Math.round((est.scoreActividades/est.totalActividades)*100);
+    const card=document.createElement('div');
+    card.className='module-card '+estadoClase;
+    setHTML(card,`
+      <div class="m-icon">${icono}</div>
+      <div class="m-num">Módulo ${m.num}</div>
+      <div class="m-title">${m.titulo}</div>
+      <div class="m-status ${estadoClase}">${estadoTxt}</div>
+      <div class="m-progress">
+        <div style="font-size:.75rem;color:var(--text-muted)">Avance: ${pct}%</div>
+        <div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+      </div>`);
+    if(!card.classList.contains('locked')){
+      card.onclick=()=>abrirModulo(m.id);
+    }
+    grid.appendChild(card);
+  });
+  // Update global progress
+  const mods=MODULES.filter(m=>m.id!=='m0');
+  let totalDone=0,totalAct=0;
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    totalDone+=e.scoreActividades;
+    totalAct+=e.totalActividades;
+  });
+  // Add consolidation bonus
+  let dominatedCount=mods.filter(m=>ESTADO.modulos[m.id].dominado).length;
+  let pct=Math.round(((totalDone/totalAct)*0.7 + (dominatedCount/mods.length)*0.3)*100);
+  if(isNaN(pct))pct=0;
+  $('progress-pct').textContent=pct+'%';
+  $('progress-fill').style.width=pct+'%';
+  // Render side panels
+  renderFormulaRef();
+  renderErroresList();
+  renderProgresoDetallado();
+  saveState();
+}
+
+/* ============================================================
+   VISTA DE MÓDULO
+   ============================================================ */
+let moduloActual=null;
+function irDashboard(){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('view-dashboard').classList.add('active');
+  moduloActual=null;
+  renderDashboard();
+  window.scrollTo(0,0);
+}
+function abrirModulo(id){
+  const m=getModulo(id);
+  if(!m)return;
+  if(id!=='m0' && !ESTADO.modulos[id].desbloqueado){
+    toast('Módulo bloqueado. Completa el anterior al 80%.','error');
+    return;
+  }
+  moduloActual=id;
+  const est=ESTADO.modulos[id];
+  if(!est.primerAcceso)est.primerAcceso=fechaHora();
+  est.ultimoAcceso=fechaHora();
+  $('bc-modulo').textContent='Módulo '+m.num+': '+m.titulo;
+  renderModuloContenido(id);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('view-module').classList.add('active');
+  window.scrollTo(0,0);
+  saveState();
+}
+function renderModuloContenido(id){
+  const m=getModulo(id);
+  const cont=$('module-content');
+  const est=ESTADO.modulos[id];
+  let html=`
+    <div class="module-header">
+      <h2><span style="font-size:1.6rem">${m.icono}</span> Módulo ${m.num}: ${m.titulo}</h2>
+      <div class="objetivo"><strong>Objetivo:</strong> ${m.objetivo}</div>
+    </div>`;
+  // M0: diagnóstico
+  if(m.esDiagnostico){
+    html+=`<div class="section"><h3>🧭 Preguntas de diagnóstico</h3>`;
+    if(ESTADO.m0.completado){
+      html+=`<div class="diag-result ${ESTADO.m0.score>=5?'alto':ESTADO.m0.score>=3?'medio':'bajo'}">
+        <strong>Resultado: ${ESTADO.m0.score}/${ESTADO.m0.max}</strong><br>
+        ${ESTADO.m0.recomendaciones.map(r=>`<div class="diag-rec">• ${r}</div>`).join('')}
+      </div>`;
+      html+=`<button class="btn" onclick="repetirDiagnostico()">🔄 Repetir diagnóstico</button>`;
+    }
+    m.actividades.forEach((a,i)=>html+=renderActividad(a,id,i));
+    html+=`</div>`;
+    cont.innerHTML=html;
+    attachActividadHandlers(id);
+    return;
+  }
+  // Repaso espaciado
+  if(m.repaso && m.repaso.length>0 && !est.repasoHecho){
+    html+=`<div class="section"><h3>🔁 Repaso espaciado <span class="badge">repaso</span></h3>
+      <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:10px">Antes de empezar, repasamos conceptos de módulos anteriores.</p>`;
+    m.repaso.forEach((a,i)=>{
+      const rId='repaso-'+i;
+      html+=renderActividadSimple(a,id,rId);
+    });
+    html+=`<button class="btn btn-primary" onclick="marcarRepasoHecho('${id}')">✓ Repaso completado, continuar</button></div>`;
+  }
+  // Teoría
+  html+=`<div class="section">
+    <h3>📚 Mini-teoría</h3>
+    <div class="accordion">
+      <div class="acc-head" onclick="toggleAcc(this)"><span>Ver teoría (click para desplegar)</span><span class="arrow">▶</span></div>
+      <div class="acc-body"><div class="teoria-content">${m.teoria}</div></div>
+    </div>
+  </div>`;
+  // Ejemplo resuelto
+  if(m.ejemplo && m.ejemplo.length>0){
+    html+=`<div class="section"><h3>🧩 Ejemplo resuelto paso a paso</h3><div id="ejemplo-display"></div></div>`;
+  }
+  // Generador de práctica (M3-M8)
+  if(['m3','m4','m5','m6','m7','m8'].includes(id)){
+    html+=`<div class="practice-gen">
+      <h3>🎲 Generador de práctica infinita</h3>
+      <p style="font-size:.88rem">Genera ejercicios aleatorios con verificación automática. Practica cuantas veces quieras.</p>
+      <div class="gen-controls">
+        <button class="btn btn-primary" onclick="generarPractica('${id}')">🔄 Generar otro ejercicio</button>
+        <button class="btn btn-ghost" onclick="mostrarSolucionGen()">💡 Ver solución</button>
+      </div>
+      <div class="gen-display" id="gen-display" style="display:none"></div>
+    </div>`;
+  }
+  // Actividades
+  html+=`<div class="section"><h3>✏️ Actividades <span class="badge">${m.actividades.length}</span></h3>`;
+  m.actividades.forEach((a,i)=>html+=renderActividad(a,id,i));
+  html+=`</div>`;
+  // Consolidación
+  html+=`<div class="consolidacion">
+    <h3>🏆 Consolidación: resuélvelo tú</h3>
+    <p>${getConsolidacion(id)}</p>
+    <div class="autoeval">
+      <p style="font-weight:600;margin-bottom:6px">Autoevaluación guiada:</p>
+      <label><input type="checkbox" id="auto-1"> Identifiqué qué regla aplicar</label>
+      <label><input type="checkbox" id="auto-2"> Escribí el +C (si es indefinida)</label>
+      <label><input type="checkbox" id="auto-3"> Verifiqué derivando</label>
+      <label><input type="checkbox" id="auto-4"> Mi respuesta coincide con la esperada</label>
+    </div>
+    <div class="act-actions" style="margin-top:12px">
+      <button class="btn btn-success" onclick="guardarConsolidacion('${id}')">✓ Marcar consolidación como hecha</button>
+    </div>
+    <div id="cons-feedback" style="margin-top:8px"></div>
+  </div>`;
+  setHTML(cont,html);
+  attachActividadHandlers(id);
+  if(m.ejemplo && m.ejemplo.length>0)renderEjemplo(m.ejemplo,0);
+  actualizarEstadoDominar(id);
+}
+
+function getConsolidacion(id){
+  const consolidaciones={
+    m1:'Calcula la antiderivada general def(x)=8x<sup>3</sup>yverifica derivando. Luego encuentra la antiderivada específica sabiendo que F(0)=5.',
+    m2:'Resuelve∫ (4x<sup>3</sup>-6x+2)dxmostrando cada paso.',
+    m3:'Calcula∫ x<sup>-4</sup>dx y ∫ x<sup>2/3</sup>dx. Verifica ambos derivando.',
+    m4:'Calcula∫ (5sen x - 2cos x)dxyverifica derivando.',
+    m5:'Calcula∫ (6x/(3x<sup>2</sup>+1))dxidentificando f y f\'.',
+    m6:'Calcula la suma izquierda de f(x)=2x en [0,4] con n=4. Muestra la tabla de subintervalos.',
+    m7:'Calcula el área entrey=x+3 e y=x<sup>2</sup>en el intervalo donde se intersecan.',
+    m8:'Resuelve∫ 3x<sup>2</sup>(x<sup>3</sup>+2)<sup>4</sup>dxpor sustitución, mostrando u, du y el regreso a x.'
+  };
+  return consolidaciones[id]||'Resuelve el ejercicio final del módulo.';
+}
+
+function toggleAcc(head){
+  head.classList.toggle('open');
+  head.nextElementSibling.classList.toggle('open');
+}
+
+/* Ejemplo paso a paso */
+let ejemploIdx=0;
+function renderEjemplo(pasos,idx){
+  ejemploIdx=idx;
+  const disp=$('ejemplo-display');
+  if(!disp)return;
+  const p=pasos[idx];
+  let dots=pasos.map((_,i)=>`<span class="dot ${i===idx?'active':''}" onclick="renderEjemplo(MODULES.find(m=>m.id===moduloActual).ejemplo,${i})"></span>`).join('');
+  setHTML(disp,`
+    <div class="paso-display">
+      <div class="paso-num">Paso ${p.num} de ${pasos.length}</div>
+      <div class="paso-titulo">${p.titulo}</div>
+      <div class="paso-content">${p.contenido}</div>
+      <div class="paso-regla">📌 Regla: ${p.regla}</div>
+    </div>
+    <div class="ejemplo-nav">
+      <button class="btn btn-sm" onclick="renderEjemplo(MODULES.find(m=>m.id===moduloActual).ejemplo,${Math.max(0,idx-1)})" ${idx===0?'disabled':''}>← Anterior</button>
+      <div class="ejemplo-dots">${dots}</div>
+      <button class="btn btn-sm" onclick="renderEjemplo(MODULES.find(m=>m.id===moduloActual).ejemplo,${Math.min(pasos.length-1,idx+1)})" ${idx===pasos.length-1?'disabled':''}>Siguiente →</button>
+    </div>`);
+}
+
+function marcarRepasoHecho(id){
+  ESTADO.modulos[id].repasoHecho=true;
+  renderModuloContenido(id);
+  toast('Repaso completado. ¡A seguir!','success');
+}
+
+/* ============================================================
+   RENDERIZADORES DE ACTIVIDADES
+   ============================================================ */
+function renderActividadSimple(act,modId,rId){
+  // Simplified renderer for repaso (no tracking)
+  if(act.tipo==='opcion_multiple'){
+    let opts=act.opciones.map((o,i)=>`<div class="opcion" onclick="seleccionarSimple(this,'${rId}',${i},${act.correcta})"><div class="marker">${String.fromCharCode(65+i)}</div><div>${o}</div></div>`).join('');
+    return `<div class="actividad" id="${rId}"><div class="act-enunciado">${act.enunciado}</div><div class="opciones">${opts}</div><div class="feedback" id="fb-${rId}"></div></div>`;
+  }
+  return `<div class="actividad"><div class="act-enunciado">${act.enunciado}</div><p style="font-size:.85rem;color:var(--text-muted)">(Pregunta de repaso)</p></div>`;
+}
+function seleccionarSimple(el,rId,sel,correcta){
+  const cont=$(rId);
+  cont.querySelectorAll('.opcion').forEach(o=>o.classList.remove('selected','correct','incorrect'));
+  const opts=cont.querySelectorAll('.opcion');
+  const fb=$('fb-'+rId);
+  if(sel===correcta){
+    el.classList.add('correct');
+    fb.className='feedback show ok';
+    setHTML(fb,'✓ ¡Correcto! Buen repaso.');
+  }else{
+    el.classList.add('incorrect');
+    opts[correcta].classList.add('correct');
+    fb.className='feedback show err';
+    setHTML(fb,'La respuesta correcta está resaltada en verde. Revisa este concepto antes de continuar.');
+  }
+}
+
+function renderActividad(act,modId,idx){
+  const aId=`act-${modId}-${idx}`;
+  const est=ESTADO.modulos[modId];
+  const estadoAct=est.actividades[idx]||{intentos:0,correcta:false,primerIntento:null};
+  let html=`<div class="actividad ${estadoAct.correcta?'respondida-correcta':''}" id="${aId}" data-tipo="${act.tipo}" data-mod="${modId}" data-idx="${idx}">
+    <div class="act-enunciado"><span class="act-num">${idx+1}</span>${act.enunciado}</div>`;
+  switch(act.tipo){
+    case 'opcion_multiple':
+    case 'verdadero_falso':{
+      // For verdadero_falso: ensure opciones exist and convert boolean correcta to index
+      const opciones = act.opciones || ['Verdadero','Falso'];
+      const correctIdx = (act.tipo==='verdadero_falso') ? (act.correcta?0:1) : act.correcta;
+      let opts=opciones.map((o,i)=>{
+        let cls='';
+        if(estadoAct.correcta){
+          cls=i===correctIdx?'correct':'';
+        }
+        return `<div class="opcion ${cls}" onclick="seleccionarOpcion('${aId}',${i})"><div class="marker">${String.fromCharCode(65+i)}</div><div>${o}</div></div>`;
+      }).join('');
+      html+=`<div class="opciones">${opts}</div>`;
+      break;
+    }
+    case 'seleccion_multiple':
+      html+=`<div class="opciones">${act.opciones.map((o,i)=>`<div class="opcion" onclick="toggleMulti('${aId}',${i})"><div class="marker">☐</div><div>${o}</div></div>`).join('')}</div>
+        <div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarMulti('${aId}')">Verificar</button></div>`;
+      break;
+    case 'completar_hueco':
+      // enunciado already rendered above (contains the input)
+      html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarHueco('${aId}',${idx})">Verificar</button></div>`;
+      break;
+    case 'ordenar_pasos':
+      html+=`<div class="orden-list" id="orden-${aId}">${renderOrdenItems(act.pasos,aId)}</div>
+        <div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarOrden('${aId}',${idx})">Verificar orden</button></div>`;
+      break;
+    case 'emparejar':
+      html+=renderEmparejar(act.parejas,aId);
+      html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarEmparejar('${aId}',${idx})">Verificar emparejamientos</button></div>`;
+      break;
+    case 'numerica':
+      // enunciado already rendered above (contains the input)
+      html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarNumerica('${aId}',${idx})">Verificar</button></div>`;
+      break;
+  }
+  // Hints (always show — generic hints generated if no explicit pistas)
+  {
+    html+=`<div class="hints">
+      <button class="hint-btn" onclick="mostrarPista('${aId}',1)">💡 Pista 1</button>
+      <button class="hint-btn" onclick="mostrarPista('${aId}',2)">💡 Pista 2</button>
+      <button class="hint-btn" onclick="mostrarPista('${aId}',3)">💡 Pista 3 (pista fuerte)</button>
+    </div>
+    <div class="hint-content" id="hint-${aId}"></div>`;
+  }
+  html+=`<div class="feedback" id="fb-${aId}"></div>`;
+  if(estadoAct.intentos>0){
+    html+=`<div class="act-stats">Intentos: ${estadoAct.intentos} ${estadoAct.correcta?'✓':'· Sigue intentando'}</div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function renderOrdenItems(pasos,aId){
+  // Shuffle
+  let shuffled=[...pasos].sort(()=>Math.random()-0.5);
+  return shuffled.map((p,i)=>`<div class="orden-item" data-orden="${p.orden}">
+    <span class="pos">${i+1}</span>
+    <span class="txt">${p.texto}</span>
+    <button class="up" onclick="moverOrden('${aId}',${i},-1)">↑</button>
+    <button class="down" onclick="moverOrden('${aId}',${i},1)">↓</button>
+  </div>`).join('');
+}
+function moverOrden(aId,i,dir){
+  const list=$('orden-'+aId);
+  const items=[...list.querySelectorAll('.orden-item')];
+  const j=i+dir;
+  if(j<0||j>=items.length)return;
+  list.insertBefore(items[j],items[i]);
+  // Update pos numbers
+  [...list.querySelectorAll('.orden-item')].forEach((it,k)=>it.querySelector('.pos').textContent=k+1);
+}
+function renderEmparejar(parejas,aId){
+  let lefts=parejas.map((p,i)=>`<div class="emp-item" data-side="L" data-idx="${i}" onclick="selEmp('${aId}','L',${i})">${p.izq}</div>`).join('');
+  let rights=[...parejas].sort(()=>Math.random()-0.5).map(p=>`<div class="emp-item" data-side="R" data-val="${p.der}" onclick="selEmp('${aId}','R',this)">${p.der}</div>`).join('');
+  return `<div class="emparejar-grid">
+    <div class="emp-col">${lefts}</div>
+    <div class="emp-col" id="emp-right-${aId}">${rights}</div>
+  </div>
+  <div id="emp-status-${aId}" style="font-size:.8rem;margin-top:6px;color:var(--text-muted)"></div>`;
+}
+let empSel={};
+function selEmp(aId,side,idx){
+  const cont=$(aId);
+  if(!empSel[aId])empSel[aId]={};
+  cont.querySelectorAll(`.emp-item[data-side="${side}"]`).forEach(e=>e.classList.remove('selected'));
+  if(side==='L'){
+    empSel[aId].L=idx;
+    cont.querySelectorAll(`.emp-item[data-side="L"]`)[idx].classList.add('selected');
+  }else{
+    // idx is the element
+    idx.classList.add('selected');
+    empSel[aId].Relem=idx;
+  }
+  if(empSel[aId].L!==undefined && empSel[aId].Relem){
+    // Match
+    const act=getActFromElem(aId);
+    const pareja=act.parejas[empSel[aId].L];
+    const rightVal=empSel[aId].Relem.getAttribute('data-val');
+    if(pareja.der===rightVal){
+      const leftElem=cont.querySelectorAll('.emp-item[data-side="L"]')[empSel[aId].L];
+      leftElem.classList.add('correct','matched');
+      leftElem.classList.remove('selected');
+      empSel[aId].Relem.classList.add('correct','matched');
+      empSel[aId].Relem.classList.remove('selected');
+      empSel[aId]={};
+      const matched=cont.querySelectorAll('.emp-item.matched').length;
+      $('emp-status-'+aId).textContent=`${matched}/${act.parejas.length} emparejados`;
+    }else{
+      const leftElem=cont.querySelectorAll('.emp-item[data-side="L"]')[empSel[aId].L];
+      leftElem.classList.add('incorrect');
+      empSel[aId].Relem.classList.add('incorrect');
+      setTimeout(()=>{
+        leftElem.classList.remove('incorrect','selected');
+        empSel[aId].Relem.classList.remove('incorrect','selected');
+        empSel[aId]={};
+      },800);
+    }
+  }
+}
+function getActFromElem(aId){
+  const parts=aId.split('-');
+  const modId=parts[1];
+  const idx=parseInt(parts[2]);
+  return getModulo(modId).actividades[idx];
+}
+
+/* ============================================================
+   VERIFICADORES
+   ============================================================ */
+function seleccionarOpcion(aId,sel){
+  const cont=$(aId);
+  if(cont.classList.contains('respondida-correcta'))return;
+  cont.querySelectorAll('.opcion').forEach(o=>o.classList.remove('selected'));
+  cont.querySelectorAll('.opcion')[sel].classList.add('selected');
+  cont.dataset.sel=sel;
+  // Auto-verify on selection
+  verificarOpcion(aId);
+}
+function attachActividadHandlers(modId){
+  // No-op; handlers are inline onclick
+}
+function verificarOpcion(aId){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const idx=parseInt(cont.dataset.idx);
+  const act=getModulo(modId).actividades[idx];
+  const sel=parseInt(cont.dataset.sel);
+  if(sel===undefined||isNaN(sel)){toast('Selecciona una opción','info');return}
+  // For verdadero_falso, correcta is boolean: convert to index
+  const correctIdx=(act.tipo==='verdadero_falso')?(act.correcta?0:1):act.correcta;
+  const opciones=act.opciones||['Verdadero','Falso'];
+  const fb=$('fb-'+aId);
+  const isCorrect=sel===correctIdx;
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    cont.querySelectorAll('.opcion')[sel].classList.add('correct');
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado,opciones[sel]);
+  }else{
+    cont.querySelectorAll('.opcion')[sel].classList.add('incorrect');
+    cont.querySelectorAll('.opcion')[correctIdx].classList.add('correct');
+    fb.className='feedback show err';
+    let errMsg='Respuesta incorrecta. ';
+    if(act.feedback.errores){
+      const errKey=act.tipo==='verdadero_falso'?(sel===0?true:false):sel;
+      errMsg=act.feedback.errores[errKey]||act.feedback.errores[sel]||'Respuesta incorrecta. Revisa la teoría.';
+    }
+    setHTML(fb,errMsg);
+    registrarError(modId,idx,act.enunciado,opciones[sel],opciones[correctIdx]);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function toggleMulti(aId,i){
+  const cont=$(aId);
+  if(cont.classList.contains('respondida-correcta'))return;
+  const opts=cont.querySelectorAll('.opcion');
+  const marker=opts[i].querySelector('.marker');
+  if(marker.textContent==='☐'){marker.textContent='☑';opts[i].classList.add('selected')}
+  else{marker.textContent='☐';opts[i].classList.remove('selected')}
+}
+function verificarMulti(aId){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const idx=parseInt(cont.dataset.idx);
+  const act=getModulo(modId).actividades[idx];
+  const opts=cont.querySelectorAll('.opcion');
+  let selected=[];
+  opts.forEach((o,i)=>{if(o.querySelector('.marker').textContent==='☑')selected.push(i)});
+  if(selected.length===0){toast('Selecciona al menos una','info');return}
+  const correctSet=new Set(act.correctas);
+  const selSet=new Set(selected);
+  const isCorrect=correctSet.size===selSet.size&&[...correctSet].every(x=>selSet.has(x));
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    opts.forEach((o,i)=>{if(correctSet.has(i))o.classList.add('correct')});
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado,selected.map(i=>act.opciones[i]).join(', '));
+  }else{
+    opts.forEach((o,i)=>{
+      if(correctSet.has(i)&&selSet.has(i))o.classList.add('correct');
+      else if(selSet.has(i)&&!correctSet.has(i))o.classList.add('incorrect');
+      else if(correctSet.has(i))o.classList.add('correct');
+    });
+    fb.className='feedback show err';
+    let errTxt='Algunas selecciones son incorrectas. ';
+    if(act.feedback.errores){
+      selected.forEach(s=>{
+        if(act.feedback.errores[s]&&!correctSet.has(s))errTxt+=act.feedback.errores[s]+' ';
+      });
+    }
+    setHTML(fb,errTxt);
+    registrarError(modId,idx,act.enunciado,selected.map(i=>act.opciones[i]).join(','),act.correctas.map(i=>act.opciones[i]).join(','));
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarHueco(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const input=cont.querySelector('input.input-line');
+  if(!input)return;
+  const val=input.value.trim();
+  if(!val){toast('Escribe tu respuesta','info');return}
+  const norm=normalizeStr(val);
+  const correctas=act.respuesta.map(r=>normalizeStr(r));
+  const isCorrect=correctas.some(r=>r===norm);
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    input.style.borderColor='var(--success)';
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedbackCorrecto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado,val);
+  }else{
+    input.style.borderColor='var(--danger)';
+    fb.className='feedback show err';
+    setHTML(fb,act.feedbackError);
+    registrarError(modId,idx,act.enunciado,val,act.respuesta[0]);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarOrden(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const list=$('orden-'+aId);
+  const items=[...list.querySelectorAll('.orden-item')];
+  const currentOrder=items.map(it=>parseInt(it.dataset.orden));
+  const expectedOrder=act.pasos.map(p=>p.orden);
+  const isCorrect=currentOrder.every((v,i)=>v===expectedOrder[i]);
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    items.forEach(it=>it.style.borderColor='var(--success)');
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado,'Orden correcto');
+  }else{
+    fb.className='feedback show err';
+    setHTML(fb,act.feedback.errores||'El orden no es correcto. Revisa cuál paso debe ir primero.');
+    registrarError(modId,idx,act.enunciado,currentOrder.join(','),expectedOrder.join(','));
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarEmparejar(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const matched=cont.querySelectorAll('.emp-item.matched').length;
+  const isCorrect=matched===act.parejas.length;
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado,'Todos emparejados');
+  }else{
+    fb.className='feedback show err';
+    setHTML(fb,`Llevas ${matched}/${act.parejas.length} correctos. `+(act.feedback.errores||'Sigue intentando.'));
+    if(matched>0)registrarIntento(modId,idx,false);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarNumerica(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const input=cont.querySelector('input.input-line');
+  if(!input)return;
+  const val=parseFloat(input.value.replace(',','.'));
+  if(isNaN(val)){toast('Escribe un número','info');return}
+  const isCorrect=Math.abs(val-act.respuesta)<=act.tolerancia;
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    input.style.borderColor='var(--success)';
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedbackCorrecto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado,val);
+  }else{
+    input.style.borderColor='var(--danger)';
+    fb.className='feedback show err';
+    setHTML(fb,act.feedbackError);
+    registrarError(modId,idx,act.enunciado,val,act.respuesta);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+/* Pistas */
+function mostrarPista(aId,nivel){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const idx=parseInt(cont.dataset.idx);
+  const act=getModulo(modId).actividades[idx];
+  const hintEl=$('hint-'+aId);
+  let label=nivel===1?'Recordatorio conceptual':nivel===2?'Paso clave':'Primer paso';
+  let pista;
+  if(act.pistas && act.pistas[nivel-1]){
+    pista=act.pistas[nivel-1];
+  }else{
+    // Generate generic hints based on activity type
+    pista=generarPistaGenerica(act,nivel,modId);
+  }
+  if(!pista)return;
+  setHTML(hintEl,`<span class="hint-level">${label}:</span>${pista}`);
+  hintEl.classList.add('show');
+}
+function generarPistaGenerica(act,nivel,modId){
+  const tipo=act.tipo;
+  const mod=getModulo(modId);
+  // Get the correct answer's text as a hint source (handle verdadero_falso and missing opciones)
+  let correctaTxt='';
+  if(act.tipo==='verdadero_falso'){
+    correctaTxt=act.correcta?'Verdadero':'Falso';
+  }else if(act.opciones && act.correcta!==undefined){
+    correctaTxt=act.opciones[act.correcta];
+  }else if(act.respuesta){
+    correctaTxt=Array.isArray(act.respuesta)?act.respuesta[0]:act.respuesta;
+  }
+  
+  if(nivel===1){
+    const reminders={
+      m1:'Piensa: ¿qué función, al derivarse, da el integrando? La antiderivada "deshace" la derivada.',
+      m2:'Aplica linealidad: separa término a término y usa las reglas básicas. No olvides +C.',
+      m3:'Regla de la potencia: sube el exponente en 1 (n→n+1) y divide entre el nuevo exponente. Cuidado con n=−1.',
+      m4:'∫sen x=−cos x (con signo menos); ∫cos x=sen x. Verifica derivando.',
+      m5:'Si el integrando es 1/x o f′/f, el resultado involucra ln|...|. Recuerda el valor absoluto.',
+      m6:'Para sumas de Riemann: calcula Δx=(b−a)/n, lista los puntos, evalúa f y multiplica por Δx.',
+      m7:'Para área entre curvas: encuentra intersecciones, decide qué va arriba, integra (superior−inferior).',
+      m8:'Elige u como la función interna. Calcula du. Si du aparece completo en el integrando, la sustitución funciona.'
+    };
+    return reminders[modId]||'Revisa la teoría del módulo y aplica la regla correspondiente.';
+  }
+  if(nivel===2){
+    if(tipo==='opcion_multiple'||tipo==='verdadero_falso'){
+      return 'Analiza cada opción: ¿cuál al derivarse o aplicarse correctamente da el resultado esperado?';
+    }
+    if(tipo==='completar_hueco'){
+      return 'El término que falta es parte de la respuesta correcta. Identifica qué operación falta.';
+    }
+    if(tipo==='ordenar_pasos'){
+      return 'El primer paso siempre es identificar o plantear; el último es simplificar o verificar.';
+    }
+    if(tipo==='numerica'){
+      return 'Identifica qué valores necesitas calcular y en qué orden. Cuidado con unidades y signos.';
+    }
+    return 'Identifica el paso clave que falta en tu razonamiento.';
+  }
+  if(nivel===3){
+    if(tipo==='opcion_multiple'||tipo==='verdadero_falso'){
+      return 'La respuesta correcta está relacionada con: '+String(correctaTxt).replace(/<[^>]+>/g,'').substring(0,60)+'...';
+    }
+    if(tipo==='completar_hueco'){
+      return 'La respuesta empieza con: '+String(correctaTxt).substring(0,4)+'...';
+    }
+    if(tipo==='numerica'){
+      return 'El resultado es aproximadamente '+act.respuesta+' (calcula los pasos intermedios).';
+    }
+    return 'Revisa el ejemplo resuelto del módulo para ver el primer paso aplicado.';
+  }
+  return '';
+}
+
+/* ============================================================
+   REGISTRO DE INTENTOS Y ERRORES
+   ============================================================ */
+function registrarIntento(modId,idx,correcto){
+  if(modId==='m0'){
+    if(!ESTADO.m0.intentos[idx])ESTADO.m0.intentos[idx]=0;
+    ESTADO.m0.intentos[idx]++;
+    if(correcto&&!ESTADO.m0.intentos[idx+'_ok']){
+      ESTADO.m0.intentos[idx+'_ok']=true;
+      ESTADO.m0.score++;
+    }
+    evalDiagnostico();
+    return;
+  }
+  const est=ESTADO.modulos[modId];
+  if(!est.actividades[idx])est.actividades[idx]={intentos:0,correcta:false,primerIntento:fechaHora()};
+  est.actividades[idx].intentos++;
+  if(correcto&&!est.actividades[idx].correcta){
+    est.actividades[idx].correcta=true;
+    est.scoreActividades++;
+  }
+  est.completado=est.scoreActividades>=Math.ceil(est.totalActividades*0.5);
+  saveState();
+}
+function registrarError(modId,idx,enunciado,dada,correcta){
+  ESTADO.errores.push({
+    mod:modId, idx:idx, enunciado:enunciado.substring(0,100),
+    respuestaDada:String(dada).substring(0,80),
+    respuestaCorrecta:String(correcta).substring(0,80),
+    fecha:fechaHora()
+  });
+  if(ESTADO.errores.length>100)ESTADO.errores=ESTADO.errores.slice(-100);
+  saveState();
+}
+
+function evalDiagnostico(){
+  const m0=ESTADO.m0;
+  m0.max=getModulo('m0').actividades.length;
+  m0.completado=m0.intentos.filter((_,i)=>typeof m0.intentos[i+'_ok']!=='undefined').length>=m0.max || Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).length>=m0.max;
+  // Generate recommendations based on categories
+  const cats={derivadas:0,exponentes:0,sigma:0,algebra:0};
+  const acts=getModulo('m0').actividades;
+  Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).forEach(k=>{
+    const i=parseInt(k);
+    if(acts[i]&&acts[i].cat)cats[acts[i].cat]++;
+  });
+  m0.recomendaciones=[];
+  if(cats.derivadas<2)m0.recomendaciones.push('Refuerza derivadas básicas (x^n, sen, cos, ln) — las necesitas en todos los módulos.');
+  if(cats.exponentes<2)m0.recomendaciones.push('Refuerza leyes de exponentes y radicales antes del módulo 3 (regla de la potencia).');
+  if(cats.sigma<1)m0.recomendaciones.push('Repasa la notación sigma antes del módulo 6 (sumas de Riemann).');
+  if(cats.algebra<2)m0.recomendaciones.push('Refuerza álgebra de fracciones — la usarás en sustitución y área entre curvas.');
+  if(m0.recomendaciones.length===0)m0.recomendaciones.push('¡Excelente base! Puedes avanzar con confianza por todos los módulos.');
+  saveState();
+}
+function repetirDiagnostico(){
+  ESTADO.m0={completado:false,score:0,max:6,recomendaciones:[],intentos:[]};
+  saveState();
+  abrirModulo('m0');
+}
+
+/* ============================================================
+   ESTADO DOMINAR Y DESBLOQUEO
+   ============================================================ */
+function actualizarEstadoDominar(modId){
+  if(modId==='m0')return;
+  const est=ESTADO.modulos[modId];
+  const m=getModulo(modId);
+  const pct=est.scoreActividades/est.totalActividades;
+  const cumpleConsolidacion=est.consolidacionHecha;
+  const btn=$('btn-dominar');
+  const msg=$('dominar-msg');
+  if(!btn)return;
+  const cumplePct=pct>=m.criterioDominio;
+  if(cumplePct&&cumpleConsolidacion){
+    btn.disabled=false;
+    msg.textContent='¡Listo! Has alcanzado el criterio de dominio ('+Math.round(pct*100)+'% + consolidación).';
+  }else{
+    btn.disabled=true;
+    let faltan=[];
+    if(!cumplePct)faltan.push(`alcanzar ${Math.round(m.criterioDominio*100)}% de aciertos (vas ${Math.round(pct*100)}%)`);
+    if(!cumpleConsolidacion)faltan.push('completar la consolidación');
+    msg.textContent='Para marcar como dominado te falta: '+faltan.join(' y ')+'.';
+  }
+}
+function marcarDominado(){
+  if(!moduloActual||moduloActual==='m0')return;
+  const est=ESTADO.modulos[moduloActual];
+  est.dominado=true;
+  est.insignia=true;
+  // Unlock next
+  const next=siguienteModulo(moduloActual);
+  if(next){
+    ESTADO.modulos[next.id].desbloqueado=true;
+    toast(`¡Módulo dominado! Insignia obtenida 🏅. Desbloqueado: ${next.titulo}`,'success');
+  }else{
+    toast('¡Módulo dominado! Has completado el curso. 🎉','success');
+  }
+  descargarReporteModulo(moduloActual);
+  saveState();
+  setTimeout(()=>irDashboard(),500);
+}
+function guardarConsolidacion(modId){
+  const checks=['auto-1','auto-2','auto-3','auto-4'].map(id=>$(id)&&$(id).checked);
+  const allOk=checks.every(c=>c);
+  ESTADO.modulos[modId].consolidacionHecha=true;
+  ESTADO.modulos[modId].intentosConsolidacion++;
+  const fb=$('cons-feedback');
+  if(fb){
+    if(allOk){
+      setHTML(fb,'<div class="feedback show ok">¡Excelente autoevaluación! Marcaste todos los criterios. Ya puedes marcar el módulo como dominado.</div>');
+    }else{
+      setHTML(fb,'<div class="feedback show err">Revisa los criterios sin marcar. La consolidación se registra, pero asegúrate de entender cada paso.</div>');
+    }
+  }
+  actualizarEstadoDominar(modId);
+  saveState();
+  toast('Consolidación registrada','success');
+}
+
+/* ============================================================
+   GENERADORES DE PRÁCTICA
+   ============================================================ */
+let practicaActual=null;
+function generarPractica(modId){
+  const gen={
+    m3:genPotencia, m4:genSenCos, m5:genLn, m6:genRiemann, m7:genArea, m8:genSustitucion
+  }[modId];
+  if(!gen)return;
+  practicaActual=gen();
+  const disp=$('gen-display');
+  disp.style.display='block';
+  setHTML(disp,`
+    <div class="gen-problem">${practicaActual.problema}</div>
+    <div class="numerica-input">
+      <input class="input-line" id="gen-input" placeholder="Tu respuesta">
+      <button class="btn btn-primary btn-sm" onclick="verificarPractica()">Verificar</button>
+    </div>
+    <div class="feedback" id="gen-feedback"></div>`);
+}
+function mostrarSolucionGen(){
+  if(!practicaActual){toast('Genera un ejercicio primero','info');return}
+  const fb=$('gen-feedback');
+  fb.className='feedback show ok';
+  setHTML(fb,'<strong>Solución:</strong> '+practicaActual.solucion);
+}
+function verificarPractica(){
+  if(!practicaActual)return;
+  const input=$('gen-input');
+  const val=input.value.trim();
+  if(!val){toast('Escribe tu respuesta','info');return}
+  let isCorrect;
+  if(practicaActual.tipo==='numerica'){
+    const num=parseFloat(val.replace(',','.'));
+    isCorrect=!isNaN(num)&&Math.abs(num-practicaActual.respuesta)<=practicaActual.tolerancia;
+  }else{
+    const norm=normalizeStr(val);
+    isCorrect=practicaActual.acepta.some(r=>normalizeStr(r)===norm);
+  }
+  const fb=$('gen-feedback');
+  if(isCorrect){
+    fb.className='feedback show ok';
+    setHTML(fb,'✓ ¡Correcto! '+practicaActual.explicacion);
+    input.style.borderColor='var(--success)';
+  }else{
+    fb.className='feedback show err';
+    setHTML(fb,'✗ Revisa. '+practicaActual.pista+' (Puedes ver la solución completa con el botón.)');
+    input.style.borderColor='var(--danger)';
+  }
+}
+
+function genPotencia(){
+  // Random exponent
+  const tipos=['entero_pos','entero_neg','fraccion'];
+  const tipo=tipos[Math.floor(Math.random()*tipos.length)];
+  let n,nStr,solucion,acepta,problema,pista,explicacion;
+  if(tipo==='entero_pos'){
+    n=2+Math.floor(Math.random()*5);
+    nStr=`x<sup>${n}</sup>`;
+    solucion=`x<sup>${n+1}</sup>/${n+1} + C`;
+    acepta=[`x^${n+1}/${n+1}`,`x^${n+1}/(${n+1})`,`${n+1===1?'':`1/${n+1}`}x^${n+1}`];
+    problema=`∫ ${nStr} dx`;
+    pista=`Recuerda: subir el exponente en 1 y dividir entre el nuevo exponente.`;
+    explicacion=`Subes ${n} a ${n+1} y divides entre ${n+1}.`;
+  }else if(tipo==='entero_neg'){
+    const k=2+Math.floor(Math.random()*3);
+    n=-k;
+    nStr=`x<sup>−${k}</sup>`;
+    solucion=`x<sup>−${k-1}</sup>/${-(k-1)} + C = −1/(${k-1}x<sup>${k-1}</sup>) + C`;
+    acepta=[`x^${-k+1}/${-k+1}`,`x^-${k-1}/-${k-1}`,`-1/(${k-1}x^${k-1})`,`-1/${k-1}x^${k-1}`];
+    problema=`∫ ${nStr} dx`;
+    pista=`n+1 = −${k}+1 = −${k-1}. Divide entre −${k-1}.`;
+    explicacion=`n=−${k}, n+1=−${k-1}. Resultado: x^(−${k-1})/(−${k-1}) = −1/(${k-1}x^${k-1}).`;
+  }else{
+    const num=1+Math.floor(Math.random()*3);
+    const den=2+Math.floor(Math.random()*3);
+    const newNum=num+den;
+    solucion=`(${den}/${newNum})x<sup>${newNum}/${den}</sup> + C`;
+    acepta=[`${den}/${newNum}x^(${newNum}/${den})`,`(${den}/${newNum})x^(${newNum}/${den})`,`${den}/${newNum}x^${newNum}/${den}`];
+    problema=`∫ x<sup>${num}/${den}</sup> dx`;
+    pista=`n+1 = ${num}/${den}+1 = ${newNum}/${den}. Dividir entre ${newNum}/${den} = multiplicar por ${den}/${newNum}.`;
+    explicacion=`n=${num}/${den}, n+1=${newNum}/${den}. Multiplicas por ${den}/${newNum}.`;
+  }
+  return {tipo:'simbolica',problema,solucion,acepta,pista,explicacion};
+}
+
+function genSenCos(){
+  const a=1+Math.floor(Math.random()*5);
+  const b=1+Math.floor(Math.random()*5);
+  const signo=Math.random()<0.5?1:-1;
+  const sigStr=signo<0?'−':'+';
+  const problema=`∫ (${a}sen x ${sigStr} ${b}cos x) dx`;
+  const solucion=`${signo<0?'−':''}${a}cos x ${sigStr==='+'?'−':'+'} ${b}sen x + C`;
+  // Simplify: integral of a·sen − b·cos = −a·cos − b·sen; integral of a·sen + b·cos = −a·cos + b·sen
+  let resA,resB;
+  if(signo===1){ // +b·cos
+    resA=-a; resB=b; // -a·cos + b·sen
+  }else{ // -b·cos
+    resA=-a; resB=-b; // -a·cos - b·sen
+  }
+  const solStr=`${resA}cos x ${resB>0?'+':'−'} ${Math.abs(resB)}sen x + C`;
+  const acepta=[
+    `${resA}cos x ${resB>0?'+':'-'} ${Math.abs(resB)}sen x`,
+    `${resA}cosx${resB>0?'+':'-'}${Math.abs(resB)}senx`,
+    `${resA}*cos x ${resB>0?'+':'-'} ${Math.abs(resB)}*sen x`
+  ];
+  return {tipo:'simbolica',problema,solucion:solStr,acepta,pista:'∫sen=−cos, ∫cos=sen. Aplica linealidad.',explicacion:'La integral de a·sen es −a·cos; la de ±b·cos es ±b·sen.'};
+}
+
+function genLn(){
+  const a=1+Math.floor(Math.random()*4);
+  const b=1+Math.floor(Math.random()*5);
+  const problema=`∫ ${a}x / (${a/2===Math.floor(a/2)?a/2:a}x<sup>2</sup>+${b}) dx`;
+  // Simplify: numerator is a·x, denom is (a/2)x²+b if a is even, else ax²+b... 
+  // Let's use: numerator = k·x, denom = k·x² + c, where k = numerator coefficient / 2... 
+  // Actually let's make it cleaner: num = 2m·x, denom = m·x² + c
+  const m=1+Math.floor(Math.random()*3);
+  const c=1+Math.floor(Math.random()*5);
+  const num=2*m;
+  const prob=`∫ (${num}x) / (${m}x<sup>2</sup>+${c}) dx`;
+  const solucion=`ln|${m}x<sup>2</sup>+${c}| + C`;
+  const acepta=[
+    `ln|${m}x^2+${c}|`,`ln(${m}x^2+${c})`,`ln|${m}x²+${c}|`,
+    `ln(${m}x^2+${c})+c`,`ln|${m}x^2+${c}|+c`
+  ];
+  return {tipo:'simbolica',problema:prob,solucion,acepta,pista:'¿El numerador es la derivada del denominador? d/dx[mx²+c] = 2mx.',explicacion:`d/dx[${m}x²+${c}]=${num}x (numerador). Aplica ∫f′/f = ln|f|+C.`};
+}
+
+function genRiemann(){
+  const tipos=['izquierda','derecha'];
+  const tipo=tipos[Math.floor(Math.random()*tipos.length)];
+  const n=2+Math.floor(Math.random()*3); // 2,3,4
+  const a=Math.floor(Math.random()*2);
+  const b=a+n; // ensures integer Δx
+  const dx=(b-a)/n;
+  const func=1+Math.floor(Math.random()*3); // f(x)=x+c
+  const c=func;
+  // f(x) = x + c
+  let puntos=[],valores=[],suma=0;
+  for(let i=0;i<=n;i++){
+    const x=a+i*dx;
+    puntos.push(x);
+  }
+  if(tipo==='izquierda'){
+    for(let i=0;i<n;i++){
+      const x=puntos[i];
+      const v=x+c;
+      valores.push(v);
+      suma+=v;
+    }
+  }else{
+    for(let i=1;i<=n;i++){
+      const x=puntos[i];
+      const v=x+c;
+      valores.push(v);
+      suma+=v;
+    }
+  }
+  suma*=dx;
+  const tipoTxt=tipo==='izquierda'?'izquierda':'derecha';
+  const problema=`Suma por ${tipoTxt} de f(x)=x+${c} en [${a},${b}] con n=${n}.<br>
+  <small>Δx=${dx}; puntos: ${puntos.map(p=>p.toFixed(2)).join(', ')}</small>`;
+  return {tipo:'numerica',problema,solucion:`${suma}`,acepta:[],respuesta:suma,tolerancia:0.01,pista:`Suma los valores de f en los ${n} puntos (${tipoTxt}) y multiplica por Δx=${dx}.`,explicacion:`Valores: ${valores.map(v=>v.toFixed(2)).join(' + ')} = ${valores.reduce((s,v)=>s+v,0).toFixed(2)}; × ${dx} = ${suma.toFixed(4)}`};
+}
+
+function genArea(){
+  // Area between y=x+c and y=x² on [0, k]
+  const c=1+Math.floor(Math.random()*3);
+  const k=c; // intersections at x=0 and x=c
+  // On (0,c): x+c > x²
+  // Area = ∫₀ᵏ (x+c - x²) dx = [x²/2 + cx - x³/3]₀ᵏ = k²/2 + ck - k³/3
+  const area=k*k/2+c*k-k*k*k/3;
+  const problema=`Área entre y=x+${c} e y=x<sup>2</sup> en [0,${k}].<br><small>Intersecciones en x=0 y x=${k}. Superior: y=x+${c}.</small>`;
+  return {tipo:'numerica',problema,solucion:`${area.toFixed(4)}`,acepta:[],respuesta:area,tolerancia:0.02,pista:`∫₀${k} (x+${c}−x²) dx = [x²/2 + ${c}x − x³/3]₀${k}`,explicacion:`Evaluando: ${k*k}/2 + ${c}·${k} − ${k*k*k}/3 = ${area.toFixed(4)}`};
+}
+
+function genSustitucion(){
+  const tipo=Math.random()<0.5?'potencia':'trig';
+  if(tipo==='potencia'){
+    const k=1+Math.floor(Math.random()*4); // u = x^k + c... let's do u=x²+c
+    const c=1+Math.floor(Math.random()*4);
+    const p=2+Math.floor(Math.random()*4);
+    // ∫ 2x (x²+c)^p dx = (x²+c)^(p+1)/(p+1) + C
+    const problema=`∫ 2x (x<sup>2</sup>+${c})<sup>${p}</sup> dx`;
+    const solucion=`(x<sup>2</sup>+${c})<sup>${p+1}</sup>/${p+1} + C`;
+    const acepta=[
+      `(x^2+${c})^${p+1}/${p+1}`,`(x^2+${c})^${p+1}/(${p+1})`,
+      `(x²+${c})^${p+1}/${p+1}`,`(x^2+${c})^${p+1}/(${p+1})+c`
+    ];
+    return {tipo:'simbolica',problema,solucion,acepta,pista:`u=x²+${c}, du=2x dx. Reescribe como ∫u^${p} du.`,explicacion:`u=x²+${c}, du=2x dx → ∫u^${p} du = u^${p+1}/${p+1} + C = (x²+${c})^${p+1}/${p+1} + C`};
+  }else{
+    const k=2+Math.floor(Math.random()*4); // ∫ sen(kx) dx
+    const problema=`∫ sen(${k}x) dx`;
+    const solucion=`−cos(${k}x)/${k} + C`;
+    const acepta=[
+      `-cos(${k}x)/${k}`,`-cos(${k}x)/${k}+c`,`-(1/${k})cos(${k}x)`,
+      `-cos(${k}x)/${k}+c`,`-(1/${k})cos(${k}x)+c`,`-cos${k}x/${k}`
+    ];
+    return {tipo:'simbolica',problema,solucion,acepta,pista:`u=${k}x, du=${k} dx. Ajusta con 1/${k}.`,explicacion:`u=${k}x, du=${k}dx → (1/${k})∫sen u du = (1/${k})(−cos u) = −cos(${k}x)/${k} + C`};
+  }
+}
+
+/* ============================================================
+   DESCARGAS DE EVIDENCIAS
+   ============================================================ */
+function descargarTexto(filename,content,mime='text/plain'){
+  const blob=new Blob([content],{type:mime+';charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function descargarEvidenciaActividad(modId,idx,correcta,enunciado,respuesta){
+  const ts=fechaHora();
+  const m=getModulo(modId);
+  const content=`EVIDENCIA DE ACTIVIDAD
+======================
+Estudiante: ${ESTADO.usuario.nombre||'(sin nombre)'}
+Grupo: ${ESTADO.usuario.grupo||'(sin grupo)'}
+Fecha: ${ts}
+
+Módulo: ${m.num}. ${m.titulo} (ID: ${modId})
+Actividad #: ${idx+1}
+
+Enunciado:
+${enunciado.replace(/<[^>]+>/g,'')}
+
+Respuesta del estudiante: ${String(respuesta).replace(/<[^>]+>/g,'')}
+¿Correcta?: ${correcta?'SÍ':'NO'}
+
+---
+Generado automáticamente por el Curso-Taller de Recuperación de Cálculo Integral.
+`;
+  const filename=`evidencia_${modId}_act${idx+1}_${Date.now()}.txt`;
+  descargarTexto(filename,content);
+  ESTADO.evidencias.push({tipo:'actividad',modId,idx,correcta,fecha:ts,filename});
+  saveState();
+}
+function descargarReporteModulo(modId){
+  const m=getModulo(modId);
+  const est=ESTADO.modulos[modId];
+  const ts=fechaHora();
+  const pct=Math.round((est.scoreActividades/est.totalActividades)*100);
+  let html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reporte ${m.titulo}</title>
+  <style>body{font-family:Arial,sans-serif;max-width:700px;margin:20px auto;padding:20px;color:#333;background:#fff}
+  h1{color:#333}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:8px}
+  .ok{color:#333;font-weight:bold}.err{color:#999}</style></head><body>
+  <h1>Reporte de módulo: ${m.titulo}</h1>
+  <p><strong>Estudiante:</strong> ${ESTADO.usuario.nombre||'(sin nombre)'}<br>
+  <strong>Grupo:</strong> ${ESTADO.usuario.grupo||'(sin grupo)'}<br>
+  <strong>Correo:</strong> ${ESTADO.usuario.correo||'—'}<br>
+  <strong>Fecha:</strong> ${ts}</p>
+  <h2>Resumen</h2>
+  <table>
+  <tr><th>Métrica</th><th>Valor</th></tr>
+  <tr><td>Actividades totales</td><td>${est.totalActividades}</td></tr>
+  <tr><td>Actividades correctas</td><td>${est.scoreActividades}</td></tr>
+  <tr><td>Porcentaje de aciertos</td><td>${pct}%</td></tr>
+  <tr><td>Consolidación completada</td><td>${est.consolidacionHecha?'Sí':'No'}</td></tr>
+  <tr><td>Módulo dominado</td><td>${est.dominado?'Sí ✓':'No'}</td></tr>
+  <tr><td>Insignia obtenida</td><td>${est.insignia?'Sí 🏅':'No'}</td></tr>
+  <tr><td>Primer acceso</td><td>${est.primerAcceso||'—'}</td></tr>
+  <tr><td>Último acceso</td><td>${est.ultimoAcceso||'—'}</td></tr>
+  </table>
+  <h2>Detalle de actividades</h2>
+  <table>
+  <tr><th>#</th><th>Intentos</th><th>Correcta</th></tr>`;
+  m.actividades.forEach((a,i)=>{
+    const aEst=est.actividades[i]||{intentos:0,correcta:false};
+    html+=`<tr><td>${i+1}</td><td>${aEst.intentos||0}</td><td class="${aEst.correcta?'ok':'err'}">${aEst.correcta?'✓':'—'}</td></tr>`;
+  });
+  html+=`</table>
+  <h2>Objetivo del módulo</h2>
+  <p>${m.objetivo}</p>
+  <hr>
+  <p style="font-size:.8rem;color:#666">Generado por Curso-Taller de Recuperación de Cálculo Integral · ${ts}</p>
+  </body></html>`;
+  const filename=`reporte_${modId}_${(ESTADO.usuario.nombre||'estudiante').replace(/\s+/g,'_')}.html`;
+  descargarTexto(filename,html,'text/html');
+  ESTADO.evidencias.push({tipo:'reporte_modulo',modId,fecha:ts,filename});
+  saveState();
+  toast('Reporte del módulo descargado','success');
+}
+
+function descargarPortafolioCompleto(){
+  const ts=fechaHora();
+  const mods=MODULES.filter(m=>m.id!=='m0');
+  let totalAct=0,totalCorrect=0,totalDom=0;
+  let htmlModulos='';
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    const pct=Math.round((e.scoreActividades/e.totalActividades)*100);
+    if(e.dominado)totalDom++;
+    totalAct+=e.totalActividades;
+    totalCorrect+=e.scoreActividades;
+    htmlModulos+=`<tr>
+      <td>M${m.num}: ${m.titulo}</td>
+      <td>${e.desbloqueado?'Sí':'No'}</td>
+      <td>${e.scoreActividades}/${e.totalActividades}</td>
+      <td>${pct}%</td>
+      <td>${e.consolidacionHecha?'✓':'—'}</td>
+      <td>${e.dominado?'✓🏅':'—'}</td>
+    </tr>`;
+  });
+  const globalPct=Math.round((totalCorrect/totalAct)*100);
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Portafolio - Cálculo Integral</title>
+  <style>
+  body{font-family:Arial,sans-serif;max-width:900px;margin:20px auto;padding:20px;color:#333;line-height:1.6}
+  h1{color:#333;border-bottom:3px solid #666;padding-bottom:8px}
+  h2{color:#333;margin-top:24px}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  td,th{border:1px solid #ddd;padding:8px;text-align:left}
+  th{background:#e0e0e0}
+  .resumen{background:#f8fafc;padding:16px;border-radius:8px;margin:16px 0}
+  .ok{color:#333;font-weight:bold}.err{color:#999}
+  .badge{display:inline-block;background:#666;color:#fff;padding:2px 10px;border-radius:12px;font-size:.8rem}
+  </style></head><body>
+  <h1>📚 Portafolio de Avance</h1>
+  <p><strong>Curso:</strong> Recuperación de Cálculo Integral<br>
+  <strong>Estudiante:</strong> ${ESTADO.usuario.nombre||'(sin nombre)'}<br>
+  <strong>Grupo:</strong> ${ESTADO.usuario.grupo||'(sin grupo)'}<br>
+  <strong>Correo:</strong> ${ESTADO.usuario.correo||'—'}<br>
+  <strong>Fecha de inicio:</strong> ${new Date(ESTADO.usuario.fechaInicio).toLocaleDateString('es-MX')}<br>
+  <strong>Fecha de generación:</strong> ${ts}</p>
+  
+  <div class="resumen">
+  <h2>Resumen global</h2>
+  <table>
+  <tr><th>Métrica</th><th>Valor</th></tr>
+  <tr><td>Módulos dominados</td><td><strong>${totalDom} / ${mods.length}</strong></td></tr>
+  <tr><td>Actividades correctas</td><td>${totalCorrect} / ${totalAct}</td></tr>
+  <tr><td>Progreso global</td><td><strong>${globalPct}%</strong></td></tr>
+  <tr><td>Diagnóstico inicial</td><td>${ESTADO.m0.completado?'Completado':'Pendiente'} (${ESTADO.m0.score}/${ESTADO.m0.max})</td></tr>
+  <tr><td>Total de errores registrados</td><td>${ESTADO.errores.length}</td></tr>
+  </table>
+  </div>
+
+  ${ESTADO.m0.completado&&ESTADO.m0.recomendaciones.length>0?`<div class="resumen"><h2>Recomendaciones del diagnóstico</h2><ul>${ESTADO.m0.recomendaciones.map(r=>`<li>${r}</li>`).join('')}</ul></div>`:''}
+
+  <h2>Detalle por módulo</h2>
+  <table>
+  <tr><th>Módulo</th><th>Desbloqueado</th><th>Aciertos</th><th>%</th><th>Consolid.</th><th>Dominado</th></tr>
+  ${htmlModulos}
+  </table>
+
+  ${ESTADO.errores.length>0?`<h2>Errores frecuentes (para repaso)</h2>
+  <table>
+  <tr><th>Módulo</th><th>Pregunta</th><td>Tu respuesta</th><th>Correcta</th><th>Fecha</th></tr>
+  ${ESTADO.errores.slice(-20).map(e=>`<tr>
+    <td>${e.mod}</td><td>${e.enunciado}</td>
+    <td class="err">${e.respuestaDada}</td>
+    <td class="ok">${e.respuestaCorrecta}</td>
+    <td>${e.fecha}</td>
+  </tr>`).join('')}
+  </table>`:''}
+
+  <h2>Insignias obtenidas</h2>
+  <p>${mods.filter(m=>ESTADO.modulos[m.id].insignia).map(m=>`<span class="badge">${m.icono} ${m.titulo}</span>`).join(' ')||'<em>Aún no has obtenido insignias. ¡Sigue practicando!</em>'}</p>
+
+  <hr>
+  <p style="font-size:.85rem;color:#666">
+  Este portafolio se genera automáticamente a partir de tu actividad en el curso-taller interactivo.<br>
+  Envíalo a tu docente como evidencia de tu proceso de recuperación.<br>
+  Generado: ${ts}
+  </p>
+  </body></html>`;
+  
+  const filename=`portafolio_calculo_integral_${(ESTADO.usuario.nombre||'estudiante').replace(/\s+/g,'_')}.html`;
+  descargarTexto(filename,html,'text/html');
+  
+  // Also download JSON with raw data
+  const jsonData={
+    curso:'Recuperación de Cálculo Integral',
+    estudiante:ESTADO.usuario,
+    fechaGeneracion:ts,
+    diagnostico:ESTADO.m0,
+    modulos:{},
+    errores:ESTADO.errores.slice(-50),
+    evidencias:ESTADO.evidencias
+  };
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    jsonData.modulos[m.id]={
+      titulo:m.titulo,
+      objetivo:m.objetivo,
+      desbloqueado:e.desbloqueado,
+      completado:e.completado,
+      dominado:e.dominado,
+      insignia:e.insignia,
+      scoreActividades:e.scoreActividades,
+      totalActividades:e.totalActividades,
+      consolidacionHecha:e.consolidacionHecha,
+      actividades:e.actividades,
+      primerAcceso:e.primerAcceso,
+      ultimoAcceso:e.ultimoAcceso
+    };
+  });
+  descargarTexto('portafolio_datos.json',JSON.stringify(jsonData,null,2),'application/json');
+  
+  toast('Portafolio completo descargado (HTML + JSON)','success');
+}
+
+/* ============================================================
+   PANELES LATERALES
+   ============================================================ */
+function openPanel(id){
+  closePanels();
+  $(id).classList.add('open');
+  $('overlay-bg').classList.add('show');
+}
+function closePanels(){
+  document.querySelectorAll('.side-panel').forEach(p=>p.classList.remove('open'));
+  $('overlay-bg').classList.remove('show');
+}
+function renderFormulaRef(){
+  const c=$('formula-ref-content');
+  if(!c)return;
+  let html='<table>';
+  FORMULAS_REFERENCIA.forEach(f=>{
+    html+=`<tr><td>${f.f}</td><td>${f.r}</td></tr>`;
+  });
+  html+='</table>';
+  setHTML(c,html);
+}
+function renderErroresList(){
+  const c=$('errores-list');
+  if(!c)return;
+  if(ESTADO.errores.length===0){
+    c.innerHTML='<p style="color:var(--text-muted);font-size:.88rem">Aún no tienes errores registrados. ¡Sigue practicando!</p>';
+    return;
+  }
+  let html='';
+  ESTADO.errores.slice(-15).reverse().forEach(e=>{
+    html+=`<div class="err-item">
+      <div class="err-mod">Módulo ${e.mod} · Actividad ${e.idx+1}</div>
+      <div class="err-q">${e.enunciado}</div>
+      <div>Tu respuesta: <span style="color:#999">${e.respuestaDada}</span></div>
+      <div>Correcta: <span style="color:#333;font-weight:bold">${e.respuestaCorrecta}</span></div>
+      <div class="err-date">${e.fecha}</div>
+    </div>`;
+  });
+  setHTML(c,html);
+}
+function renderProgresoDetallado(){
+  const c=$('progreso-detallado');
+  if(!c)return;
+  const mods=MODULES.filter(m=>m.id!=='m0');
+  let html='<table style="width:100%;font-size:.85rem"><tr><th>Módulo</th><th>Aciertos</th><th>%</th><th>Estado</th></tr>';
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    const pct=Math.round((e.scoreActividades/e.totalActividades)*100);
+    const estado=e.dominado?'✅':e.desbloqueado?'📖':'🔒';
+    html+=`<tr><td>${estado} M${m.num}</td><td>${e.scoreActividades}/${e.totalActividades}</td><td>${pct}%</td><td>${e.dominado?'Dominado':e.desbloqueado?'Disponible':'Bloqueado'}</td></tr>`;
+  });
+  html+='</table>';
+  html+=`<div style="margin-top:14px;padding:10px;background:var(--surface-2);border-radius:8px;font-size:.85rem">
+    <strong>Diagnóstico:</strong> ${ESTADO.m0.completado?'Completado':'Pendiente'} (${ESTADO.m0.score}/${ESTADO.m0.max})<br>
+    <strong>Evidencias descargadas:</strong> ${ESTADO.evidencias.length}<br>
+    <strong>Errores registrados:</strong> ${ESTADO.errores.length}
+  </div>`;
+  setHTML(c,html);
+}
+
+/* ============================================================
+   MODAL: EDITAR DATOS
+   ============================================================ */
+function editarDatos(){
+  const m=$('modal-content');
+  setHTML(m,`
+    <h3>👤 Mis datos</h3>
+    <div class="field">
+      <label>Nombre completo</label>
+      <input class="input-line" id="dat-nombre" value="${escapeHtml(ESTADO.usuario.nombre)}" placeholder="Tu nombre" style="width:100%">
+    </div>
+    <div class="field">
+      <label>Grupo / sección</label>
+      <input class="input-line" id="dat-grupo" value="${escapeHtml(ESTADO.usuario.grupo)}" placeholder="Ej: Cálculo Integral - Grupo B" style="width:100%">
+    </div>
+    <div class="field">
+      <label>Correo de contacto</label>
+      <input class="input-line" id="dat-correo" value="${escapeHtml(ESTADO.usuario.correo)}" placeholder="tu@correo.com" style="width:100%">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarDatos()">Guardar</button>
+    </div>`);
+  $('modal-overlay').classList.add('show');
+}
+function guardarDatos(){
+  ESTADO.usuario.nombre=$('dat-nombre').value.trim();
+  ESTADO.usuario.grupo=$('dat-grupo').value.trim();
+  ESTADO.usuario.correo=$('dat-correo').value.trim();
+  saveState();
+  cerrarModal();
+  toast('Datos guardados','success');
+  renderDashboard();
+}
+function cerrarModal(){
+  $('modal-overlay').classList.remove('show');
+}
+
+/* ============================================================
+   IMPORTAR / REINICIAR
+   ============================================================ */
+function importarEvidencias(){
+  const m=$('modal-content');
+  setHTML(m,`
+    <h3>📥 Importar evidencias previas</h3>
+    <p style="font-size:.9rem;margin-bottom:12px">Si descargaste anteriormente el archivo <code>portafolio_datos.json</code>, puedes importarlo aquí para restaurar tu progreso.</p>
+    <input type="file" id="import-file" accept=".json" style="margin-bottom:10px">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="procesarImport()">Importar</button>
+    </div>`);
+  $('modal-overlay').classList.add('show');
+}
+function procesarImport(){
+  const file=$('import-file').files[0];
+  if(!file){toast('Selecciona un archivo','error');return}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.estudiante)ESTADO.usuario=data.estudiante;
+      if(data.modulos){
+        Object.keys(data.modulos).forEach(mid=>{
+          if(ESTADO.modulos[mid]){
+            Object.assign(ESTADO.modulos[mid],data.modulos[mid]);
+          }
+        });
+      }
+      if(data.errores)ESTADO.errores=data.errores;
+      if(data.diagnostico)ESTADO.m0=Object.assign(ESTADO.m0,data.diagnostico);
+      saveState();
+      cerrarModal();
+      renderDashboard();
+      toast('Progreso importado correctamente','success');
+    }catch(err){
+      toast('Error: archivo inválido','error');
+    }
+  };
+  reader.readAsText(file);
+}
+function reiniciarProgreso(){
+  const m=$('modal-content');
+  setHTML(m,`
+    <h3>🔄 Reiniciar progreso</h3>
+    <p style="font-size:.9rem;margin-bottom:12px;color:var(--danger)">⚠️ Esto borrará TODO tu progreso, evidencias y errores. Esta acción no se puede deshacer.</p>
+    <p style="font-size:.88rem">Se recomienda descargar tu portafolio completo antes de reiniciar.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" style="background:var(--danger);color:#fff" onclick="confirmarReset()">Sí, reiniciar todo</button>
+    </div>`);
+  $('modal-overlay').classList.add('show');
+}
+function confirmarReset(){
+  localStorage.removeItem(STORAGE_KEY);
+  ESTADO={
+    usuario:{nombre:'',grupo:'',correo:'',fechaInicio:new Date().toISOString()},
+    m0:{completado:false,score:0,max:6,recomendaciones:[],intentos:[]},
+    modulos:{},
+    errores:[],
+    evidencias:[],
+    ultimoAcceso:new Date().toISOString()
+  };
+  initModulosEstado();
+  cerrarModal();
+  irDashboard();
+  toast('Progreso reiniciado','info');
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+function init(){
+  loadState();
+  initModulosEstado();
+  // Ensure m0 is always accessible
+  renderDashboard();
+  // First-time welcome
+  if(!ESTADO.usuario.nombre && !localStorage.getItem(STORAGE_KEY+'_welcomed')){
+    setTimeout(()=>{
+      editarDatos();
+      localStorage.setItem(STORAGE_KEY+'_welcomed','1');
+    },800);
+  }
+}
+/* Dark mode toggle */
+function toggleDarkMode(){
+  var html=document.documentElement;
+  var current=html.getAttribute('data-theme');
+  var newTheme=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',newTheme);
+  try{localStorage.setItem('calc_theme',newTheme)}catch(e){}
+  updateDarkModeButton(newTheme);
+}
+function updateDarkModeButton(theme){
+  var btn=document.getElementById('btn-dark-mode');
+  if(!btn)return;
+  if(theme==='dark'){
+    btn.innerHTML='☀️ <span class="btn-label">Modo claro</span>';
+  }else{
+    btn.innerHTML='🌙 <span class="btn-label">Modo oscuro</span>';
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  try{
+    var savedTheme=localStorage.getItem('calc_theme')||'light';
+    document.documentElement.setAttribute('data-theme',savedTheme);
+    updateDarkModeButton(savedTheme);
+  }catch(e){}
+  init();
+});
+</script>
+</body>
+</html>
