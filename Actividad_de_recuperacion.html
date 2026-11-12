@@ -298,8 +298,8 @@ footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
   <section id="view-dashboard" class="view active">
     <div class="welcome">
       <h2>Bienvenido de vuelta a tu recuperación 🎯</h2>
-      <p>Este taller está diseñado para que retomes Cálculo Integral a tu ritmo, en sesiones cortas, desde celular o computadora. No importa cuánto hayas perdido: aquí empezamos de donde estás y avanzamos juntos, paso a paso.</p>
-      <div class="motiv">💡 <strong>Regla de oro:</strong> equivocarse aquí no te penaliza. Cada error se registra para repaso y te ayuda a aprender. Lo único que importa es no rendirte.</div>
+      <p>Esta plataforma-taller está diseñado para que retomes tu curso de Cálculo Integral a tu ritmo, en sesiones cortas, desde tu celular o computadora. No importa cuánto hayas perdido si te ausentaste: aquí empezamos de donde estás y avanzamos juntos, paso a paso.</p>
+      <div class="motiv">💡 <strong>Regla de oro:</strong> equivocarse aquí en esta plataforma no te penaliza ni te califica con menos puntos. Cada error se registra para repaso y te ayuda a aprender. Lo único que importa es no rendirse, si se comete un error primero lo reconoces aprendes de el y después simplemente ya no caes en el mismo, por el contrario avanzas con mayor seguridad.</div>
     </div>
 
     <div class="progress-global">
@@ -612,7 +612,7 @@ const MODULES = [
     {tipo:"verdadero_falso", enunciado:"∫  x<sup>-1</sup> dx = x<sup>0</sup>/0 + C", correcta:false,
       feedback:{correcto:"Correcto: esa expresión NO es válida porque dividirías entre cero. El caso n=-1 se resuelve conln|x|.",errores:{0:"Cuidado: n=-1 produce 1/0, que no está definido. Es el caso especial que se resuelve conln|x|."}}},
     {tipo:"opcion_multiple", enunciado:"∫  √ x dx =?", opciones:["(2/3)x<sup>3/2</sup> + C","(1/2)x<sup>1/2</sup> + C","x<sup>3/2</sup> + C","2√ x + C"], correcta:0,
-      feedback:{correcto:"Sí:√ x = x<sup>1/2</sup>; subes a 3/2 y multiplicas por 2/3.",errores:{1:"Eso es derivar√ x.",2:"Olvidaste dividir entre el nuevo exponente.",3:"No se integra así una raíz."}}},
+      feedback:{correcto:"Sí:√ x = x<sup>1/2</sup>; subes a 3/2 y multiplicas por 2/3.",errores:{1:"Eso es derivar √ x.",2:"Olvidaste dividir entre el nuevo exponente.",3:"No se integra así una raíz."}}},
     {tipo:"ordenar_pasos", enunciado:"Ordena la resolución de∫ x<sup>-3</sup>dx:",
       pasos:[
         {texto:"Identificar n=-3", orden:1},
@@ -621,7 +621,7 @@ const MODULES = [
         {texto:"Simplificar y añadir C:-1/(2x<sup>2</sup>) + C", orden:4}
       ],
       feedback:{correcto:"Buena secuencia.",errores:"Primero identificas n, luego calculas n+1, escribes la división y finalmente simplificas y añades C."}},
-    {tipo:"numerica", enunciado:"∫ x<sup>2</sup>dxevaluada en x=3 (sin contar C) da:", respuesta:9, tolerancia:0.01, feedbackCorrecto:"Sí:∫ x<sup>2</sup>=x<sup>3</sup>/3; al evaluar enx=3 →  27/3 = 9.", feedbackError:"∫ x<sup>2</sup>=x<sup>3</sup>/3; evaluado en 3:3<sup>3</sup>/3 = 27/3 = 9."},
+    {tipo:"numerica", enunciado:"∫ x<sup>2</sup>dx evaluada en x=3 (sin contar C) da:", respuesta:9, tolerancia:0.01, feedbackCorrecto:"Sí:∫ x<sup>2</sup>=x<sup>3</sup>/3; al evaluar enx=3 →  27/3 = 9.", feedbackError:"∫ x<sup>2</sup>=x<sup>3</sup>/3; evaluado en 3:3<sup>3</sup>/3 = 27/3 = 9."},
     {tipo:"seleccion_multiple", enunciado:"¿Cuáles son antiderivadas válidas dex<sup>4</sup>?", opciones:["x<sup>5</sup>/5 + C","x<sup>5</sup>/5 + 7","x<sup>5</sup>/5","x<sup>5</sup> + C","(1/5)x<sup>5</sup>"], correctas:[0,1,2,4],
       feedback:{correcto:"Todas esas difieren solo en C, son antiderivadas válidas.",errores:{3:"Olvidaste dividir entre 5: la derivada dex<sup>5</sup>es5x<sup>4</sup>,nox<sup>4</sup>."}}}
   ],
@@ -630,8 +630,8 @@ const MODULES = [
 
 /* ===================== MÓDULO 4: SEN Y COS ===================== */
 {
-  id:"m4", num:4, titulo:"Integrales desen x y cos x", icono:"🌊",
-  objetivo:"Al terminar podrás integrarsen x y cos xyentender por qué cambian los signos.",
+  id:"m4", num:4, titulo:"Integrales de sen x y cos x", icono:"🌊",
+  objetivo:"Al terminar podrás integrar sen x y cos x y entender por qué cambian los signos.",
   repaso:[
     {tipo:"opcion_multiple", enunciado:"(RepasoM3) ∫ x<sup>4</sup>dx =?", opciones:["x<sup>5</sup>/5+C","x<sup>5</sup>+C","5x<sup>5</sup>+C","x<sup>3</sup>/3+C"], correcta:0, feedback:{correcto:"Bien.",errores:{1:"Falta dividir.",2:"Estás derivando.",3:"Confundiste exponentes."}}},
     {tipo:"opcion_multiple", enunciado:"(Repaso M1) d/dx[cos x] = ?", opciones:["-sen x","sen x","-cos x","cos x"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Signo incorrecto.",2:"Es la derivada desen.",3:"No cambia."}}}
