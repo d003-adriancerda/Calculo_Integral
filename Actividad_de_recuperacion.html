@@ -474,7 +474,7 @@ const MODULES = [
   teoria:`
     <h4>¿Qué es una antiderivada?</h4>
     <p>Una función <strong>F(x)</strong> es <em>antiderivada</em> (o primitiva) de <strong>f(x)</strong> cuando al derivar F recuperas f:</p>
-    <div class="formula-box">F'(x) = f(x)   \\iff F es antiderivada de f</div>
+    <div class="formula-box">F'(x) = f(x)   \iff  F es antiderivada de f</div>
     <h4>La constante de integración C</h4>
     <p>La derivada de cualquier constante es 0. Entonces, si F(x) es antiderivada de f(x), también lo es <strong>F(x)+C</strong> para cualquier constante C. A este conjunto se le llama <em>familia de curvas</em>.</p>
     <div class="formula-box">Si F'(x)=f(x), entonces todas las antiderivadas son F(x)+C</div>
@@ -485,8 +485,8 @@ const MODULES = [
     <p>Si te dan un valor específico, por ejemplo F(0)=4, puedes sustituir x=0 en F(x)+C y despejar C. Así obtienes <em>una</em> antiderivada concreta, no la familia.</p>
   `,
   ejemplo:[
-    {num:1,titulo:"Identificar qué debemos integrar",contenido:"Necesitamos una F tal queF'(x)=6x<sup>2</sup>.",regla:"Definición de antiderivada"},
-    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivar x<sup>n</sup>dan· x<sup>n-1</sup>,entonces integrar6x<sup>2</sup>implica subir el exponente: pensamos enx<sup>3</sup>.",regla:"Regla de la potencia (inversa)"},
+    {num:1,titulo:"Identificar qué debemos integrar",contenido:"Necesitamos una F tal que F'(x)=6x<sup>2</sup>.",regla:"Definición de antiderivada"},
+    {num:2,titulo:"Aplicar la potencia al revés",contenido:"Si derivar x<sup>n</sup>da n· x<sup>n-1</sup>, entonces integrar 6x<sup>2</sup> implica subir el exponente: pensamos en x<sup>3</sup>.",regla:"Regla de la potencia (inversa)"},
     {num:3,titulo:"Ajustar coeficiente y añadir C",contenido:"d/dx[x<sup>3</sup>]=3x<sup>2</sup>. Para obtener6x<sup>2</sup>multiplicamos por 2:F(x)=2x<sup>3</sup>+C.",regla:"Linealidad y constante de integración"},
     {num:4,titulo:"Verificar derivando",contenido:"F'(x)=d/dx[2x<sup>3</sup>+C]=6x<sup>2</sup>+0=6x<sup>2</sup>. ✓ Coincide con el integrando.",regla:"Verificación por derivación"}
   ],
@@ -687,7 +687,7 @@ const MODULES = [
 
 /* ===================== MÓDULO 5: LN|x| ===================== */
 {
-  id:"m5", num:5, titulo:"Integral de 1/x →  ln|x|", icono:"📉",
+  id:"m5", num:5, titulo:"Integral de x^{-1} →  ln|x|", icono:"📉",
   objetivo:"Al terminar podrás integrar 1/x y funciones de la forma f'/f usandoln|f|.",
   repaso:[
     {tipo:"opcion_multiple", enunciado:"(Repaso M3) ¿Cuál exponente NO se puede integrar con la regla de la potencia?", opciones:["-1","2","-3","1/2"], correcta:0, feedback:{correcto:"n=-1 produce división entre 0.",errores:{1:"Sí se puede:x<sup>3</sup>/3.",2:"Sí: x⁻<sup>2</sup>/-2.",3:"Sí: (2/3)x^(3/2)."}}},
