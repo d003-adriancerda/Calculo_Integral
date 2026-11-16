@@ -3,302 +3,2596 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recuperación de Cálculo Integral · Curso-Taller Interactivo</title>
-<!-- KaTeX CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-<!-- KaTeX JS -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
-<!-- html2canvas para la descarga de la insignia/nota en PNG -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+<title>Recuperación de Cálculo Diferencial · Curso-Taller Interactivo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
 :root{
-  --primary:#4a4a4a; --primary-dark:#2a2a2a; --primary-light:#e0e0e0;
-  --accent:#6a6a6a; --accent-light:#f0f0f0;
-  --success:#3a3a3a; --success-light:#e8e8e8;
-  --danger:#6a6a6a; --danger-light:#f2f2f2;
-  --warning:#7a7a7a; --warning-light:#f5f5f5;
-  --bg:#f5f5f5; --surface:#ffffff; --surface-2:#ebebeb;
-  --text:#1a1a1a; --text-muted:#707070; --border:#d4d4d4;
+  --primary:#4a4a4a;--primary-dark:#2a2a2a;--primary-light:#e0e0e0;
+  --accent:#6a6a6a;--accent-light:#f0f0f0;
+  --success:#3a3a3a;--success-light:#e8e8e8;
+  --danger:#6a6a6a;--danger-light:#f2f2f2;
+  --warning:#7a7a7a;--warning-light:#f5f5f5;
+  --bg:#f5f5f5;--surface:#ffffff;--surface-2:#ebebeb;
+  --text:#1a1a1a;--text-muted:#707070;--border:#d4d4d4;
   --btn-text:#ffffff;
   --shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);
   --shadow-lg:0 10px 25px -5px rgba(0,0,0,.12),0 8px 10px -6px rgba(0,0,0,.08);
-  --radius:14px; --radius-sm:8px;
+  --radius:14px;--radius-sm:8px;
   --font:'Segoe UI',Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
 }
 html[data-theme="dark"]{
-  --primary:#666666; --primary-dark:#444444; --primary-light:#333333;
-  --accent:#888888; --accent-light:#2a2a2a;
-  --success:#555555; --success-light:#2a2a2a;
-  --danger:#888888; --danger-light:#2a2a2a;
-  --warning:#777777; --warning-light:#2a2a2a;
-  --bg:#1a1a1a; --surface:#252525; --surface-2:#303030;
-  --text:#e8e8e8; --text-muted:#999999; --border:#383838;
+  --primary:#666666;--primary-dark:#444444;--primary-light:#333333;
+  --accent:#888888;--accent-light:#2a2a2a;
+  --success:#555555;--success-light:#2a2a2a;
+  --danger:#888888;--danger-light:#2a2a2a;
+  --warning:#777777;--warning-light:#2a2a2a;
+  --bg:#1a1a1a;--surface:#252525;--surface-2:#303030;
+  --text:#e8e8e8;--text-muted:#999999;--border:#383838;
   --btn-text:#ffffff;
   --shadow:0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
   --shadow-lg:0 10px 25px -5px rgba(0,0,0,.5),0 8px 10px -6px rgba(0,0,0,.3);
 }
-body {
-  font-family: var(--font);
-  background-color: var(--bg);
-  color: var(--text);
-  margin: 0;
-  padding: 20px;
-  transition: background 0.3s, color 0.3s;
+html[data-theme="dark"] .katex{color:var(--text)}
+html[data-theme="dark"] .formula-box{background:var(--surface-2)!important}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;font-size:16px;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:1rem}
+a{color:var(--primary);text-decoration:none}
+
+/* ===== Layout ===== */
+.app{max-width:1100px;margin:0 auto;padding:16px}
+header.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:var(--btn-text);padding:18px 20px;border-radius:var(--radius);box-shadow:var(--shadow-lg);position:relative;z-index:100}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.topbar h1{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.topbar h1 .logo{font-size:1.4rem}
+.topbar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:600;transition:all .15s;background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn:hover{background:var(--surface-2);transform:translateY(-1px)}
+.btn-primary{background:var(--primary);color:var(--btn-text);border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--success);color:var(--btn-text);border-color:var(--success)}
+.btn-success:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:var(--btn-text);border-color:var(--accent)}
+.btn-accent:hover{background:var(--primary-dark)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text-muted)}
+.btn-ghost:hover{background:var(--surface-2);color:var(--text)}
+.btn-sm{padding:6px 10px;font-size:.82rem}
+.btn-lg{padding:12px 20px;font-size:1rem}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-download{background:linear-gradient(135deg,var(--accent),var(--primary-dark));color:var(--btn-text);border:none;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.btn-download:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+
+/* ===== Progress ===== */
+.progress-global{margin:14px 0;background:var(--surface);padding:12px 16px;border-radius:var(--radius-sm);box-shadow:var(--shadow)}
+.progress-global-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:.9rem}
+.progress-bar{height:10px;background:var(--surface-2);border-radius:50px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:50px;transition:width .6s ease;width:0}
+
+/* ===== Dashboard ===== */
+.welcome{background:var(--surface);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.welcome h2{font-size:1.3rem;margin-bottom:8px;color:var(--primary-dark)}
+.welcome p{color:var(--text-muted);font-size:.95rem}
+.welcome .motiv{margin-top:10px;padding:10px 14px;background:var(--accent-light);border-left:4px solid var(--accent);border-radius:6px;color:var(--text);font-size:.9rem}
+
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:16px}
+.module-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:2px solid var(--border);transition:all .2s;position:relative;overflow:hidden;cursor:pointer}
+.module-card:hover:not(.locked){border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.module-card.locked{opacity:.55;cursor:not-allowed;background:var(--surface-2)}
+.module-card.completed{border-color:var(--success)}
+.module-card .m-num{font-size:.75rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.module-card .m-title{font-size:1.05rem;font-weight:700;margin:4px 0 8px;color:var(--text)}
+.module-card .m-icon{font-size:1.6rem;position:absolute;top:12px;right:14px;opacity:.9}
+.module-card .m-status{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;padding:3px 8px;border-radius:12px;font-weight:600;margin-top:6px}
+.m-status.available{background:var(--primary-light);color:var(--primary-dark)}
+.m-status.locked{background:var(--surface-2);color:var(--text-muted)}
+.m-status.in-progress{background:var(--accent-light);color:var(--text)}
+.m-status.completed{background:var(--success-light);color:var(--text)}
+.module-card .m-progress{margin-top:10px}
+.mini-bar{height:6px;background:var(--surface-2);border-radius:50px;overflow:hidden;margin-top:4px}
+.mini-bar-fill{height:100%;background:var(--primary);border-radius:50px;transition:width .4s}
+
+/* ===== Module view ===== */
+.view{display:none}
+.view.active{display:block}
+.module-header{background:var(--surface);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.module-header h2{font-size:1.4rem;color:var(--primary-dark);display:flex;align-items:center;gap:10px}
+.objetivo{margin-top:8px;padding:10px 14px;background:var(--primary-light);border-radius:8px;color:var(--primary-dark);font-size:.92rem}
+.objetivo strong{color:var(--primary-dark)}
+
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--text-muted);margin-bottom:12px}
+.breadcrumb a{color:var(--primary);cursor:pointer}
+.breadcrumb span.sep{opacity:.5}
+
+.section{background:var(--surface);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+.section h3{font-size:1.1rem;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--border);padding-bottom:8px}
+.section h3 .badge{font-size:.7rem;background:var(--accent);color:var(--btn-text);padding:2px 8px;border-radius:10px;font-weight:700}
+
+/* Accordion */
+.accordion{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.acc-head{padding:12px 16px;background:var(--surface-2);font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.acc-head:hover{background:var(--surface-2)}
+.acc-head .arrow{transition:transform .2s}
+.acc-head.open .arrow{transform:rotate(90deg)}
+.acc-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s}
+.acc-body.open{padding:16px;max-height:3000px}
+
+.teoria-content{font-size:.95rem;line-height:1.7}
+.teoria-content h4{color:var(--primary-dark);margin:10px 0 6px;font-size:1rem}
+.teoria-content p{margin-bottom:8px}
+.teoria-content .formula-box{background:var(--surface-2);border-left:4px solid var(--primary);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:1.05rem;text-align:center}
+.teoria-content .analogia{background:var(--accent-light);border-left:4px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.9rem}
+.teoria-content .analogia strong{color:var(--text)}
+
+/* Example steps */
+.ejemplo-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.paso-display{flex:1;background:var(--surface-2);border-radius:var(--radius-sm);padding:14px;min-height:80px}
+.paso-display .paso-num{font-size:.75rem;color:var(--primary);font-weight:700;text-transform:uppercase}
+.paso-display .paso-titulo{font-size:1rem;font-weight:700;margin:2px 0 6px}
+.paso-display .paso-content{font-size:.95rem}
+.paso-display .paso-regla{margin-top:8px;font-size:.82rem;color:var(--success);font-style:italic}
+.ejemplo-dots{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--primary);transform:scale(1.3)}
+
+/* Activities */
+.actividad{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px;transition:all .2s}
+.actividad.respondida-correcta{border-color:var(--success);background:linear-gradient(0deg,var(--success-light) 0%,var(--surface) 40%)}
+.actividad.respondida-incorrecta{border-color:var(--danger)}
+.act-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--primary);color:var(--btn-text);border-radius:50%;font-weight:700;font-size:.85rem;margin-right:8px}
+.act-enunciado{font-size:.98rem;margin-bottom:12px;line-height:1.6}
+.act-enunciado .math{font-family:'Cambria Math','Times New Roman',serif;font-style:italic}
+.opciones{display:flex;flex-direction:column;gap:8px}
+.opcion{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.opcion:hover{border-color:var(--primary);background:var(--primary-light)}
+.opcion.selected{border-color:var(--primary);background:var(--primary-light)}
+.opcion.correct{border-color:var(--success);background:var(--success-light)}
+.opcion.incorrect{border-color:var(--danger);background:var(--danger-light)}
+.opcion .marker{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700}
+.opcion.selected .marker{border-color:var(--primary);background:var(--primary);color:var(--btn-text)}
+.opcion.correct .marker{border-color:var(--success);background:var(--success);color:var(--btn-text)}
+.opcion.incorrect .marker{border-color:var(--danger);background:var(--danger);color:var(--btn-text)}
+
+.input-line{padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);width:100%;max-width:280px;font-size:1rem}
+.input-line:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+
+.feedback{margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);font-size:.9rem;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--success-light);color:var(--text);border-left:4px solid var(--success)}
+.feedback.err{background:var(--danger-light);color:var(--text);border-left:4px solid var(--danger)}
+
+.hints{margin-top:8px}
+.hint-btn{font-size:.78rem;color:var(--accent);font-weight:600;padding:4px 8px;border-radius:6px}
+.hint-btn:hover{background:var(--accent-light)}
+.hint-content{margin-top:6px;padding:8px 12px;background:var(--warning-light);border-left:3px solid var(--warning);border-radius:6px;font-size:.88rem;color:var(--text);display:none}
+.hint-content.show{display:block}
+.hint-content .hint-level{font-weight:700;color:var(--warning);font-size:.75rem;text-transform:uppercase;margin-right:6px}
+
+.act-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.act-stats{font-size:.75rem;color:var(--text-muted);margin-top:8px}
+
+/* Ordenar pasos */
+.orden-list{display:flex;flex-direction:column;gap:6px}
+.orden-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface-2);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.orden-item .pos{font-weight:700;color:var(--primary);min-width:24px}
+.orden-item .txt{flex:1;font-size:.92rem}
+.orden-item .up,.orden-item .down{padding:4px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border)}
+.orden-item .up:hover,.orden-item .down:hover{background:var(--primary-light)}
+
+/* Emparejar */
+.emparejar-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.emp-col{display:flex;flex-direction:column;gap:6px}
+.emp-item{padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;text-align:center;font-size:.9rem;transition:all .15s}
+.emp-item:hover{border-color:var(--primary)}
+.emp-item.selected{border-color:var(--primary);background:var(--primary-light)}
+.emp-item.matched{opacity:.4;cursor:not-allowed}
+.emp-item.correct{border-color:var(--success);background:var(--success-light)}
+
+/* Numérica */
+.numerica-input{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.numerica-input .input-line{max-width:200px}
+
+/* Practice generator */
+.practice-gen{background:linear-gradient(135deg,var(--primary-light),var(--surface));padding:16px;border-radius:var(--radius);border:2px dashed var(--primary);margin-bottom:16px}
+.practice-gen h3{color:var(--primary-dark);margin-bottom:8px;border:none}
+.gen-display{background:var(--surface);padding:14px;border-radius:var(--radius-sm);margin-top:10px;border:1px solid var(--border)}
+.gen-problem{font-size:1.05rem;text-align:center;margin:8px 0;font-family:'Cambria Math',serif}
+.gen-controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+/* Consolidación */
+.consolidacion{background:linear-gradient(135deg,var(--accent-light),var(--surface));padding:16px;border-radius:var(--radius);border:2px solid var(--accent);margin-bottom:16px}
+.consolidacion h3{color:var(--text);border:none}
+.autoeval{margin-top:12px;background:var(--surface);padding:12px;border-radius:var(--radius-sm)}
+.autoeval label{display:flex;align-items:center;gap:6px;margin:4px 0;font-size:.9rem;cursor:pointer}
+
+/* Nota de módulo */
+.nota-card{background:var(--surface);border:2px solid var(--primary);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow-lg)}
+.nota-card h3{color:var(--primary-dark);margin-bottom:10px}
+.nota-card .nota-valor{font-size:2.2rem;font-weight:800;color:var(--primary-dark);line-height:1.1}
+.nota-card .nota-valor small{font-size:1rem;color:var(--text-muted);font-weight:600}
+.nota-card table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.9rem}
+.nota-card td{padding:6px 8px;border-bottom:1px solid var(--border)}
+.nota-card td:last-child{text-align:right;font-weight:600}
+.nota-card .nota-estado{display:inline-block;padding:4px 10px;border-radius:12px;font-size:.82rem;font-weight:700;margin-top:6px}
+.nota-card .nota-estado.aprobado{background:var(--success-light);color:var(--text);border:1px solid var(--success)}
+.nota-card .nota-estado.pendiente{background:var(--danger-light);color:var(--text);border:1px solid var(--danger)}
+.nota-card .nota-acciones{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* Insignia */
+.insignia{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,var(--accent),var(--primary));color:var(--btn-text);border-radius:20px;font-weight:700;font-size:.85rem;box-shadow:0 4px 12px rgba(0,0,0,.25);animation:pop .4s}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:20px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal h3{color:var(--primary-dark);margin-bottom:12px;font-size:1.2rem}
+.modal .field{margin-bottom:12px}
+.modal .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px;color:var(--text-muted)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+
+/* Panel lateral */
+.side-panel{position:fixed;top:0;right:-340px;width:330px;max-width:90vw;height:100vh;background:var(--surface);box-shadow:-4px 0 20px rgba(0,0,0,.15);transition:right .3s;z-index:150;overflow-y:auto;padding:16px}
+.side-panel.open{right:0}
+.side-panel h3{color:var(--primary-dark);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.side-panel-close{position:absolute;top:12px;right:12px;font-size:1.4rem;color:var(--text-muted);cursor:pointer}
+.overlay-bg{position:fixed;inset:0;background:rgba(0,0,0,.3);display:none;z-index:140}
+.overlay-bg.show{display:block}
+
+.formula-ref{font-size:.88rem}
+.formula-ref table{width:100%;border-collapse:collapse}
+.formula-ref td{padding:6px 8px;border-bottom:1px solid var(--border)}
+.formula-ref td:first-child{font-family:'Cambria Math',serif;font-size:1rem;background:var(--surface-2);font-weight:600;width:45%}
+.formula-ref td:last-child{color:var(--text-muted)}
+
+.errores-list{font-size:.88rem}
+.err-item{padding:8px;background:var(--danger-light);border-radius:6px;margin-bottom:6px;border-left:3px solid var(--danger)}
+.err-item .err-mod{font-weight:700;color:var(--text);font-size:.78rem}
+.err-item .err-q{font-size:.85rem;color:var(--text)}
+.err-item .err-date{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+
+/* M0 Diagnóstico */
+.diag-result{padding:14px;border-radius:var(--radius-sm);margin-top:14px}
+.diag-result.bajo{background:var(--danger-light);border-left:4px solid var(--danger)}
+.diag-result.medio{background:var(--accent-light);border-left:4px solid var(--accent)}
+.diag-result.alto{background:var(--success-light);border-left:4px solid var(--success)}
+.diag-rec{margin-top:8px;font-size:.88rem}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:var(--bg);padding:12px 20px;border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:300;opacity:0;transition:all .3s;font-size:.9rem}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.info{background:var(--primary)}
+
+/* Responsive */
+@media(max-width:640px){
+  .app{padding:8px}
+  .topbar{padding:12px}
+  .topbar h1{font-size:1rem}
+  .topbar-actions .btn-label{display:none}
+  .modules-grid{grid-template-columns:1fr}
+  .emparejar-grid{grid-template-columns:1fr}
+  .module-header h2{font-size:1.15rem}
+  .btn{padding:7px 11px;font-size:.85rem}
 }
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--surface);
-  padding: 15px 25px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  margin-bottom: 25px;
-}
-h1 { font-size: 1.5rem; margin: 0; }
-.btn {
-  background: var(--primary);
-  color: var(--btn-text);
-  border: none;
-  padding: 10px 18px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: var(--shadow);
-  transition: opacity 0.2s;
-  text-decoration: none;
-  display: inline-block;
-}
-.btn:hover { opacity: 0.9; }
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 25px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-}
-.grid-modules {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-.module-card {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  border-radius: 12px;
-  background: var(--accent-light);
-  color: var(--text);
-  margin-bottom: 10px;
-}
-.hidden { display: none !important; }
-#certificate-preview {
-  background: var(--surface);
-  border: 2px dashed var(--primary);
-  padding: 30px;
-  text-align: center;
-  border-radius: var(--radius);
-  margin-top: 20px;
-}
+
+/* Math helpers */
+sub,sup{font-size:.7em}
+.math-block{font-family:'Cambria Math','Times New Roman',serif;background:var(--surface-2);padding:8px 14px;border-radius:6px;text-align:center;margin:8px 0;font-size:1.05rem}
+.frac{display:inline-block;vertical-align:middle;text-align:center}
+.frac .num{display:block;border-bottom:1px solid currentColor;padding:0 4px}
+.frac .den{display:block;padding:0 4px}
+.sqrt{border-top:1px solid currentColor;padding:0 2px}
+
+footer{padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem}
 </style>
 </head>
 <body>
-
-<div class="container">
-  <!-- Header General -->
-  <header>
-    <h1>Cálculo Integral · Módulos Independientes</h1>
-    <div>
-      <button class="btn" onclick="toggleTheme()">🌓 Tema</button>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-row">
+      <h1><span class="logo">📐</span> Recuperación de Cálculo Diferencial</h1>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="toggleDarkMode()" id="btn-dark-mode" title="Cambiar modo claro/oscuro">🌙 <span class="btn-label">Modo oscuro</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-formulas')" title="Tabla de fórmulas">📐 <span class="btn-label">Fórmulas</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-errores')" title="Mis errores frecuentes">⚠️ <span class="btn-label">Errores</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="openPanel('panel-progreso')" title="Mi progreso detallado">📊 <span class="btn-label">Progreso</span></button>
+        <button class="btn btn-ghost btn-sm" onclick="editarDatos()" title="Editar mis datos">👤 <span class="btn-label">Mis datos</span></button>
+        <button class="btn btn-download btn-sm" onclick="descargarPortafolioCompleto()">📦 <span class="btn-label">Descargar avance</span></button>
+      </div>
     </div>
   </header>
 
-  <!-- VISTA: DASHBOARD PRINCIPAL -->
-  <div id="view-dashboard" class="card">
-    <h2>Panel de Módulos (Independientes)</h2>
-    <p>Selecciona cualquier módulo libremente para practicar o evaluar tus conocimientos. No se requiere orden estricto ni carga de archivos previos.</p>
-    
-    <div class="grid-modules">
-      <!-- Módulo 1 -->
-      <div class="module-card">
-        <div>
-          <span class="badge">Módulo 1</span>
-          <h3>Antiderivadas y Teorema Fundamental</h3>
-          <p>Conceptos básicos de integración y acumulación de área.</p>
-        </div>
-        <button class="btn" onclick="openModule(1)">Acceder al Módulo</button>
-      </div>
-      <!-- Módulo 2 -->
-      <div class="module-card">
-        <div>
-          <span class="badge">Módulo 2</span>
-          <h3>Métodos de Integración</h3>
-          <p>Sustitución, partes y fracciones parciales.</p>
-        </div>
-        <button class="btn" onclick="openModule(2)">Acceder al Módulo</button>
-      </div>
-      <!-- Módulo 3 -->
-      <div class="module-card">
-        <div>
-          <span class="badge">Módulo 3</span>
-          <h3>Aplicaciones de la Integral</h3>
-          <p>Áreas bajo la curva, sólidos de revolución y longitudes.</p>
-        </div>
-        <button class="btn" onclick="openModule(3)">Acceder al Módulo</button>
-      </div>
+  <!-- Dashboard -->
+  <section id="view-dashboard" class="view active">
+    <div class="welcome">
+      <h2>Bienvenido de vuelta a tu recuperación 🎯</h2>
+      <p>Esta plataforma-taller está diseñado para que retomes tu curso de Cálculo Diferencial a tu ritmo, en sesiones cortas, desde tu celular o computadora. No importa cuánto hayas perdido si te ausentaste: aquí empezamos de donde estás y avanzamos juntos, paso a paso.</p>
+      <p style="margin-top:8px"><strong>Los módulos son independientes:</strong> puedes estudiarlos en el orden que necesites. Cada módulo tiene su propio repaso opcional, práctica y consolidación. Al finalizar un módulo verás tu nota y podrás descargarla con tu nombre.</p>
+      <div class="motiv">💡 <strong>Regla de oro:</strong> equivocarse aquí en esta plataforma no te penaliza ni te califica con menos puntos. Cada error se registra para repaso y te ayuda a aprender. Lo único que importa es no rendirse, si se comete un error primero lo reconoces aprendes de él y después simplemente ya no caes en el mismo error, por el contrario avanzas con mayor seguridad.</div>
     </div>
 
-    <div style="margin-top: 30px;">
-      <h3>Portafolio de Evidencias y Avance Local</h3>
-      <div id="portfolio-container" style="background: var(--surface-2); padding: 15px; border-radius: var(--radius-sm);">
-        <p>Aún no hay módulos completados en este dispositivo.</p>
+    <div class="progress-global">
+      <div class="progress-global-top">
+        <strong>Progreso global del curso</strong>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <div class="modules-grid" id="modules-grid"></div>
+
+    <div class="section">
+      <h3>🗂️ Diagnóstico inicial (Módulo 0)</h3>
+      <p style="font-size:.92rem;color:var(--text-muted);margin-bottom:10px">Antes de empezar, contesta estas preguntas rápidas para identificar qué prerrequisitos necesitas reforzar. <strong>No bloquea ningún módulo</strong>, solo te da recomendaciones personalizadas.</p>
+      <button class="btn btn-primary" onclick="abrirModulo('m0')">Iniciar diagnóstico (6 preguntas)</button>
+    </div>
+
+    <div class="section">
+      <h3>📂 Opciones</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="importarEvidencias()">📥 Importar evidencias previas</button>
+        <button class="btn" onclick="reiniciarProgreso()">🔄 Reiniciar progreso</button>
+        <button class="btn" onclick="editarDatos()">✏️ Editar mis datos</button>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- VISTA: CONTENEDOR DE MÓDULOS -->
-  <div id="view-module" class="card hidden">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <button class="btn" onclick="goDashboard()">← Volver al Dashboard</button>
-      <span id="module-title-header" style="font-weight: bold; font-size: 1.1rem;"></span>
+  <!-- Module view -->
+  <section id="view-module" class="view">
+    <div class="breadcrumb">
+      <a onclick="irDashboard()">← Dashboard</a>
+      <span class="sep">/</span>
+      <span id="bc-modulo">Módulo</span>
     </div>
-
-    <div id="module-content-body">
-      <!-- Contenido interactivo dinámico del módulo -->
+    <div id="module-content"></div>
+    <div style="text-align:center;margin:20px 0">
+      <button class="btn btn-primary btn-lg" id="btn-dominar" onclick="finalizarModulo()" disabled>🎓 Finalizar módulo y ver mi nota</button>
+      <div id="dominar-msg" style="margin-top:8px;font-size:.85rem;color:var(--text-muted)"></div>
     </div>
+  </section>
 
-    <div style="margin-top: 25px; text-align: right;">
-      <button class="btn" onclick="completeModuleEval()">Finalizar y Evaluar Módulo</button>
-    </div>
-  </div>
-
-  <!-- VISTA: RESULTADO Y DESCARGA DE PNG -->
-  <div id="view-result" class="card hidden">
-    <h2>¡Módulo Completado con Éxito!</h2>
-    <p>Has terminado la práctica de este módulo de forma independiente.</p>
-    
-    <div id="certificate-preview">
-      <h3>Constancia de Logro - Cálculo Integral</h3>
-      <p id="cert-user-info">Módulo acreditado satisfactoriamente</p>
-      <h1 id="cert-score" style="color: var(--primary);">Calificación: 100 / 100</h1>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">Fecha: <span id="cert-date"></span></p>
-    </div>
-
-    <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
-      <button class="btn" onclick="downloadPNG()">Descargar Nota en PNG</button>
-      <button class="btn" onclick="goDashboard()">Regresar al Dashboard</button>
-    </div>
-  </div>
-
+  <footer>
+    Curso-taller de recuperación · Cálculo Diferencial · Diseñado para aprendizaje autosuficiente<br>
+    Tus datos se guardan solo en este navegador (localStorage). Descarga tu nota o tu portafolio para enviarlo al docente.
+  </footer>
 </div>
 
+<!-- Side panels -->
+<div class="overlay-bg" id="overlay-bg" onclick="closePanels()"></div>
+
+<aside class="side-panel" id="panel-formulas">
+  <span class="side-panel-close" onclick="closePanels()">×</span>
+  <h3>📐 Fórmulas clave</h3>
+  <div class="formula-ref" id="formula-ref-content"></div>
+</aside>
+
+<aside class="side-panel" id="panel-errores">
+  <span class="side-panel-close" onclick="closePanels()">×</span>
+  <h3>⚠️ Mis errores frecuentes</h3>
+  <div class="errores-list" id="errores-list"></div>
+  <p style="font-size:.8rem;color:var(--text-muted);margin-top:10px">Los errores se guardan automáticamente para que los repases. No afectan tu calificación.</p>
+</aside>
+
+<aside class="side-panel" id="panel-progreso">
+  <span class="side-panel-close" onclick="closePanels()">×</span>
+  <h3>📊 Mi progreso detallado</h3>
+  <div id="progreso-detallado"></div>
+</aside>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-let currentModuleId = null;
+/* ============================================================
+   ESTADO Y PERSISTENCIA
+   ============================================================ */
+const STORAGE_KEY = 'calc_diferencial_recuperacion_v1';
 
-function toggleTheme() {
-  const html = document.documentElement;
-  const current = html.getAttribute("data-theme");
-  html.setAttribute("data-theme", current === "dark" ? "" : "dark");
+let ESTADO = {
+  usuario: { nombre: '', grupo: '', correo: '', fechaInicio: new Date().toISOString() },
+  m0: { completado: false, score: 0, max: 6, recomendaciones: [], intentos: [] },
+  modulos: {},
+  errores: [],
+  evidencias: [],
+  ultimoAcceso: new Date().toISOString()
+};
+
+// Inicializar estado de módulos (todos desbloqueados: los módulos son independientes)
+function initModulosEstado() {
+  MODULES.forEach(m => {
+    if (!ESTADO.modulos[m.id]) {
+      ESTADO.modulos[m.id] = {
+        desbloqueado: true,
+        completado: false,
+        dominado: false,
+        actividades: {},
+        scoreActividades: 0,
+        totalActividades: 0,
+        consolidacionHecha: false,
+        intentosConsolidacion: 0,
+        insignia: false,
+        repasoHecho: false,
+        primerAcceso: null,
+        ultimoAcceso: null,
+        finalizado: false,
+        nota: null,
+        fechaFinal: null
+      };
+    }
+    // Los módulos son independientes: siempre disponibles
+    ESTADO.modulos[m.id].desbloqueado = true;
+    // contar actividades
+    ESTADO.modulos[m.id].totalActividades = m.actividades.length;
+  });
 }
 
-function openModule(id) {
-  currentModuleId = id;
-  document.getElementById("view-dashboard").classList.add("hidden");
-  document.getElementById("view-result").classList.add("hidden");
-  document.getElementById("view-module").classList.remove("hidden");
-
-  const titles = {
-    1: "Módulo 1: Antiderivadas y Teorema Fundamental",
-    2: "Módulo 2: Métodos de Integración",
-    3: "Módulo 3: Aplicaciones de la Integral"
-  };
-  
-  document.getElementById("module-title-header").innerText = titles[id];
-  document.getElementById("module-content-body").innerHTML = `
-    <p>Ejercicios interactivos correspondientes al <strong>${titles[id]}</strong>.</p>
-    <p>Resuelve las cuestiones planteadas en este espacio de práctica autónoma.</p>
-    <div style="padding: 15px; background: var(--surface-2); border-radius: 8px; margin-top: 15px;">
-      <p>$$\\int x^2 dx = \\frac{x^3}{3} + C$$</p>
-      <label>Escribe tu respuesta simplificada:</label><br>
-      <input type="text" id="user-answer" style="padding: 8px; width: 100%; margin-top: 8px; border-radius: 4px; border: 1px solid var(--border);" placeholder="Ej. x^3/3 + C">
-    </div>
-  `;
+function saveState() {
+  try {
+    ESTADO.ultimoAcceso = new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ESTADO));
+  } catch(e) { console.warn('No se pudo guardar:', e); }
 }
 
-function goDashboard() {
-  document.getElementById("view-module").classList.add("hidden");
-  document.getElementById("view-result").classList.add("hidden");
-  document.getElementById("view-dashboard").classList.remove("hidden");
-  renderPortfolio();
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      ESTADO = Object.assign(ESTADO, parsed);
+      // ensure modulos structure
+      initModulosEstado();
+    }
+  } catch(e) { console.warn('No se pudo cargar:', e); }
 }
 
-function completeModuleEval() {
-  // Guardar en portafolio local (localStorage)
-  let portfolio = JSON.parse(localStorage.getItem("calculo_portfolio") || "{}");
-  portfolio[currentModuleId] = {
-    score: 100,
-    date: new Date().toLocaleDateString()
-  };
-  localStorage.setItem("calculo_portfolio", JSON.stringify(portfolio));
+/* ============================================================
+   DATOS: MÓDULOS
+   ============================================================ */
+const MODULES = [
+/* ===== MÓDULO 0: DIAGNÓSTICO ===== */
+{
+  id:"m0", num:0, titulo:"Diagnóstico inicial", icono:"🧭",
+  objetivo:"Identificar prerrequisitos para que el curso se adapte a tu nivel real.",
+  esDiagnostico:true,
+  teoria:`<p>Contesta con honestidad. Estas preguntas NO te califican, solo nos ayudan a recomendarte por dónde empezar a reforzar.</p>`,
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"Simplifica $x^{-2}$.", opciones:["$\\frac{1}{x^{2}}$","$-x^{2}$","$x\\cdot x$","$-2x$"], correcta:0, cat:"exponentes",
+      feedback:{correcto:"Bien: exponente negativo significa recíproco.",errores:{1:"No cambia el signo de $x$.",2:"$x^{2}$ es positivo.",3:"No se mezcla con coeficiente."}}},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=2x+3$, ¿cuánto vale $f(5)$?", opciones:["$13$","$10$","$8$","$15$"], correcta:0, cat:"algebra",
+      feedback:{correcto:"Bien: $2(5)+3=13$.",errores:{1:"Olvidaste sumar 3.",2:"Calculaste $2\\cdot 5$ sin el $+3$.",3:"Sumaste $5+3$ sin multiplicar."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la pendiente de la recta $y=3x-2$?", opciones:["$3$","$-2$","$1$","$\\frac{1}{3}$"], correcta:0, cat:"lineales",
+      feedback:{correcto:"Sí: en $y=mx+b$, $m$ es la pendiente.",errores:{1:"Ese es el intercepto $b$.",2:"No es 1.",3:"No es el recíproco."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\operatorname{sen}(30^{\\circ})=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$1$","$0$"], correcta:0, cat:"trigonometria",
+      feedback:{correcto:"Sí: $\\operatorname{sen}(30^{\\circ})=\\frac{1}{2}$.",errores:{1:"Ese es $\\operatorname{sen}(60^{\\circ})$.",2:"Ese es $\\operatorname{sen}(90^{\\circ})$.",3:"Ese es $\\operatorname{sen}(0^{\\circ})$."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\log_{10}(100)=\\,?$", opciones:["$2$","$10$","$100$","$\\frac{1}{2}$"], correcta:0, cat:"logaritmos",
+      feedback:{correcto:"Sí: $10^{2}=100$, por tanto $\\log_{10}(100)=2$.",errores:{1:"No es la base.",2:"No es el argumento.",3:"No es fracción."}}},
+    {tipo:"opcion_multiple", enunciado:"Factoriza $x^{2}-9$.", opciones:["$(x-3)(x+3)$","$(x-9)(x+1)$","$(x-3)^{2}$","$(x+3)^{2}$"], correcta:0, cat:"algebra",
+      feedback:{correcto:"Bien: es diferencia de cuadrados $a^{2}-b^{2}=(a-b)(a+b)$.",errores:{1:"Revisa: $9$ no es $9\\cdot 1$.",2:"Eso daría $x^{2}-6x+9$.",3:"Eso daría $x^{2}+6x+9$."}}},
+    {tipo:"opcion_multiple", enunciado:"Convierte $60^{\\circ}$ a radianes.", opciones:["$\\frac{\\pi}{3}$","$\\frac{\\pi}{6}$","$\\pi$","$\\frac{2\\pi}{3}$"], correcta:0, cat:"trigonometria",
+      feedback:{correcto:"Sí: $60^{\\circ}\\cdot\\frac{\\pi}{180^{\\circ}}=\\frac{\\pi}{3}$.",errores:{1:"Ese es $30^{\\circ}$.",2:"Ese es $180^{\\circ}$.",3:"Ese es $120^{\\circ}$."}}},
+    {tipo:"opcion_multiple", enunciado:"$e^{0}=\\,?$", opciones:["$1$","$0$","$e$","$\\infty$"], correcta:0, cat:"exponentes",
+      feedback:{correcto:"Sí: cualquier base (excepto $0$) elevada a $0$ es $1$.",errores:{1:"No es $0$.",2:"No es $e$.",3:"No tiende a infinito."}}}
+  ]
+},
 
-  // Mostrar vista de resultado
-  document.getElementById("view-module").classList.add("hidden");
-  document.getElementById("cert-user-info").innerText = `Módulo ${currentModuleId} acreditado independientemente`;
-  document.getElementById("cert-date").innerText = new Date().toLocaleDateString();
-  document.getElementById("view-result").classList.remove("hidden");
+/* ===== MÓDULO 1: CONCEPTO DE FUNCIÓN ===== */
+{
+  id:"m1", num:1, titulo:"Concepto de función", icono:"📥",
+  objetivo:"Al terminar podrás identificar funciones, evaluarlas y distinguir variable dependiente de independiente.",
+  repaso:[],
+  teoria:`
+    <h4>¿Qué es una función?</h4>
+    <p>Una <strong>función</strong> es una regla que asigna a cada elemento de un conjunto (entrada) exactamente un elemento de otro conjunto (salida). Se escribe $f(x)$, donde $x$ es la <em>variable independiente</em> (entrada) y $f(x)$ es la <em>variable dependiente</em> (salida).</p>
+    <div class="formula-box">$$x \\;\\xrightarrow{\\;f\\;}\\; f(x)$$</div>
+    <h4>Evaluación</h4>
+    <p>Evaluar una función significa sustituir la variable por un valor específico. Por ejemplo, si $f(x)=x^{2}+2x$, entonces $f(3)=3^{2}+2(3)=9+6=15$.</p>
+    <h4>Prueba de la línea vertical</h4>
+    <p>Una gráfica representa una función si ninguna línea vertical la intersecta en más de un punto. Si una línea vertical corta la gráfica dos o más veces, NO es función.</p>
+    <div class="analogia"><strong>Intuición:</strong> piensa en una máquina expendedora: insertas una moneda (entrada) y obtienes un producto (salida). Cada moneda da exactamente un producto. Si una moneda pudiera dar dos productos distintos, no sería una "función".</div>
+    <h4>Tipos básicos</h4>
+    <p>• <strong>Lineal:</strong> $f(x)=mx+b$ &nbsp; • <strong>Cuadrática:</strong> $f(x)=ax^{2}+bx+c$ &nbsp; • <strong>Constante:</strong> $f(x)=k$</p>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar la función y la variable",contenido:"Dada $f(x)=x^{2}+2x$, la variable independiente es $x$ y la dependiente es $f(x)$.",regla:"Definición de función"},
+    {num:2,titulo:"Sustituir el valor",contenido:"Evaluamos en $x=3$: $f(3)=3^{2}+2(3)$.",regla:"Sustitución"},
+    {num:3,titulo:"Calcular",contenido:"$f(3)=9+6=15$.",regla:"Aritmética"},
+    {num:4,titulo:"Verificar",contenido:"Comprobamos: si $x=3$, $3^{2}+2(3)=15$ $\\checkmark$",regla:"Verificación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuál de las siguientes NO es una función de $x$?", opciones:["$y=x^{2}$","$y=\\pm\\sqrt{x}$","$y=2x+1$","$y=\\frac{1}{x}$"], correcta:1,
+      feedback:{correcto:"Correcto: $y=\\pm\\sqrt{x}$ da dos valores para cada $x>0$, por lo que no es función.",errores:{0:"$y=x^{2}$ sí es función: cada $x$ da un solo $y$.",2:"$y=2x+1$ sí es función.",3:"$y=\\frac{1}{x}$ sí es función (con $x\\neq 0$)."}}},
+    {tipo:"verdadero_falso", enunciado:"Las notaciones $y=f(x)$ significan lo mismo cuando $f$ es una función.", correcta:true,
+      feedback:{correcto:"Sí: en una función, $y$ y $f(x)$ representan lo mismo: la salida asociada a $x$.",errores:{0:"En el contexto de funciones, $y$ y $f(x)$ son equivalentes."}}},
+    {tipo:"completar_hueco", enunciado:"Si $f(x)=3x-1$, entonces $f(2)=\\,$<input class='input-line' id='ch1-3' placeholder='número'>.", respuesta:["5"], feedbackCorrecto:"Sí: $3(2)-1=5$.", feedbackError:"Sustituye $x=2$: $f(2)=3(2)-1=6-1=5$."},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=x^{2}+1$, ¿cuánto vale $f(-2)$?", opciones:["$5$","$3$","$-3$","$4$"], correcta:0,
+      feedback:{correcto:"Bien: $(-2)^{2}+1=4+1=5$.",errores:{1:"Olvidaste elevar al cuadrado antes de sumar.",2:"El cuadrado de $-2$ es $4$, no $-4$.",3:"Olvidaste sumar $1$."}}},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles de las siguientes son funciones?", opciones:["$f(x)=x^{3}$","$x^{2}+y^{2}=1$ (circunferencia)","$y=|x|$","$y=\\sqrt{x}$","$x=\\pm\\sqrt{y}$"], correctas:[0,2,3],
+      feedback:{correcto:"Perfecto: $x^{3}$, $|x|$ y $\\sqrt{x}$ son funciones.",errores:{1:"La circunferencia falla la prueba de la línea vertical.",4:"Da dos valores de $x$ para cada $y$."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la evaluación de $f(x)=2x^{2}-x$ en $x=3$:",
+      pasos:[
+        {texto:"Sustituir $x=3$: $f(3)=2(3)^{2}-3$", orden:1},
+        {texto:"Calcular el cuadrado: $2(9)-3$", orden:2},
+        {texto:"Multiplicar: $18-3$", orden:3},
+        {texto:"Resultado: $f(3)=15$", orden:4}
+      ],
+      feedback:{correcto:"Secuencia correcta.",errores:"Primero sustituyes, luego calculas el cuadrado, multiplicas y finalmente restas."}},
+    {tipo:"completar_hueco", enunciado:"Si $f(x)=x^{2}+x$, ¿para qué valor de $x$ se cumple $f(x)=6$? $x=\\,$<input class='input-line' id='ch1-7' placeholder='número'>.", respuesta:["2"], feedbackCorrecto:"Sí: $2^{2}+2=6$.", feedbackError:"Resuelve $x^{2}+x=6 \\Rightarrow x^{2}+x-6=0 \\Rightarrow (x+3)(x-2)=0$. La solución positiva es $x=2$."},
+    {tipo:"numerica", enunciado:"Si $f(x)=x^{2}-3x$, ¿cuánto vale $f(4)$?", respuesta:4, tolerancia:0.01, feedbackCorrecto:"Sí: $16-12=4$.", feedbackError:"$f(4)=4^{2}-3(4)=16-12=4$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 2: DOMINIO Y RANGO ===== */
+{
+  id:"m2", num:2, titulo:"Dominio y rango", icono:"🎯",
+  objetivo:"Al terminar podrás determinar el dominio y el rango de funciones con restricciones de raíz, fracción y logaritmo.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M1) Si $f(x)=x^{2}+1$, ¿cuánto vale $f(-2)$?", opciones:["$5$","$3$","$-3$","$4$"], correcta:0, feedback:{correcto:"Bien: $(-2)^{2}+1=5$.",errores:{1:"Olvidaste sumar 1.",2:"Error de signo.",3:"Olvidaste el $+1$."}}}
+  ],
+  teoria:`
+    <h4>Definiciones</h4>
+    <p>El <strong>dominio</strong> es el conjunto de todos los valores de entrada $x$ para los que la función está definida. El <strong>rango</strong> es el conjunto de todos los valores de salida $f(x)$.</p>
+    <h4>Restricciones comunes</h4>
+    <ul>
+      <li><strong>Fracción:</strong> el denominador no puede ser $0$. Ej: $f(x)=\\frac{1}{x-2}$ tiene dominio $x\\neq 2$.</li>
+      <li><strong>Raíz cuadrada:</strong> el radicando debe ser $\\geq 0$. Ej: $f(x)=\\sqrt{x-3}$ tiene dominio $x\\geq 3$.</li>
+      <li><strong>Logaritmo:</strong> el argumento debe ser $>0$. Ej: $f(x)=\\ln(x)$ tiene dominio $x>0$.</li>
+    </ul>
+    <div class="formula-box">$$\\text{Dom}(f) = \\{\\,x \\in \\mathbb{R} \\mid f(x) \\text{ existe}\\,\\}$$</div>
+    <h4>Polinomios</h4>
+    <p>Los polinomios (como $x^{2}$, $x^{3}-5x$, etc.) tienen dominio $\\mathbb{R}$ (todos los reales), sin restricciones.</p>
+    <div class="analogia"><strong>Intuición:</strong> el dominio es como el menú de un restaurante: solo puedes pedir lo que existe. El rango es lo que el chef te puede entregar según lo que pediste.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar la restricción",contenido:"$f(x)=\\frac{1}{x-2}$. El denominador no puede ser $0$.",regla:"Fracción: denominador $\\neq 0$"},
+    {num:2,titulo:"Plantear la condición",contenido:"$x-2\\neq 0 \\Rightarrow x\\neq 2$.",regla:"Resolver la restricción"},
+    {num:3,titulo:"Escribir el dominio",contenido:"$\\text{Dom}(f)=\\mathbb{R}-\\{2\\}$, es decir, todos los reales excepto $x=2$.",regla:"Expresar el dominio"},
+    {num:4,titulo:"Verificar",contenido:"En $x=2$: $f(2)=\\frac{1}{0}$ (no definido). En $x=3$: $f(3)=\\frac{1}{1}=1$ $\\checkmark$",regla:"Verificación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el dominio de $f(x)=x^{2}$?", opciones:["$\\mathbb{R}$ (todos los reales)","$x\\geq 0$","$x>0$","$x\\neq 0$"], correcta:0,
+      feedback:{correcto:"Los polinomios tienen dominio $\\mathbb{R}$: no hay restricciones.",errores:{1:"No hay raíz ni fracción: no se restringe.",2:"$x^{2}$ está definida también para negativos.",3:"$x^{2}$ está definida en $x=0$."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el dominio de $f(x)=\\sqrt{x-3}$?", opciones:["$x\\geq 3$","$x>3$","$x\\geq 0$","$\\mathbb{R}$"], correcta:0,
+      feedback:{correcto:"Sí: el radicando $x-3\\geq 0 \\Rightarrow x\\geq 3$.",errores:{1:"En $x=3$, $\\sqrt{0}=0$ sí está definido.",2:"Ese sería el dominio si hubiera fracción.",3:"No: los negativos no funcionan."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el dominio de $f(x)=\\frac{1}{x+1}$?", opciones:["$x\\neq -1$","$x>-1$","$x\\neq 1$","$\\mathbb{R}$"], correcta:0,
+      feedback:{correcto:"Sí: $x+1\\neq 0 \\Rightarrow x\\neq -1$.",errores:{1:"No hay raíz: no se requiere $>$.",2:"Es $-1$, no $1$.",3:"En $x=-1$ hay división entre $0$."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el dominio de $f(x)=\\ln(x)$?", opciones:["$x>0$","$x\\geq 0$","$x\\neq 0$","$\\mathbb{R}$"], correcta:0,
+      feedback:{correcto:"Sí: el logaritmo requiere argumento estrictamente positivo.",errores:{1:"$\\ln(0)$ no existe.",2:"No es división.",3:"Los negativos no tienen logaritmo real."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el rango de $f(x)=x^{2}$?", opciones:["$[0,\\infty)$","$\\mathbb{R}$","$(-\\infty,0]$","$(0,\\infty)$"], correcta:0,
+      feedback:{correcto:"Sí: $x^{2}\\geq 0$ siempre, y puede tomar cualquier valor $\\geq 0$.",errores:{1:"No: los negativos no son salida de $x^{2}$.",2:"El rango no incluye negativos.",3:"$0$ sí es posible ($x=0$)."}}},
+    {tipo:"verdadero_falso", enunciado:"El dominio de $f(x)=\\frac{1}{x}$ es $\\mathbb{R}$ (todos los reales).", correcta:false,
+      feedback:{correcto:"Correcto: $x=0$ no está en el dominio porque $\\frac{1}{0}$ no está definido.",errores:{0:"En $x=0$ hay división entre $0$: no está permitido."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el dominio de $f(x)=\\sqrt{x^{2}-4}$?", opciones:["$x\\leq -2$ o $x\\geq 2$","$x\\geq 2$","$x\\geq -2$","$\\mathbb{R}$"], correcta:0,
+      feedback:{correcto:"Sí: $x^{2}-4\\geq 0 \\Rightarrow x^{2}\\geq 4 \\Rightarrow |x|\\geq 2$.",errores:{1:"También funcionan los $x\\leq -2$.",2:"Ese sería $x\\geq 0$ con restricción.",3:"Los valores entre $-2$ y $2$ no funcionan."}}},
+    {tipo:"numerica", enunciado:"Para $f(x)=\\frac{x+3}{x-5}$, ¿en qué valor de $x$ NO está definida?", respuesta:5, tolerancia:0.01, feedbackCorrecto:"Sí: $x-5=0 \\Rightarrow x=5$. En ese punto hay división entre $0$.", feedbackError:"El denominador $x-5=0 \\Rightarrow x=5$. En $x=5$ la función no está definida."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 3: FUNCIONES LINEALES, POLINOMIALES Y OPERACIONES ===== */
+{
+  id:"m3", num:3, titulo:"Funciones lineales, polinomiales y operaciones", icono:"📐",
+  objetivo:"Al terminar podrás trabajar con funciones lineales y polinomiales, y realizar operaciones y composición de funciones.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M2) ¿Cuál es el dominio de $f(x)=\\frac{1}{x+1}$?", opciones:["$x\\neq -1$","$x>-1$","$x\\neq 1$","$\\mathbb{R}$"], correcta:0, feedback:{correcto:"Sí: $x+1\\neq 0$.",errores:{1:"No hay raíz.",2:"Es $-1$.",3:"En $x=-1$ hay división entre $0$."}}},
+    {tipo:"opcion_multiple", enunciado:"(Repaso M1) Si $f(x)=x^{2}+2x$, ¿cuánto vale $f(3)$?", opciones:["$15$","$9$","$12$","$6$"], correcta:0, feedback:{correcto:"Sí: $9+6=15$.",errores:{1:"Olvidaste $+2x$.",2:"Olvidaste el $+2(3)$.",3:"Calculaste solo $2(3)$."}}}
+  ],
+  teoria:`
+    <h4>Función lineal</h4>
+    <p>Una función lineal tiene la forma $f(x)=mx+b$, donde $m$ es la <strong>pendiente</strong> (razón de cambio) y $b$ es el <strong>intercepto</strong> con el eje $y$.</p>
+    <div class="formula-box">$$m=\\frac{y_{2}-y_{1}}{x_{2}-x_{1}}=\\frac{\\Delta y}{\\Delta x}$$</div>
+    <h4>Función polinomial</h4>
+    <p>Un polinomio de grado $n$ tiene la forma $P(x)=a_{n}x^{n}+a_{n-1}x^{n-1}+\\cdots+a_{1}x+a_{0}$. El dominio de todo polinomio es $\\mathbb{R}$.</p>
+    <h4>Operaciones con funciones</h4>
+    <p>Dadas $f$ y $g$:</p>
+    <div class="formula-box">$$(f+g)(x)=f(x)+g(x) \\quad (f-g)(x)=f(x)-g(x)$$</div>
+    <div class="formula-box">$$(f\\cdot g)(x)=f(x)\\cdot g(x) \\quad \\left(\\frac{f}{g}\\right)(x)=\\frac{f(x)}{g(x)},\\; g(x)\\neq 0$$</div>
+    <h4>Composición de funciones</h4>
+    <p>La composición $(f\\circ g)(x)$ significa aplicar $g$ primero y luego $f$ al resultado:</p>
+    <div class="formula-box">$$(f\\circ g)(x)=f\\big(g(x)\\big)$$</div>
+    <div class="analogia"><strong>Intuición:</strong> la composición es como una cadena de montaje: primero una máquina procesa la entrada ($g$), y luego la salida pasa a otra máquina ($f$).</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar $f$ y $g$",contenido:"Sean $f(x)=x^{2}$ y $g(x)=x+1$. Queremos calcular $(f\\circ g)(x)$.",regla:"Composición"},
+    {num:2,titulo:"Aplicar $g$ primero",contenido:"$(f\\circ g)(x)=f(g(x))=f(x+1)$.",regla:"Sustituir $g(x)$ en $f$"},
+    {num:3,titulo:"Evaluar $f$",contenido:"$f(x+1)=(x+1)^{2}=x^{2}+2x+1$.",regla:"Evaluar $f$"},
+    {num:4,titulo:"Calcular en un punto",contenido:"$(f\\circ g)(2)=f(g(2))=f(3)=9$.",regla:"Evaluar en $x=2$"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la pendiente de la recta que pasa por $(1,2)$ y $(3,8)$?", opciones:["$3$","$2$","$4$","$6$"], correcta:0,
+      feedback:{correcto:"Sí: $m=\\frac{8-2}{3-1}=\\frac{6}{2}=3$.",errores:{1:"Revisa la resta.",2:"Es $\\frac{6}{2}=3$.",3:"Esos son los $\\Delta y$."}}},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=x^{2}$ y $g(x)=2x$, ¿cuánto vale $(f+g)(x)$?", opciones:["$x^{2}+2x$","$2x^{2}$","$2x^{3}$","$\\frac{x^{2}}{2x}$"], correcta:0,
+      feedback:{correcto:"Bien: $(f+g)(x)=f(x)+g(x)=x^{2}+2x$.",errores:{1:"Eso sería $f\\cdot g$.",2:"Eso sería $f\\cdot g$ mal calculado.",3:"Eso sería $\\frac{f}{g}$."}}},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=x+3$ y $g(x)=x^{2}$, ¿cuánto vale $(f\\circ g)(x)$?", opciones:["$x^{2}+3$","$(x+3)^{2}$","$x^{2}+3x$","$x^{3}$"], correcta:0,
+      feedback:{correcto:"Sí: $f(g(x))=f(x^{2})=x^{2}+3$.",errores:{1:"Eso sería $(g\\circ f)(x)=g(f(x))=g(x+3)=(x+3)^{2}$.",2:"Revisa el orden.",3:"No es multiplicación."}}},
+    {tipo:"completar_hueco", enunciado:"Si $f(x)=x^{2}+1$ y $g(x)=x-1$, entonces $(f\\circ g)(2)=f(g(2))=f(\\,\\underline{\\ \\ }\\,)=\\,$<input class='input-line' id='ch3-4' placeholder='número'>.", respuesta:["2"], feedbackCorrecto:"Sí: $g(2)=1$, $f(1)=1^{2}+1=2$.", feedbackError:"$g(2)=2-1=1$, luego $f(1)=1^{2}+1=2$."},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=\\sqrt{x}$ y $g(x)=x-4$, ¿cuál es el dominio de $(f\\circ g)(x)$?", opciones:["$x\\geq 4$","$x\\geq 0$","$x\\neq 4$","$\\mathbb{R}$"], correcta:0,
+      feedback:{correcto:"Sí: $f(g(x))=\\sqrt{x-4}$, requiere $x-4\\geq 0 \\Rightarrow x\\geq 4$.",errores:{1:"Es el dominio de $f$, no de $f\\circ g$.",2:"No hay división.",3:"La raíz restringe."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena el cálculo de $(f\\circ g)(3)$ donde $f(x)=2x+1$ y $g(x)=x^{2}$:",
+      pasos:[
+        {texto:"Calcular $g(3)=3^{2}=9$", orden:1},
+        {texto:"Sustituir en $f$: $f(9)$", orden:2},
+        {texto:"Calcular $f(9)=2(9)+1=19$", orden:3},
+        {texto:"Resultado: $(f\\circ g)(3)=19$", orden:4}
+      ],
+      feedback:{correcto:"Secuencia impecable.",errores:"Primero evalúas $g$, luego sustituyes en $f$, calculas y obtienes el resultado."}},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=x^{2}$ y $g(x)=x+1$, ¿cuánto vale $(g\\circ f)(x)$?", opciones:["$x^{2}+1$","$(x+1)^{2}$","$x^{2}+x$","$x^{2}\\cdot(x+1)$"], correcta:0,
+      feedback:{correcto:"Sí: $(g\\circ f)(x)=g(f(x))=g(x^{2})=x^{2}+1$.",errores:{1:"Eso sería $(f\\circ g)(x)$.",2:"No es producto.",3:"No es producto."}}},
+    {tipo:"numerica", enunciado:"Si $f(x)=3x-2$ y $g(x)=x+5$, ¿cuánto vale $(f\\circ g)(4)$?", respuesta:25, tolerancia:0.01, feedbackCorrecto:"Sí: $g(4)=9$, $f(9)=3(9)-2=25$.", feedbackError:"$g(4)=4+5=9$, luego $f(9)=3(9)-2=25$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 4: FUNCIONES EXPONENCIALES Y LOGARÍTMICAS ===== */
+{
+  id:"m4", num:4, titulo:"Funciones exponenciales y logarítmicas", icono:"📈",
+  objetivo:"Al terminar podrás usar propiedades de exponentes y logaritmos, y resolver ecuaciones exponenciales y logarítmicas.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M3) Si $f(x)=x^{2}$ y $g(x)=x+1$, ¿cuánto vale $(f\\circ g)(x)$?", opciones:["$(x+1)^{2}$","$x^{2}+1$","$x^{2}+x$","$x^{3}+x$"], correcta:0, feedback:{correcto:"Sí: $f(g(x))=f(x+1)=(x+1)^{2}$.",errores:{1:"Eso es $(g\\circ f)(x)$.",2:"No es producto.",3:"No es producto."}}}
+  ],
+  teoria:`
+    <h4>Función exponencial</h4>
+    <p>Una función exponencial tiene la forma $f(x)=a^{x}$ donde $a>0$ y $a\\neq 1$. El caso más importante es la base $e$ (número de Euler, $e\\approx 2.718$):</p>
+    <div class="formula-box">$$f(x)=e^{x} \\quad \\text{(crecimiento)} \\qquad f(x)=e^{-x} \\quad \\text{(decrecimiento)}$$</div>
+    <h4>Propiedades de los exponentes</h4>
+    <div class="formula-box">$$a^{m}\\cdot a^{n}=a^{m+n} \\quad \\frac{a^{m}}{a^{n}}=a^{m-n} \\quad (a^{m})^{n}=a^{mn}$$</div>
+    <h4>Función logarítmica</h4>
+    <p>El logaritmo es la función inversa de la exponencial: $\\log_{a}(y)=x$ significa $a^{x}=y$. El logaritmo natural $\\ln(x)=\\log_{e}(x)$.</p>
+    <h4>Propiedades de los logaritmos</h4>
+    <div class="formula-box">$$\\log_{a}(b\\cdot c)=\\log_{a}b+\\log_{a}c \\quad \\log_{a}\\!\\left(\\frac{b}{c}\\right)=\\log_{a}b-\\log_{a}c \\quad \\log_{a}(b^{n})=n\\cdot\\log_{a}b$$</div>
+    <div class="analogia"><strong>Intuición:</strong> el logaritmo responde: "¿a qué potencia debo elevar la base para obtener este número?" $\\log_{2}(8)=3$ porque $2^{3}=8$.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Plantear la ecuación",contenido:"Resolver $2^{x}=8$. Queremos encontrar $x$.",regla:"Ecuación exponencial"},
+    {num:2,titulo:"Expresar como potencia",contenido:"$8=2^{3}$, así que $2^{x}=2^{3}$.",regla:"Misma base"},
+    {num:3,titulo:"Igualar exponentes",contenido:"Si $2^{x}=2^{3}$, entonces $x=3$.",regla:"Igualar exponentes"},
+    {num:4,titulo:"Verificar",contenido:"$2^{3}=8$ $\\checkmark$",regla:"Verificación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"Simplifica $2^{3}\\cdot 2^{2}$.", opciones:["$2^{5}=32$","$2^{6}=64$","$4^{5}$","$2^{1}$"], correcta:0,
+      feedback:{correcto:"Sí: $2^{3}\\cdot 2^{2}=2^{3+2}=2^{5}=32$.",errores:{1:"Se suman exponentes, no se multiplican.",2:"No se multiplican bases.",3:"Se resta, no se divide."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\log_{2}(16)=\\,?$", opciones:["$4$","$2$","$8$","$16$"], correcta:0,
+      feedback:{correcto:"Sí: $2^{4}=16$, por tanto $\\log_{2}(16)=4$.",errores:{1:"$2^{2}=4\\neq 16$.",2:"$2^{8}\\neq 16$.",3:"No es el argumento."}}},
+    {tipo:"completar_hueco", enunciado:"$\\ln(e^{3})=\\,$<input class='input-line' id='ch4-3' placeholder='número'>.", respuesta:["3"], feedbackCorrecto:"Sí: $\\ln$ y $e^{x}$ son inversas, $\\ln(e^{3})=3$.", feedbackError:"$\\ln(e^{x})=x$ siempre. Por tanto $\\ln(e^{3})=3$."},
+    {tipo:"opcion_multiple", enunciado:"Resuelve $3^{x}=27$.", opciones:["$x=3$","$x=2$","$x=9$","$x=\\frac{27}{3}$"], correcta:0,
+      feedback:{correcto:"Sí: $27=3^{3}$, así que $3^{x}=3^{3} \\Rightarrow x=3$.",errores:{1:"$3^{2}=9\\neq 27$.",2:"$3^{9}\\neq 27$.",3:"No es división."}}},
+    {tipo:"verdadero_falso", enunciado:"$\\log(a\\cdot b)=\\log(a)+\\log(b)$", correcta:true,
+      feedback:{correcto:"Sí: es una de las propiedades fundamentales de los logaritmos.",errores:{0:"Esta es la propiedad clave: el logaritmo de un producto es la suma de logaritmos."}}},
+    {tipo:"seleccion_multiple", enunciado:"¿Cuáles de estas propiedades son correctas?", opciones:["$\\log\\!\\left(\\frac{a}{b}\\right)=\\log a-\\log b$","$\\log(a^{n})=n\\cdot\\log a$","$\\log(a+b)=\\log a+\\log b$","$\\log(a\\cdot b)=\\log a\\cdot\\log b$"], correctas:[0,1],
+      feedback:{correcto:"Perfecto: solo las dos primeras son propiedades válidas.",errores:{2:"NO: $\\log(a+b)\\neq\\log a+\\log b$. Esto es un error común.",3:"NO: $\\log(a\\cdot b)=\\log a+\\log b$, no producto."}}},
+    {tipo:"completar_hueco", enunciado:"Usando propiedades: $\\log_{2}(8)+\\log_{2}(4)=\\log_{2}(8\\cdot 4)=\\log_{2}(32)=\\,$<input class='input-line' id='ch4-7' placeholder='número'>.", respuesta:["5"], feedbackCorrecto:"Sí: $2^{5}=32$.", feedbackError:"$\\log_{2}(8)+\\log_{2}(4)=\\log_{2}(32)$. Como $2^{5}=32$, la respuesta es $5$."},
+    {tipo:"numerica", enunciado:"Si $\\ln(x)=0$, ¿cuánto vale $x$?", respuesta:1, tolerancia:0.01, feedbackCorrecto:"Sí: $\\ln(1)=0$ porque $e^{0}=1$.", feedbackError:"$\\ln(x)=0 \\Rightarrow e^{0}=x \\Rightarrow x=1$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 5: FUNCIONES TRIGONOMÉTRICAS ===== */
+{
+  id:"m5", num:5, titulo:"Funciones trigonométricas", icono:"🌊",
+  objetivo:"Al terminar podrás evaluar funciones trigonométricas en ángulos notables y usar la identidad pitagórica.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M4) $\\log_{2}(16)=\\,?$", opciones:["$4$","$2$","$8$","$16$"], correcta:0, feedback:{correcto:"Sí: $2^{4}=16$.",errores:{1:"$2^{2}=4$.",2:"$2^{8}\\neq 16$.",3:"No es el argumento."}}},
+    {tipo:"opcion_multiple", enunciado:"(Repaso M0) $\\operatorname{sen}(30^{\\circ})=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$1$","$0$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Ese es $\\operatorname{sen}(60^{\\circ})$.",2:"Ese es $\\operatorname{sen}(90^{\\circ})$.",3:"Ese es $\\operatorname{sen}(0^{\\circ})$."}}}
+  ],
+  teoria:`
+    <h4>Las seis razones trigonométricas</h4>
+    <div class="formula-box">$$\\operatorname{sen}\\,\\theta=\\frac{\\text{cateto opuesto}}{\\text{hipotenusa}} \\quad \\cos\\theta=\\frac{\\text{cateto adyacente}}{\\text{hipotenusa}} \\quad \\tan\\theta=\\frac{\\operatorname{sen}\\,\\theta}{\\cos\\theta}$$</div>
+    <p>Las recíprocas: $\\csc\\theta=\\frac{1}{\\operatorname{sen}\\,\\theta}$, $\\sec\\theta=\\frac{1}{\\cos\\theta}$, $\\cot\\theta=\\frac{1}{\\tan\\theta}$.</p>
+    <h4>Identidad pitagórica</h4>
+    <div class="formula-box">$$\\operatorname{sen}^{2}\\theta+\\cos^{2}\\theta=1$$</div>
+    <h4>Valores notables</h4>
+    <table style="width:100%;text-align:center;margin:10px 0">
+      <tr><th>$\\theta$</th><th>$0^{\\circ}$</th><th>$30^{\\circ}$</th><th>$45^{\\circ}$</th><th>$60^{\\circ}$</th><th>$90^{\\circ}$</th></tr>
+      <tr><td>$\\operatorname{sen}\\,\\theta$</td><td>$0$</td><td>$\\frac{1}{2}$</td><td>$\\frac{\\sqrt{2}}{2}$</td><td>$\\frac{\\sqrt{3}}{2}$</td><td>$1$</td></tr>
+      <tr><td>$\\cos\\theta$</td><td>$1$</td><td>$\\frac{\\sqrt{3}}{2}$</td><td>$\\frac{\\sqrt{2}}{2}$</td><td>$\\frac{1}{2}$</td><td>$0$</td></tr>
+    </table>
+    <h4>Periodicidad</h4>
+    <p>Las funciones $\\operatorname{sen}$ y $\\cos$ son periódicas con periodo $2\\pi$ ($360^{\\circ}$). La función $\\tan$ tiene periodo $\\pi$ ($180^{\\circ}$).</p>
+    <div class="analogia"><strong>Truco memoria (SOHCAHTOA):</strong> <strong>S</strong>en = <strong>O</strong>puesto/<strong>H</strong>ipotenusa, <strong>C</strong>os = <strong>A</strong>dyacente/<strong>H</strong>ipotenusa, <strong>T</strong>an = <strong>O</strong>puesto/<strong>A</strong>dyacente.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar el ángulo",contenido:"Calcular $\\operatorname{sen}(45^{\\circ})$ usando la tabla de valores notables.",regla:"Valores notables"},
+    {num:2,titulo:"Consultar la tabla",contenido:"$\\operatorname{sen}(45^{\\circ})=\\frac{\\sqrt{2}}{2}$.",regla:"Tabla de valores"},
+    {num:3,titulo:"Verificar con la identidad",contenido:"$\\operatorname{sen}^{2}(45^{\\circ})+\\cos^{2}(45^{\\circ})=\\left(\\frac{\\sqrt{2}}{2}\\right)^{2}+\\left(\\frac{\\sqrt{2}}{2}\\right)^{2}=\\frac{2}{4}+\\frac{2}{4}=1$ $\\checkmark$",regla:"Identidad pitagórica"},
+    {num:4,titulo:"Calcular tangente",contenido:"$\\tan(45^{\\circ})=\\frac{\\operatorname{sen}(45^{\\circ})}{\\cos(45^{\\circ})}=\\frac{\\frac{\\sqrt{2}}{2}}{\\frac{\\sqrt{2}}{2}}=1$",regla:"Definición de tangente"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"$\\operatorname{sen}(30^{\\circ})=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$1$","$\\frac{\\sqrt{2}}{2}$"], correcta:0,
+      feedback:{correcto:"Sí: es un valor notable.",errores:{1:"Ese es $\\operatorname{sen}(60^{\\circ})$.",2:"Ese es $\\operatorname{sen}(90^{\\circ})$.",3:"Ese es $\\operatorname{sen}(45^{\\circ})$."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\cos(60^{\\circ})=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$0$","$1$"], correcta:0,
+      feedback:{correcto:"Sí: es un valor notable.",errores:{1:"Ese es $\\cos(30^{\\circ})$.",2:"Ese es $\\cos(90^{\\circ})$.",3:"Ese es $\\cos(0^{\\circ})$."}}},
+    {tipo:"completar_hueco", enunciado:"$\\tan(45^{\\circ})=\\,$<input class='input-line' id='ch5-3' placeholder='número'>.", respuesta:["1"], feedbackCorrecto:"Sí: $\\tan(45^{\\circ})=\\frac{\\operatorname{sen}(45^{\\circ})}{\\cos(45^{\\circ})}=\\frac{\\frac{\\sqrt{2}}{2}}{\\frac{\\sqrt{2}}{2}}=1$.", feedbackError:"$\\tan(45^{\\circ})=\\frac{\\operatorname{sen}(45^{\\circ})}{\\cos(45^{\\circ})}=1$ porque seno y coseno son iguales en $45^{\\circ}$."},
+    {tipo:"verdadero_falso", enunciado:"$\\operatorname{sen}^{2}\\theta+\\cos^{2}\\theta=1$ para todo $\\theta$.", correcta:true,
+      feedback:{correcto:"Sí: es la identidad pitagórica fundamental.",errores:{0:"Esta identidad se cumple SIEMPRE, para cualquier ángulo."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es el periodo de $\\operatorname{sen}\\, x$?", opciones:["$2\\pi$","$\\pi$","$\\frac{\\pi}{2}$","$\\infty$"], correcta:0,
+      feedback:{correcto:"Sí: $\\operatorname{sen}\\, x$ se repite cada $2\\pi$ radianes ($360^{\\circ}$).",errores:{1:"Ese es el periodo de $\\tan x$.",2:"Es la mitad del periodo.",3:"No es infinito."}}},
+    {tipo:"emparejar", enunciado:"Empareja ángulo con $\\operatorname{sen}$ del ángulo:",
+      parejas:[
+        {izq:"$\\operatorname{sen}(0^{\\circ})$", der:"$0$"},
+        {izq:"$\\operatorname{sen}(30^{\\circ})$", der:"$\\frac{1}{2}$"},
+        {izq:"$\\operatorname{sen}(45^{\\circ})$", der:"$\\frac{\\sqrt{2}}{2}$"},
+        {izq:"$\\operatorname{sen}(90^{\\circ})$", der:"$1$"}
+      ],
+      feedback:{correcto:"Todas correctas.",errores:"Memoriza: $0 \\to 0$, $30^{\\circ} \\to \\frac{1}{2}$, $45^{\\circ} \\to \\frac{\\sqrt{2}}{2}$, $90^{\\circ} \\to 1$."}},
+    {tipo:"completar_hueco", enunciado:"Si $\\operatorname{sen}\\,\\theta=\\frac{3}{5}$ y $\\cos\\theta>0$, entonces $\\cos\\theta=\\frac{\\,\\underline{\\ \\ \\ }}{5}$ (usa la identidad pitagórica). Escribe solo el numerador.", respuesta:["4"], feedbackCorrecto:"Sí: $\\cos^{2}\\theta=1-\\frac{9}{25}=\\frac{16}{25}$, $\\cos\\theta=\\frac{4}{5}$.", feedbackError:"$\\cos^{2}\\theta=1-\\operatorname{sen}^{2}\\theta=1-\\frac{9}{25}=\\frac{16}{25}$, así que $\\cos\\theta=\\frac{4}{5}$."},
+    {tipo:"numerica", enunciado:"Calcula $\\operatorname{sen}^{2}(45^{\\circ})+\\cos^{2}(45^{\\circ})$.", respuesta:1, tolerancia:0.01, feedbackCorrecto:"Sí: la identidad pitagórica da $1$.", feedbackError:"$\\operatorname{sen}^{2}\\theta+\\cos^{2}\\theta=1$ para cualquier $\\theta$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 6: RAZONES, ÁNGULOS Y GRÁFICAS ===== */
+{
+  id:"m6", num:6, titulo:"Razones, ángulos y gráficas", icono:"📏",
+  objetivo:"Al terminar podrás convertir entre grados y radianes, y aplicar SOHCAHTOA en triángulos rectángulos.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M5) $\\cos(60^{\\circ})=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$0$","$1$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Ese es $\\cos(30^{\\circ})$.",2:"Ese es $\\cos(90^{\\circ})$.",3:"Ese es $\\cos(0^{\\circ})$."}}}
+  ],
+  teoria:`
+    <h4>Medición de ángulos</h4>
+    <p>Los ángulos se miden en <strong>grados</strong> ($^{\\circ}$) o en <strong>radianes</strong> (rad). La conversión es:</p>
+    <div class="formula-box">$$\\pi \\text{ rad} = 180^{\\circ} \\quad \\Rightarrow \\quad \\text{rad} = \\text{grados}\\cdot\\frac{\\pi}{180^{\\circ}}, \\quad \\text{grados} = \\text{rad}\\cdot\\frac{180^{\\circ}}{\\pi}$$</div>
+    <h4>Triángulo rectángulo y SOHCAHTOA</h4>
+    <p>En un triángulo rectángulo con ángulo $\\theta$:</p>
+    <ul>
+      <li><strong>SOH:</strong> $\\operatorname{sen}\\,\\theta=\\frac{\\text{Opuesto}}{\\text{Hipotenusa}}$</li>
+      <li><strong>CAH:</strong> $\\cos\\theta=\\frac{\\text{Adyacente}}{\\text{Hipotenusa}}$</li>
+      <li><strong>TOA:</strong> $\\tan\\theta=\\frac{\\text{Opuesto}}{\\text{Adyacente}}$</li>
+    </ul>
+    <h4>Triángulo 3-4-5</h4>
+    <p>En un triángulo con catetos $3$ y $4$, e hipotenusa $5$:</p>
+    <div class="formula-box">$$\\operatorname{sen}\\,\\theta=\\frac{4}{5}, \\quad \\cos\\theta=\\frac{3}{5}, \\quad \\tan\\theta=\\frac{4}{3}$$</div>
+    <div class="analogia"><strong>Intuición:</strong> un radián es el ángulo que abarca un arco de longitud igual al radio. Como la circunferencia completa tiene $2\\pi$ radios, equivale a $2\\pi$ radianes ($360^{\\circ}$).</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Convertir grados a radianes",contenido:"Convertir $60^{\\circ}$ a radianes: $60^{\\circ}\\cdot\\frac{\\pi}{180^{\\circ}}=\\frac{\\pi}{3}$ rad.",regla:"Conversión de unidades"},
+    {num:2,titulo:"Identificar catetos en triángulo 3-4-5",contenido:"Si $\\theta$ es el ángulo opuesto al cateto $4$: opuesto $=4$, adyacente $=3$, hipotenusa $=5$.",regla:"SOHCAHTOA"},
+    {num:3,titulo:"Calcular razones",contenido:"$\\operatorname{sen}\\,\\theta=\\frac{4}{5}$, $\\cos\\theta=\\frac{3}{5}$, $\\tan\\theta=\\frac{4}{3}$.",regla:"Aplicar SOHCAHTOA"},
+    {num:4,titulo:"Verificar",contenido:"$\\operatorname{sen}^{2}\\theta+\\cos^{2}\\theta=\\frac{16}{25}+\\frac{9}{25}=\\frac{25}{25}=1$ $\\checkmark$",regla:"Identidad pitagórica"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"Convierte $90^{\\circ}$ a radianes.", opciones:["$\\frac{\\pi}{2}$","$\\pi$","$\\frac{\\pi}{4}$","$\\frac{\\pi}{3}$"], correcta:0,
+      feedback:{correcto:"Sí: $90^{\\circ}\\cdot\\frac{\\pi}{180^{\\circ}}=\\frac{\\pi}{2}$.",errores:{1:"Ese es $180^{\\circ}$.",2:"Ese es $45^{\\circ}$.",3:"Ese es $60^{\\circ}$."}}},
+    {tipo:"opcion_multiple", enunciado:"Convierte $\\frac{\\pi}{4}$ rad a grados.", opciones:["$45^{\\circ}$","$90^{\\circ}$","$60^{\\circ}$","$30^{\\circ}$"], correcta:0,
+      feedback:{correcto:"Sí: $\\frac{\\pi}{4}\\cdot\\frac{180^{\\circ}}{\\pi}=45^{\\circ}$.",errores:{1:"Ese es $\\frac{\\pi}{2}$.",2:"Ese es $\\frac{\\pi}{3}$.",3:"Ese es $\\frac{\\pi}{6}$."}}},
+    {tipo:"opcion_multiple", enunciado:"En un triángulo rectángulo, el cateto opuesto mide $6$ y la hipotenusa $10$. ¿Cuánto vale $\\operatorname{sen}\\,\\theta$?", opciones:["$\\frac{3}{5}$","$\\frac{6}{10}$","$\\frac{4}{5}$","$\\frac{5}{3}$"], correcta:0,
+      feedback:{correcto:"$\\operatorname{sen}\\,\\theta=\\frac{6}{10}=\\frac{3}{5}$.",errores:{1:"Simplifica $\\frac{6}{10}=\\frac{3}{5}$.",2:"Ese sería el coseno.",3:"Es el recíproco."}}},
+    {tipo:"completar_hueco", enunciado:"En un triángulo 3-4-5, si $\\theta$ está opuesto al cateto $4$, entonces $\\tan\\theta=\\frac{\\,\\underline{\\ \\ \\ }}{3}$ (escribe solo el numerador).", respuesta:["4"], feedbackCorrecto:"Sí: $\\tan\\theta=\\frac{\\text{opuesto}}{\\text{adyacente}}=\\frac{4}{3}$.", feedbackError:"$\\tan\\theta=\\frac{\\text{opuesto}}{\\text{adyacente}}=\\frac{4}{3}$."},
+    {tipo:"verdadero_falso", enunciado:"$180^{\\circ}=\\pi$ radianes.", correcta:true,
+      feedback:{correcto:"Sí: esa es la equivalencia fundamental.",errores:{0:"$180^{\\circ}$ equivale exactamente a $\\pi$ radianes."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la conversión de $45^{\\circ}$ a radianes:",
+      pasos:[
+        {texto:"Multiplicar por $\\frac{\\pi}{180^{\\circ}}$", orden:1},
+        {texto:"$45^{\\circ}\\cdot\\frac{\\pi}{180^{\\circ}}=\\frac{45\\pi}{180}$", orden:2},
+        {texto:"Simplificar: $\\frac{45}{180}=\\frac{1}{4}$", orden:3},
+        {texto:"Resultado: $\\frac{\\pi}{4}$ rad", orden:4}
+      ],
+      feedback:{correcto:"Buena secuencia.",errores:"Multiplicas por $\\frac{\\pi}{180^{\\circ}}$, calculas, simplificas y obtienes el resultado."}},
+    {tipo:"completar_hueco", enunciado:"En un triángulo rectángulo con catetos $5$ y $12$, la hipotenusa mide <input class='input-line' id='ch6-7' placeholder='número'>.", respuesta:["13"], feedbackCorrecto:"Sí: $\\sqrt{5^{2}+12^{2}}=\\sqrt{169}=13$.", feedbackError:"Por Pitágoras: $h=\\sqrt{5^{2}+12^{2}}=\\sqrt{25+144}=\\sqrt{169}=13$."},
+    {tipo:"numerica", enunciado:"En un triángulo 3-4-5, si $\\theta$ está opuesto al cateto $4$, ¿cuánto vale $\\operatorname{sen}\\,\\theta+\\cos\\theta$?", respuesta:1.4, tolerancia:0.01, feedbackCorrecto:"Sí: $\\frac{4}{5}+\\frac{3}{5}=\\frac{7}{5}=1.4$.", feedbackError:"$\\operatorname{sen}\\,\\theta=\\frac{4}{5}$, $\\cos\\theta=\\frac{3}{5}$. Suma: $\\frac{4}{5}+\\frac{3}{5}=\\frac{7}{5}=1.4$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 7: CÍRCULO TRIGONOMÉTRICO ===== */
+{
+  id:"m7", num:7, titulo:"Círculo trigonométrico", icono:"⭕",
+  objetivo:"Al terminar podrás ubicar ángulos en el círculo unitario y obtener $\\operatorname{sen}$, $\\cos$ y $\\tan$ de ángulos notables.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M6) Convierte $90^{\\circ}$ a radianes.", opciones:["$\\frac{\\pi}{2}$","$\\pi$","$\\frac{\\pi}{4}$","$2\\pi$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Eso es $180^{\\circ}$.",2:"Eso es $45^{\\circ}$.",3:"Eso es $360^{\\circ}$."}}}
+  ],
+  teoria:`
+    <h4>El círculo unitario</h4>
+    <p>Es una circunferencia de radio $1$ centrada en el origen. Para cada ángulo $\\theta$ medido desde el eje $x$ positivo, el punto en la circunferencia tiene coordenadas:</p>
+    <div class="formula-box">$$(\\cos\\theta,\\; \\operatorname{sen}\\,\\theta)$$</div>
+    <p>Es decir: el $\\cos\\theta$ es la coordenada $x$ y el $\\operatorname{sen}\\,\\theta$ es la coordenada $y$ del punto en el círculo unitario.</p>
+    <h4>Ángulos notales en radianes</h4>
+    <p>$0$, $\\frac{\\pi}{6}$ ($30^{\\circ}$), $\\frac{\\pi}{4}$ ($45^{\\circ}$), $\\frac{\\pi}{3}$ ($60^{\\circ}$), $\\frac{\\pi}{2}$ ($90^{\\circ}$), $\\pi$ ($180^{\\circ}$), $\\frac{3\\pi}{2}$ ($270^{\\circ}$), $2\\pi$ ($360^{\\circ}$).</p>
+    <h4>Signos por cuadrante</h4>
+    <ul>
+      <li><strong>I cuadrante</strong> ($0<\\theta<\\frac{\\pi}{2}$): $\\operatorname{sen}>0$, $\\cos>0$, $\\tan>0$</li>
+      <li><strong>II cuadrante</strong> ($\\frac{\\pi}{2}<\\theta<\\pi$): $\\operatorname{sen}>0$, $\\cos<0$, $\\tan<0$</li>
+      <li><strong>III cuadrante</strong> ($\\pi<\\theta<\\frac{3\\pi}{2}$): $\\operatorname{sen}<0$, $\\cos<0$, $\\tan>0$</li>
+      <li><strong>IV cuadrante</strong> ($\\frac{3\\pi}{2}<\\theta<2\\pi$): $\\operatorname{sen}<0$, $\\cos>0$, $\\tan<0$</li>
+    </ul>
+    <div class="analogia"><strong>Intuición:</strong> el círculo unitario es como un reloj donde el ángulo se mide desde las "3 en punto" (eje $x$ positivo) y girando en sentido antihorario. La "altura" del punto es el seno y la "distancia horizontal" es el coseno.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar el ángulo",contenido:"Calcular $\\cos\\!\\left(\\frac{\\pi}{3}\\right)$ usando el círculo unitario.",regla:"Círculo unitario"},
+    {num:2,titulo:"Recordar el valor notable",contenido:"$\\frac{\\pi}{3}=60^{\\circ}$. En el círculo unitario, el punto es $\\left(\\frac{1}{2},\\,\\frac{\\sqrt{3}}{2}\\right)$.",regla:"Valores notables"},
+    {num:3,titulo:"Extraer coordenadas",contenido:"$\\cos\\!\\left(\\frac{\\pi}{3}\\right)=\\frac{1}{2}$ (coordenada $x$), $\\operatorname{sen}\\!\\left(\\frac{\\pi}{3}\\right)=\\frac{\\sqrt{3}}{2}$ (coordenada $y$).",regla:"Coordenadas del círculo"},
+    {num:4,titulo:"Verificar",contenido:"$\\cos^{2}\\!\\left(\\frac{\\pi}{3}\\right)+\\operatorname{sen}^{2}\\!\\left(\\frac{\\pi}{3}\\right)=\\frac{1}{4}+\\frac{3}{4}=1$ $\\checkmark$",regla:"Identidad pitagórica"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"$\\operatorname{sen}(0)=\\,?$", opciones:["$0$","$1$","$-1$","$\\frac{1}{2}$"], correcta:0,
+      feedback:{correcto:"Sí: en $\\theta=0$, el punto es $(1,0)$, así que $\\operatorname{sen}(0)=0$.",errores:{1:"Ese es $\\cos(0)$.",2:"Ese es $\\operatorname{sen}\\!\\left(\\frac{3\\pi}{2}\\right)$.",3:"Ese es $\\operatorname{sen}\\!\\left(\\frac{\\pi}{6}\\right)$."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\cos\\!\\left(\\frac{\\pi}{2}\\right)=\\,?$", opciones:["$0$","$1$","$-1$","$\\frac{\\sqrt{2}}{2}$"], correcta:0,
+      feedback:{correcto:"Sí: en $\\theta=\\frac{\\pi}{2}$ ($90^{\\circ}$), el punto es $(0,1)$, así que $\\cos=0$.",errores:{1:"Ese es $\\operatorname{sen}\\!\\left(\\frac{\\pi}{2}\\right)$.",2:"Ese es $\\cos(\\pi)$.",3:"Ese es $\\cos\\!\\left(\\frac{\\pi}{4}\\right)$."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\operatorname{sen}\\!\\left(\\frac{\\pi}{6}\\right)=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$\\frac{\\sqrt{2}}{2}$","$1$"], correcta:0,
+      feedback:{correcto:"Sí: $\\frac{\\pi}{6}=30^{\\circ}$ y $\\operatorname{sen}(30^{\\circ})=\\frac{1}{2}$.",errores:{1:"Ese es $\\operatorname{sen}(60^{\\circ})$.",2:"Ese es $\\operatorname{sen}(45^{\\circ})$.",3:"Ese es $\\operatorname{sen}(90^{\\circ})$."}}},
+    {tipo:"opcion_multiple", enunciado:"En el II cuadrante ($\\frac{\\pi}{2}<\\theta<\\pi$), ¿cuál función es positiva?", opciones:["$\\operatorname{sen}$","$\\cos$","$\\tan$","Ninguna"], correcta:0,
+      feedback:{correcto:"Sí: en el II cuadrante, $\\operatorname{sen}>0$ (la $y$ es positiva), pero $\\cos<0$.",errores:{1:"$\\cos<0$ en el II cuadrante.",2:"$\\tan=\\frac{\\operatorname{sen}}{\\cos}<0$.",3:"$\\operatorname{sen}$ sí es positiva."}}},
+    {tipo:"opcion_multiple", enunciado:"Si $\\theta=\\pi$ ($180^{\\circ}$), ¿cuáles son las coordenadas en el círculo unitario?", opciones:["$(-1,\\,0)$","$(1,\\,0)$","$(0,\\,1)$","$(0,\\,-1)$"], correcta:0,
+      feedback:{correcto:"Sí: en $180^{\\circ}$, el punto es $(-1,0)$. $\\cos(\\pi)=-1$, $\\operatorname{sen}(\\pi)=0$.",errores:{1:"Ese es $\\theta=0$.",2:"Ese es $\\theta=\\frac{\\pi}{2}$.",3:"Ese es $\\theta=\\frac{3\\pi}{2}$."}}},
+    {tipo:"emparejar", enunciado:"Empareja ángulo con coordenada $(\\cos,\\operatorname{sen})$:",
+      parejas:[
+        {izq:"$\\theta=0$", der:"$(1,\\,0)$"},
+        {izq:"$\\theta=\\frac{\\pi}{2}$", der:"$(0,\\,1)$"},
+        {izq:"$\\theta=\\pi$", der:"$(-1,\\,0)$"},
+        {izq:"$\\theta=\\frac{3\\pi}{2}$", der:"$(0,\\,-1)$"}
+      ],
+      feedback:{correcto:"Todas correctas.",errores:"Memoriza: $0 \\to (1,0)$, $\\frac{\\pi}{2} \\to (0,1)$, $\\pi \\to (-1,0)$, $\\frac{3\\pi}{2} \\to (0,-1)$."}},
+    {tipo:"completar_hueco", enunciado:"$\\cos\\!\\left(\\frac{\\pi}{3}\\right)=\\,$<input class='input-line' id='ch7-7' placeholder='fracción'> (en forma a/b).", respuesta:["1/2"], feedbackCorrecto:"Sí: $\\cos(60^{\\circ})=\\frac{1}{2}$.", feedbackError:"$\\frac{\\pi}{3}=60^{\\circ}$ y $\\cos(60^{\\circ})=\\frac{1}{2}$."},
+    {tipo:"numerica", enunciado:"$\\tan\\!\\left(\\frac{\\pi}{4}\\right)=\\,?$", respuesta:1, tolerancia:0.01, feedbackCorrecto:"Sí: $\\tan(45^{\\circ})=1$.", feedbackError:"$\\frac{\\pi}{4}=45^{\\circ}$ y $\\tan(45^{\\circ})=1$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 8: LEYES DE SENOS Y COSENOS ===== */
+{
+  id:"m8", num:8, titulo:"Leyes de senos y cosenos", icono:"📐",
+  objetivo:"Al terminar podrás resolver triángulos usando la ley de senos y la ley de cosenos.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M7) $\\cos\\!\\left(\\frac{\\pi}{3}\\right)=\\,?$", opciones:["$\\frac{1}{2}$","$\\frac{\\sqrt{3}}{2}$","$0$","$1$"], correcta:0, feedback:{correcto:"Sí.",errores:{1:"Ese es $\\operatorname{sen}\\!\\left(\\frac{\\pi}{3}\\right)$.",2:"Ese es $\\cos\\!\\left(\\frac{\\pi}{2}\\right)$.",3:"Ese es $\\cos(0)$."}}}
+  ],
+  teoria:`
+    <h4>Cuándo usar cada ley</h4>
+    <p>Para resolver triángulos que <strong>no son rectángulos</strong> se usan dos leyes:</p>
+    <h4>Ley de senos</h4>
+    <p>Relaciona lados y ángulos opuestos. Se usa cuando se conocen dos ángulos y un lado, o dos lados y un ángulo opuesto.</p>
+    <div class="formula-box">$$\\frac{a}{\\operatorname{sen}\\, A}=\\frac{b}{\\operatorname{sen}\\, B}=\\frac{c}{\\operatorname{sen}\\, C}$$</div>
+    <h4>Ley de cosenos</h4>
+    <p>Generaliza el teorema de Pitágoras. Se usa cuando se conocen tres lados, o dos lados y el ángulo entre ellos.</p>
+    <div class="formula-box">$$c^{2}=a^{2}+b^{2}-2ab\\cos C$$</div>
+    <div class="analogia"><strong>Intuición:</strong> la ley de cosenos es como Pitágoras "ajustada": si $C=90^{\\circ}$, $\\cos(90^{\\circ})=0$ y se reduce a $c^{2}=a^{2}+b^{2}$. El término $-2ab\\cos C$ corrige cuando el ángulo no es recto.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Identificar datos",contenido:"Triángulo con $A=30^{\\circ}$, $B=45^{\\circ}$, $a=10$. Encontrar $b$.",regla:"Ley de senos (dos ángulos, un lado)"},
+    {num:2,titulo:"Aplicar ley de senos",contenido:"$\\frac{10}{\\operatorname{sen}(30^{\\circ})}=\\frac{b}{\\operatorname{sen}(45^{\\circ})}$",regla:"$\\frac{a}{\\operatorname{sen}\\, A}=\\frac{b}{\\operatorname{sen}\\, B}$"},
+    {num:3,titulo:"Despejar $b$",contenido:"$b=\\frac{10\\cdot\\operatorname{sen}(45^{\\circ})}{\\operatorname{sen}(30^{\\circ})}=\\frac{10\\cdot\\frac{\\sqrt{2}}{2}}{\\frac{1}{2}}=10\\sqrt{2}\\approx 14.14$",regla:"Despejar"},
+    {num:4,titulo:"Verificar",contenido:"$\\frac{10}{0.5}=20$ y $\\frac{14.14}{0.707}\\approx 20$ $\\checkmark$",regla:"Verificación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la fórmula de la ley de senos?", opciones:["$\\frac{a}{\\operatorname{sen}\\, A}=\\frac{b}{\\operatorname{sen}\\, B}=\\frac{c}{\\operatorname{sen}\\, C}$","$a^{2}=b^{2}+c^{2}-2bc\\cos A$","$a^{2}+b^{2}=c^{2}$","$\\frac{a}{\\cos A}=\\frac{b}{\\cos B}$"], correcta:0,
+      feedback:{correcto:"Sí: esa es la ley de senos.",errores:{1:"Esa es la ley de cosenos.",2:"Ese es el teorema de Pitágoras.",3:"No existe esa ley."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Cuál es la fórmula de la ley de cosenos para el lado $c$?", opciones:["$c^{2}=a^{2}+b^{2}-2ab\\cos C$","$c=a+b-2\\cos C$","$c^{2}=a^{2}+b^{2}$","$\\frac{c}{\\operatorname{sen}\\, C}=\\frac{a}{\\operatorname{sen}\\, A}$"], correcta:0,
+      feedback:{correcto:"Sí: esa es la ley de cosenos.",errores:{1:"No se suman lados directamente.",2:"Eso es Pitágoras (caso $C=90^{\\circ}$).",3:"Esa es la ley de senos."}}},
+    {tipo:"completar_hueco", enunciado:"Si $\\frac{a}{\\operatorname{sen}\\, A}=\\frac{b}{\\operatorname{sen}\\, B}$, $a=8$, $A=30^{\\circ}$, $B=90^{\\circ}$, entonces $b=\\,$<input class='input-line' id='ch8-3' placeholder='número'>.", respuesta:["16"], feedbackCorrecto:"Sí: $b=\\frac{8\\cdot\\operatorname{sen}(90^{\\circ})}{\\operatorname{sen}(30^{\\circ})}=\\frac{8\\cdot 1}{0.5}=16$.", feedbackError:"$b=\\frac{a\\cdot\\operatorname{sen}\\, B}{\\operatorname{sen}\\, A}=\\frac{8\\cdot 1}{0.5}=16$."},
+    {tipo:"opcion_multiple", enunciado:"En un triángulo con $a=3$, $b=4$, $C=90^{\\circ}$, ¿cuánto vale $c$ usando la ley de cosenos?", opciones:["$5$","$7$","$1$","$25$"], correcta:0,
+      feedback:{correcto:"Sí: $c^{2}=9+16-2(3)(4)\\cos(90^{\\circ})=25-0=25$, $c=5$.",errores:{1:"No se suman lados.",2:"No se restan.",3:"Eso es $c^{2}$."}}},
+    {tipo:"verdadero_falso", enunciado:"La ley de cosenos se reduce al teorema de Pitágoras cuando $C=90^{\\circ}$.", correcta:true,
+      feedback:{correcto:"Sí: $\\cos(90^{\\circ})=0$, así que $c^{2}=a^{2}+b^{2}$.",errores:{0:"Cuando $C=90^{\\circ}$, $\\cos C=0$ y se obtiene $c^{2}=a^{2}+b^{2}$."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena el uso de la ley de senos para encontrar $b$ dados $a$, $A$, $B$:",
+      pasos:[
+        {texto:"Plantear: $\\frac{a}{\\operatorname{sen}\\, A}=\\frac{b}{\\operatorname{sen}\\, B}$", orden:1},
+        {texto:"Despejar: $b=\\frac{a\\cdot\\operatorname{sen}\\, B}{\\operatorname{sen}\\, A}$", orden:2},
+        {texto:"Sustituir los valores", orden:3},
+        {texto:"Calcular $b$", orden:4}
+      ],
+      feedback:{correcto:"Secuencia correcta.",errores:"Primero planteas la proporción, despejas $b$, sustituyes y calculas."}},
+    {tipo:"completar_hueco", enunciado:"Usando la ley de cosenos: si $a=5$, $b=5$, $C=60^{\\circ}$, entonces $c^{2}=25+25-2(25)\\cdot\\frac{1}{2}=\\,$<input class='input-line' id='ch8-7' placeholder='número'>.", respuesta:["25"], feedbackCorrecto:"Sí: $50-25=25$, así que $c=5$.", feedbackError:"$c^{2}=25+25-50\\cdot\\frac{1}{2}=50-25=25$, $c=5$."},
+    {tipo:"numerica", enunciado:"Si $a=6$, $b=8$, $C=90^{\\circ}$, calcula $c$ usando la ley de cosenos.", respuesta:10, tolerancia:0.01, feedbackCorrecto:"Sí: $c^{2}=36+64-0=100$, $c=10$.", feedbackError:"$c^{2}=6^{2}+8^{2}-2(6)(8)\\cos(90^{\\circ})=36+64-0=100$, $c=10$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 9: LÍMITES ===== */
+{
+  id:"m9", num:9, titulo:"Límites", icono:"➡️",
+  objetivo:"Al terminar podrás calcular límites por sustitución directa, factorización, conjugado y al infinito.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M3) Factoriza $x^{2}-9$.", opciones:["$(x-3)(x+3)$","$(x-9)(x+1)$","$(x-3)^{2}$","$(x+3)^{2}$"], correcta:0, feedback:{correcto:"Bien: diferencia de cuadrados.",errores:{1:"Revisa.",2:"Eso da $x^{2}-6x+9$.",3:"Eso da $x^{2}+6x+9$."}}}
+  ],
+  teoria:`
+    <h4>Definición intuitiva</h4>
+    <p>El límite $\\displaystyle\\lim_{x\\to x_{0}} f(x)=L$ significa que los valores de $f(x)$ se acercan a $L$ cuando $x$ se acerca a $x_{0}$ (por ambos lados).</p>
+    <h4>Técnicas para calcular límites</h4>
+    <ol>
+      <li><strong>Sustitución directa:</strong> si $f$ es continua en $x_{0}$, se evalúa $f(x_{0})$.</li>
+      <li><strong>Factorización:</strong> para indeterminaciones $\\frac{0}{0}$, se factoriza y simplifica.</li>
+      <li><strong>Conjugado:</strong> útil cuando hay raíces. Se multiplica por $\\frac{\\text{conjugado}}{\\text{conjugado}}$.</li>
+      <li><strong>Al infinito:</strong> se comparan los términos dominantes.</li>
+      <li><strong>Trigonométrico:</strong> $\\displaystyle\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\, x}{x}=1$.</li>
+    </ol>
+    <div class="formula-box">$$\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\, x}{x}=1$$</div>
+    <div class="analogia"><strong>Intuición:</strong> un límite es como acercarte a un punto sin tocarlo. Quieres saber a dónde se dirige la función, no necesariamente su valor en el punto.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Intentar sustitución directa",contenido:"$\\displaystyle\\lim_{x\\to 3}\\frac{x^{2}-9}{x-3}$. Sustituyendo: $\\frac{9-9}{3-3}=\\frac{0}{0}$ (indeterminado).",regla:"Sustitución directa falla"},
+    {num:2,titulo:"Factorizar",contenido:"$\\frac{x^{2}-9}{x-3}=\\frac{(x-3)(x+3)}{x-3}$",regla:"Factorización"},
+    {num:3,titulo:"Simplificar",contenido:"$\\frac{(x-3)(x+3)}{x-3}=x+3$ (para $x\\neq 3$)",regla:"Simplificación"},
+    {num:4,titulo:"Evaluar el límite",contenido:"$\\displaystyle\\lim_{x\\to 3}(x+3)=6$",regla:"Sustitución directa después de simplificar"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"$\\displaystyle\\lim_{x\\to 2}(3x+1)=\\,?$", opciones:["$7$","$6$","$3$","$\\infty$"], correcta:0,
+      feedback:{correcto:"Sí: sustitución directa: $3(2)+1=7$.",errores:{1:"Olvidaste el $+1$.",2:"Solo tomaste el coeficiente.",3:"No hay indeterminación."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\displaystyle\\lim_{x\\to 3}\\frac{x^{2}-9}{x-3}=\\,?$", opciones:["$6$","$0$","$\\infty$","$9$"], correcta:0,
+      feedback:{correcto:"Sí: factorizando $\\frac{(x-3)(x+3)}{x-3}=x+3$, límite $=6$.",errores:{1:"No es $0$: la indeterminación se resuelve factorizando.",2:"No diverge.",3:"Evaluaste solo $x^{2}$."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\displaystyle\\lim_{x\\to\\infty}\\frac{4x^{3}+2x^{2}}{7x^{3}-5x}=\\,?$", opciones:["$\\frac{4}{7}$","$0$","$\\infty$","$\\frac{2}{5}$"], correcta:0,
+      feedback:{correcto:"Sí: los términos dominantes son $4x^{3}$ y $7x^{3}$: $\\frac{4}{7}$.",errores:{1:"No tiende a $0$: mismo grado arriba y abajo.",2:"No diverge: grados iguales.",3:"No son los coeficientes correctos."}}},
+    {tipo:"completar_hueco", enunciado:"$\\displaystyle\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\, x}{x}=\\,$<input class='input-line' id='ch9-4' placeholder='número'>.", respuesta:["1"], feedbackCorrecto:"Sí: es un límite notable fundamental.", feedbackError:"$\\displaystyle\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\, x}{x}=1$ es un límite trigonométrico notable."},
+    {tipo:"verdadero_falso", enunciado:"Si al sustituir directamente se obtiene $\\frac{0}{0}$, el límite no existe.", correcta:false,
+      feedback:{correcto:"Correcto: $\\frac{0}{0}$ es una indeterminación, no significa que el límite no exista. Hay que usar factorización u otra técnica.",errores:{0:"$\\frac{0}{0}$ es una INDETERMINACIÓN, no una inexistencia. Hay que resolverla."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena el cálculo de $\\displaystyle\\lim_{x\\to 4}\\frac{x^{2}-16}{x-4}$:",
+      pasos:[
+        {texto:"Factorizar: $\\frac{(x-4)(x+4)}{x-4}$", orden:1},
+        {texto:"Simplificar: $x+4$ (para $x\\neq 4$)", orden:2},
+        {texto:"Evaluar: $4+4=8$", orden:3},
+        {texto:"Resultado: el límite es $8$", orden:4}
+      ],
+      feedback:{correcto:"Buena secuencia.",errores:"Factorizas, simplificas, evalúas y obtienes el resultado."}},
+    {tipo:"completar_hueco", enunciado:"$\\displaystyle\\lim_{x\\to\\infty}\\frac{3x^{2}+x}{6x^{2}-1}=\\,$<input class='input-line' id='ch9-7' placeholder='fracción'> (en forma a/b).", respuesta:["1/2"], feedbackCorrecto:"Sí: términos dominantes $3x^{2}$ y $6x^{2}$: $\\frac{3}{6}=\\frac{1}{2}$.", feedbackError:"Grados iguales: se dividen coeficientes principales: $\\frac{3}{6}=\\frac{1}{2}$."},
+    {tipo:"numerica", enunciado:"$\\displaystyle\\lim_{x\\to 5}\\frac{x^{2}-25}{x-5}=\\,?$", respuesta:10, tolerancia:0.01, feedbackCorrecto:"Sí: factorizando $\\frac{(x-5)(x+5)}{x-5}=x+5$, límite $=10$.", feedbackError:"Factoriza: $\\frac{(x-5)(x+5)}{x-5}=x+5$. Evaluando en $x=5$: $5+5=10$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 10: CONTINUIDAD ===== */
+{
+  id:"m10", num:10, titulo:"Continuidad", icono:"🔗",
+  objetivo:"Al terminar podrás verificar si una función es continua y encontrar el valor de $k$ que hace continua una función por tramos.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M9) $\\displaystyle\\lim_{x\\to 2}(3x+1)=\\,?$", opciones:["$7$","$6$","$3$","$\\infty$"], correcta:0, feedback:{correcto:"Sí: sustitución directa.",errores:{1:"Olvidaste $+1$.",2:"Solo el coeficiente.",3:"No hay indeterminación."}}}
+  ],
+  teoria:`
+    <h4>Definición de continuidad</h4>
+    <p>Una función $f$ es <strong>continua</strong> en $x=a$ si se cumplen las <strong>tres condiciones</strong>:</p>
+    <div class="formula-box">$$1.\\; f(a) \\text{ existe} \\qquad 2.\\; \\lim_{x\\to a} f(x) \\text{ existe} \\qquad 3.\\; \\lim_{x\\to a} f(x) = f(a)$$</div>
+    <h4>Tipos de discontinuidad</h4>
+    <ul>
+      <li><strong>Removable:</strong> el límite existe pero no coincide con $f(a)$ (o $f(a)$ no existe). Se "puede arreglar".</li>
+      <li><strong>Salto (jump):</strong> los límites laterales existen pero son distintos.</li>
+      <li><strong>Infinita:</strong> la función tiende a $\\pm\\infty$ cerca del punto.</li>
+    </ul>
+    <h4>Continuidad y derivabilidad</h4>
+    <p>Si una función es <strong>derivable</strong> en un punto, entonces es <strong>continua</strong> allí. Pero lo contrario no siempre es cierto: $f(x)=|x|$ es continua en $x=0$ pero no derivable.</p>
+    <div class="analogia"><strong>Intuición:</strong> una función continua es como dibujar sin levantar el lápiz del papel. Si tienes que levantarlo (un "salto" o "agujero"), hay discontinuidad.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Plantear las tres condiciones",contenido:"Para que $f(x)=\\begin{cases}\\frac{x^{2}-6x+8}{x-2}, & x\\neq 2 \\\\ k, & x=2\\end{cases}$ sea continua en $x=2$, necesitamos que $\\displaystyle\\lim_{x\\to 2} f(x)=k$.",regla:"Condición de continuidad"},
+    {num:2,titulo:"Calcular el límite",contenido:"$\\displaystyle\\lim_{x\\to 2}\\frac{x^{2}-6x+8}{x-2}=\\lim_{x\\to 2}\\frac{(x-2)(x-4)}{x-2}=\\lim_{x\\to 2}(x-4)=-2$",regla:"Factorización"},
+    {num:3,titulo:"Igualar a $f(2)$",contenido:"Como $f(2)=k$ y el límite es $-2$, necesitamos $k=-2$.",regla:"$\\lim=f(a)$"},
+    {num:4,titulo:"Verificar",contenido:"Con $k=-2$: $f(2)=-2$, $\\displaystyle\\lim_{x\\to 2} f(x)=-2$. Como coinciden, $f$ es continua en $x=2$ $\\checkmark$",regla:"Verificación"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"¿Cuáles son las tres condiciones para que $f$ sea continua en $x=a$?", opciones:["$f(a)$ existe, $\\lim_{x\\to a} f(x)$ existe, $\\lim_{x\\to a} f(x)=f(a)$","$f(a)=0$, $f'(a)$ existe, $f$ es polinomial","$f$ es derivable, $f$ es creciente, $f(a)>0$","$\\lim_{x\\to a} f(x)=0$, $f(a)=0$, $f'(a)=0$"], correcta:0,
+      feedback:{correcto:"Exacto: esas son las tres condiciones.",errores:{1:"No: no se requiere derivabilidad ni que sea polinomial.",2:"No: esas no son las condiciones.",3:"No: no se requiere que valga $0$."}}},
+    {tipo:"opcion_multiple", enunciado:"¿Es $f(x)=x^{2}$ continua en todo $\\mathbb{R}$?", opciones:["Sí, los polinomios son continuos en $\\mathbb{R}$","No, hay discontinuidad en $x=0$","Solo en $x>0$","Solo en $x\\neq 0$"], correcta:0,
+      feedback:{correcto:"Sí: todos los polinomios son continuos en todos los reales.",errores:{1:"No hay discontinuidad en $x=0$.",2:"Es continua también en negativos.",3:"Es continua en $x=0$."}}},
+    {tipo:"verdadero_falso", enunciado:"Si una función es derivable en un punto, entonces es continua en ese punto.", correcta:true,
+      feedback:{correcto:"Sí: la derivabilidad implica continuidad (pero no al revés).",errores:{0:"La derivabilidad SÍ implica continuidad. Lo contrario no siempre es cierto."}}},
+    {tipo:"opcion_multiple", enunciado:"Si $f(x)=\\begin{cases}\\frac{x^{2}-9}{x-3}, & x\\neq 3 \\\\ k, & x=3\\end{cases}$ es continua en $x=3$, ¿cuánto vale $k$?", opciones:["$k=6$","$k=0$","$k=3$","$k=9$"], correcta:0,
+      feedback:{correcto:"Sí: $\\displaystyle\\lim_{x\\to 3}\\frac{(x-3)(x+3)}{x-3}=\\lim_{x\\to 3}(x+3)=6$, así que $k=6$.",errores:{1:"No es $0$: la indeterminación se resuelve.",2:"No es $3$.",3:"No es $9$."}}},
+    {tipo:"opcion_multiple", enunciado:"$f(x)=|x-2|$ tiene una discontinuidad en $x=2$. ¿De qué tipo?", opciones:["No tiene discontinuidad; es continua pero no derivable","Removable","Salto","Infinita"], correcta:0,
+      feedback:{correcto:"Correcto: $|x-2|$ es continua en $x=2$ (no hay salto ni agujero), pero NO es derivable allí.",errores:{1:"No es removable: no hay agujero.",2:"No es salto: la función es continua.",3:"No tiende a infinito."}}},
+    {tipo:"ordenar_pasos", enunciado:"Ordena la verificación de continuidad de $f$ en $x=a$:",
+      pasos:[
+        {texto:"Verificar que $f(a)$ existe", orden:1},
+        {texto:"Calcular $\\displaystyle\\lim_{x\\to a} f(x)$", orden:2},
+        {texto:"Comparar: $\\displaystyle\\lim_{x\\to a} f(x)=f(a)$", orden:3},
+        {texto:"Si coinciden, $f$ es continua en $x=a$", orden:4}
+      ],
+      feedback:{correcto:"Secuencia correcta.",errores:"Primero verificas que $f(a)$ existe, luego calculas el límite, comparas y concluyes."}},
+    {tipo:"completar_hueco", enunciado:"Si $f(x)=\\begin{cases}x^{2}, & x<1 \\\\ k, & x=1 \\\\ 2x-1, & x>1\\end{cases}$ es continua en $x=1$, entonces $k=\\,$<input class='input-line' id='ch10-7' placeholder='número'>.", respuesta:["1"], feedbackCorrecto:"Sí: $\\displaystyle\\lim_{x\\to 1^{-}} x^{2}=1$ y $\\displaystyle\\lim_{x\\to 1^{+}}(2x-1)=1$. Los límites laterales coinciden, así que $k=1$.", feedbackError:"Calcula ambos límites laterales en $x=1$: $x^{2}\\to 1$ por la izquierda y $2x-1\\to 1$ por la derecha. Como coinciden, $k=1$."},
+    {tipo:"numerica", enunciado:"Si $f(x)=\\begin{cases}\\frac{x^{2}-4}{x-2}, & x\\neq 2 \\\\ k, & x=2\\end{cases}$ es continua, ¿cuánto vale $k$?", respuesta:4, tolerancia:0.01, feedbackCorrecto:"Sí: $\\displaystyle\\lim_{x\\to 2}\\frac{(x-2)(x+2)}{x-2}=\\lim_{x\\to 2}(x+2)=4$, $k=4$.", feedbackError:"Factoriza: $\\frac{(x-2)(x+2)}{x-2}=x+2$. En $x=2$: $2+2=4$, $k=4$."}
+  ],
+  criterioDominio:0.8
+},
+
+/* ===== MÓDULO 11: DERIVADAS ===== */
+{
+  id:"m11", num:11, titulo:"Derivadas", icono:"⚡",
+  objetivo:"Al terminar podrás calcular derivadas con las reglas básicas, producto, cociente y cadena, y hallar rectas tangentes.",
+  repaso:[
+    {tipo:"opcion_multiple", enunciado:"(Repaso M9) $\\displaystyle\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\, x}{x}=\\,?$", opciones:["$1$","$0$","$\\infty$","$\\frac{1}{2}$"], correcta:0, feedback:{correcto:"Sí: límite notable.",errores:{1:"No es $0$.",2:"No diverge.",3:"No es $\\frac{1}{2}$."}}},
+    {tipo:"opcion_multiple", enunciado:"(Repaso M10) ¿La derivabilidad implica continuidad?", opciones:["Sí, siempre","No, nunca","Solo para polinomios","Solo en $x=0$"], correcta:0, feedback:{correcto:"Sí: derivable $\\Rightarrow$ continua.",errores:{1:"Sí lo hace.",2:"No es exclusivo de polinomios.",3:"No es solo en $x=0$."}}}
+  ],
+  teoria:`
+    <h4>Definición</h4>
+    <p>La derivada de $f$ en $x=a$ mide la <strong>razón de cambio instantánea</strong>. Se define como:</p>
+    <div class="formula-box">$$f'(a)=\\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h}$$</div>
+    <h4>Reglas básicas</h4>
+    <div class="formula-box">$$\\frac{d}{dx}(c)=0 \\quad \\frac{d}{dx}(x^{n})=nx^{n-1} \\quad \\frac{d}{dx}(e^{x})=e^{x} \\quad \\frac{d}{dx}(\\ln x)=\\frac{1}{x}$$</div>
+    <div class="formula-box">$$\\frac{d}{dx}(\\operatorname{sen}\\, x)=\\cos x \\quad \\frac{d}{dx}(\\cos x)=-\\operatorname{sen}\\, x$$</div>
+    <h4>Reglas de operación</h4>
+    <div class="formula-box">$$(f\\pm g)'=f'\\pm g' \\quad (f\\cdot g)'=f'g+fg' \\quad \\left(\\frac{f}{g}\\right)'=\\frac{f'g-fg'}{g^{2}}$$</div>
+    <h4>Regla de la cadena</h4>
+    <div class="formula-box">$$\\frac{d}{dx}\\big[f(g(x))\\big]=f'\\big(g(x)\\big)\\cdot g'(x)$$</div>
+    <h4>Recta tangente</h4>
+    <p>La recta tangente a $f$ en $x=a$ es: $y-f(a)=f'(a)(x-a)$, es decir, $y=f'(a)(x-a)+f(a)$.</p>
+    <div class="analogia"><strong>Intuición:</strong> la derivada es la pendiente de la recta tangente en un punto. Es como poner una regla sobre la curva y medir su inclinación.</div>
+  `,
+  ejemplo:[
+    {num:1,titulo:"Derivar término a término",contenido:"$f(x)=x^{3}-5x+2$. Aplicamos $\\frac{d}{dx}(x^{n})=nx^{n-1}$ a cada término.",regla:"Regla de la potencia"},
+    {num:2,titulo:"Aplicar la regla",contenido:"$f'(x)=3x^{2}-5$. La derivada de $2$ (constante) es $0$.",regla:"Derivada de constante"},
+    {num:3,titulo:"Evaluar la pendiente",contenido:"En $x=1$: $f'(1)=3(1)^{2}-5=-2$. La pendiente es $-2$.",regla:"Evaluar derivada"},
+    {num:4,titulo:"Ecuación de la recta tangente",contenido:"$f(1)=1-5+2=-2$. La recta tangente: $y-(-2)=-2(x-1)$, es decir, $y=-2x$.",regla:"$y-f(a)=f'(a)(x-a)$"}
+  ],
+  actividades:[
+    {tipo:"opcion_multiple", enunciado:"$\\frac{d}{dx}\\big[x^{5}\\big]=\\,?$", opciones:["$5x^{4}$","$x^{4}$","$\\frac{x^{6}}{6}$","$5x^{6}$"], correcta:0,
+      feedback:{correcto:"Sí: $\\frac{d}{dx}(x^{n})=nx^{n-1}$, así que $5x^{4}$.",errores:{1:"Bajaste el exponente pero olvidaste el coeficiente.",2:"Eso sería integrar, no derivar.",3:"No se sube el exponente al derivar."}}},
+    {tipo:"opcion_multiple", enunciado:"$\\frac{d}{dx}\\big[3x^{2}-4x+1\\big]=\\,?$", opciones:["$6x-4$","$3x-4$","$6x^{2}-4$","$3x^{2}-4$"], correcta:0,
+      feedback:{correcto:"Sí: $6x-4$ (la derivada de $1$ es $0$).",errores:{1:"Olvidaste multiplicar por el exponente.",2:"No se conserva el exponente.",3:"El coeficiente es incorrecto."}}},
+    {tipo:"completar_hueco", enunciado:"$\\frac{d}{dx}\\big[e^{x}\\big]=\\,$<input class='input-line' id='ch11-3' placeholder='función'>.", respuesta:["e^x","e^{x}","exp(x)"], feedbackCorrecto:"Sí: la derivada de $e^{x}$ es $e^{x}$.", feedbackError:"$\\frac{d}{dx}(e^{x})=e^{x}$: es una propiedad única del exponencial natural."},
+    {tipo:"opcion_multiple", enunciado:"$\\frac{d}{dx}\\big[\\operatorname{sen}\\, x\\big]=\\,?$", opciones:["$\\cos x$","$-\\cos x$","$-\\operatorname{sen}\\, x$","$\\operatorname{sen}\\, x$"], correcta:0,
+      feedback:{correcto:"Sí: la derivada del seno es coseno.",errores:{1:"Ese es $\\frac{d}{dx}[-\\operatorname{sen}\\, x]$.",2:"Ese es $\\frac{d}{dx}[\\cos x]$.",3:"No se queda igual."}}},
+    {tipo:"completar_hueco", enunciado:"$\\frac{d}{dx}\\big[\\ln x\\big]=\\,$<input class='input-line' id='ch11-5' placeholder='fracción'> (en forma 1/x).", respuesta:["1/x"], feedbackCorrecto:"Sí: $\\frac{d}{dx}(\\ln x)=\\frac{1}{x}$.", feedbackError:"$\\frac{d}{dx}(\\ln x)=\\frac{1}{x}$."},
+    {tipo:"opcion_multiple", enunciado:"Usando la regla del producto: $\\frac{d}{dx}\\big[x\\cdot\\operatorname{sen}\\, x\\big]=\\,?$", opciones:["$\\operatorname{sen}\\, x+x\\cos x$","$x\\cos x$","$\\operatorname{sen}\\, x$","$x\\operatorname{sen}\\, x$"], correcta:0,
+      feedback:{correcto:"Sí: $(f\\cdot g)'=f'g+fg'=1\\cdot\\operatorname{sen}\\, x+x\\cdot\\cos x$.",errores:{1:"Olvidaste el primer término $f'g$.",2:"Falta el producto.",3:"No se deja igual."}}},
+    {tipo:"opcion_multiple", enunciado:"Usando la regla de la cadena: $\\frac{d}{dx}\\big[(2x+1)^{4}\\big]=\\,?$", opciones:["$8(2x+1)^{3}$","$4(2x+1)^{3}$","$(2x+1)^{3}$","$4(2x+1)^{3}\\cdot 2$"], correcta:0,
+      feedback:{correcto:"Sí: $f'(g)\\cdot g'=4(2x+1)^{3}\\cdot 2=8(2x+1)^{3}$.",errores:{1:"Olvidaste multiplicar por $g'=2$.",2:"Olvidaste ambos coeficientes.",3:"Olvidaste el $f'=4$."}}},
+    {tipo:"numerica", enunciado:"Si $f(x)=x^{2}-3x+1$, ¿cuánto vale $f'(2)$?", respuesta:1, tolerancia:0.01, feedbackCorrecto:"Sí: $f'(x)=2x-3$, $f'(2)=4-3=1$.", feedbackError:"$f'(x)=2x-3$. En $x=2$: $f'(2)=2(2)-3=1$."}
+  ],
+  criterioDominio:0.8
+}
+];
+
+const FORMULAS_REFERENCIA = [
+  {f:"$f(x)=mx+b$", r:"Función lineal, $m$=pendiente"},
+  {f:"$m=\\frac{\\Delta y}{\\Delta x}$", r:"Fórmula de pendiente"},
+  {f:"$(f\\circ g)(x)=f(g(x))$", r:"Composición"},
+  {f:"$a^{m}\\cdot a^{n}=a^{m+n}$", r:"Producto de potencias"},
+  {f:"$\\log_{a}(b\\cdot c)=\\log_{a}b+\\log_{a}c$", r:"Log de producto"},
+  {f:"$\\log_{a}(b^{n})=n\\cdot\\log_{a}b$", r:"Log de potencia"},
+  {f:"$\\operatorname{sen}^{2}\\theta+\\cos^{2}\\theta=1$", r:"Identidad pitagórica"},
+  {f:"$\\pi\\text{ rad}=180^{\\circ}$", r:"Conversión grados/radianes"},
+  {f:"$\\frac{a}{\\operatorname{sen}\\, A}=\\frac{b}{\\operatorname{sen}\\, B}$", r:"Ley de senos"},
+  {f:"$c^{2}=a^{2}+b^{2}-2ab\\cos C$", r:"Ley de cosenos"},
+  {f:"$\\displaystyle\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\, x}{x}=1$", r:"Límite notable"},
+  {f:"$\\frac{d}{dx}(x^{n})=nx^{n-1}$", r:"Regla de la potencia"},
+  {f:"$\\frac{d}{dx}[f\\cdot g]=f'g+fg'$", r:"Regla del producto"},
+  {f:"$\\frac{d}{dx}[f(g(x))]=f'(g(x))\\cdot g'(x)$", r:"Regla de la cadena"}
+];
+
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function $(id){return document.getElementById(id)}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+/* Fisher-Yates: mezcla uniforme (reemplaza sort(() => Math.random()-0.5)) */
+function barajar(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=a[i];a[i]=a[j];a[j]=t;
+  }
+  return a;
 }
 
-function renderPortfolio() {
-  let portfolio = JSON.parse(localStorage.getItem("calculo_portfolio") || "{}");
-  let container = document.getElementById("portfolio-container");
-  
-  let keys = Object.keys(portfolio);
-  if (keys.length === 0) {
-    container.innerHTML = `<p>Aún no hay módulos completados en este dispositivo.</p>`;
-    return;
+/* Render LaTeX math in an element using KaTeX auto-render */
+function renderMath(el){
+  if(typeof renderMathInElement==='function'){
+    try{
+      renderMathInElement(el,{
+        delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ],
+        throwOnError:false,
+        errorColor:'#888888'
+      });
+    }catch(e){/* KaTeX not ready */}
+  }
+}
+/* Set innerHTML and render LaTeX math (data already has $...$ delimiters) */
+function setHTML(el,html){
+  el.innerHTML=html;
+  renderMath(el);
+}
+
+/* Convert HTML/Unicode math notation to LaTeX with $...$ delimiters */
+function htmlToLatex(text){
+  return text
+    .replace(/<sup>(.*?)<\/sup>/g,function(m,c){return '^{'+htmlToLatex(c)+'}'})
+    .replace(/<sub>(.*?)<\/sub>/g,function(m,c){return '_{'+htmlToLatex(c)+'}'})
+    .replace(/<span class="frac"><span class="num">(.*?)<\/span><span class="den">(.*?)<\/span><\/span>/g,function(m,n,d){return '\\frac{'+n+'}{'+d+'}'})
+    .replace(/∫/g,'\\int ')
+    .replace(/√/g,'\\sqrt ')
+    .replace(/²/g,'^{2}').replace(/³/g,'^{3}').replace(/⁴/g,'^{4}')
+    .replace(/⁵/g,'^{5}').replace(/⁶/g,'^{6}')
+    .replace(/⁻¹/g,'^{-1}').replace(/⁻²/g,'^{-2}').replace(/⁻³/g,'^{-3}')
+    .replace(/π/g,'\\pi ').replace(/≠/g,'\\neq ').replace(/≤/g,'\\leq ')
+    .replace(/≥/g,'\\geq ').replace(/→/g,'\\to ').replace(/≈/g,'\\approx ')
+    .replace(/∞/g,'\\infty ').replace(/×/g,'\\times ').replace(/·/g,'\\cdot ')
+    .replace(/Σ/g,'\\sum ').replace(/Δ/g,'\\Delta ').replace(/½/g,'\\frac{1}{2}')
+    .replace(/₁/g,'_{1}').replace(/₂/g,'_{2}').replace(/₃/g,'_{3}')
+    .replace(/₄/g,'_{4}').replace(/₅/g,'_{5}').replace(/₆/g,'_{6}')
+    .replace(/₀/g,'_{0}').replace(/ᵢ/g,'_{i}')
+    .replace(/′/g,"'").replace(/⟺/g,'\\iff ').replace(/•/g,'')
+    .replace(/\bsen\b/g,'\\operatorname{sen}')
+    .replace(/\bcos\b/g,'\\cos').replace(/\btan\b/g,'\\tan')
+    .replace(/\bsec\b/g,'\\sec').replace(/\bln\b/g,'\\ln');
+}
+
+var MATH_WORDS_JS={sen:1,cos:1,tan:1,sec:1,cot:1,csc:1,sin:1,ln:1,log:1,dx:1,du:1,dv:1,dt:1,pi:1,infty:1,exp:1,lim:1,int:1,sum:1,frac:1,sqrt:1,Delta:1,cdot:1,times:1,neq:1,leq:1,geq:1,to:1,approx:1,iff:1};
+var MATH_CHARS_JS='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/=()|,\\^_\'{} ';
+
+function isMathChar(c){return MATH_CHARS_JS.indexOf(c)>=0}
+
+function extendLeftMath(text,pos){
+  var i=pos;
+  while(i>0){
+    var c=text[i-1];
+    // Stop at ) preceded by digit (e.g., M3) from "(Repaso M3)")
+    if(c===')' && i>=2 && /[0-9]/.test(text[i-2])) return i;
+    // Stop at ( preceded by space or text (opening paren of text)
+    if(c==='(' && i>=2 && /[a-záéíóúñ.]/.test(text[i-2])) return i;
+    if(/[a-zA-Z]/.test(c)){
+      var wordEnd=i;
+      while(i>0 && /[a-zA-Z]/.test(text[i-1])) i--;
+      var word=text.substring(i,wordEnd);
+      if(word.length>1 && !MATH_WORDS_JS[word.toLowerCase()]) return wordEnd;
+    }else if(isMathChar(c)){i--}
+    else return i;
+  }
+  return i;
+}
+
+function extendRightMath(text,pos){
+  var i=pos, n=text.length;
+  while(i<n){
+    var c=text[i];
+    if(/[a-zA-Z]/.test(c)){
+      var wordStart=i;
+      while(i<n && /[a-zA-Z]/.test(text[i])) i++;
+      var word=text.substring(wordStart,i);
+      if(word.length>1 && !MATH_WORDS_JS[word.toLowerCase()]) return wordStart;
+    }else if(isMathChar(c)){i++}
+    else return i;
+  }
+  return i;
+}
+
+function wrapInlineMath(text){
+  // Find math anchors: \command, ^{, _{
+  var anchors=[];
+  var cmdRe=/\\(operatorname\{sen\}|int|sqrt|pi|sum|Delta|frac|ln|cos|tan|sec|neq|leq|geq|to|approx|infty|times|cdot|iff|bullet)\b/g;
+  var m;
+  while((m=cmdRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  var supRe=/\^\{/g;
+  while((m=supRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+  var subRe=/_\{/g;
+  while((m=subRe.exec(text))!==null) anchors.push([m.index,m.index+m[0].length]);
+
+  if(anchors.length===0) return text;
+
+  // Extend each anchor
+  var segments=[];
+  for(var a=0;a<anchors.length;a++){
+    var left=extendLeftMath(text,anchors[a][0]);
+    var right=extendRightMath(text,anchors[a][1]);
+    segments.push([left,right]);
   }
 
-  let html = "<ul>";
-  keys.forEach(k => {
-    html += `<li><strong>Módulo ${k}</strong> - Calificación: ${portfolio[k].score} (Completado el ${portfolio[k].date})</li>`;
-  });
-  html += "</ul>";
-  container.innerHTML = html;
+  // Sort by start
+  segments.sort(function(a,b){return a[0]-b[0]});
+
+  // Merge overlapping
+  var merged=[];
+  for(var s=0;s<segments.length;s++){
+    if(merged.length>0 && segments[s][0]<=merged[merged.length-1][1]+1){
+      merged[merged.length-1][1]=Math.max(merged[merged.length-1][1],segments[s][1]);
+    }else{
+      merged.push([segments[s][0],segments[s][1]]);
+    }
+  }
+
+  // Build result
+  var result='';
+  var lastEnd=0;
+  for(var s=0;s<merged.length;s++){
+    result+=text.substring(lastEnd,merged[s][0]);
+    var mathText=text.substring(merged[s][0],merged[s][1]).trim();
+    if(mathText.length>0){
+      if(mathText.charAt(0)==='{') result+='$ '+mathText+'$';
+      else result+='$'+mathText+'$';
+    }
+    lastEnd=merged[s][1];
+  }
+  result+=text.substring(lastEnd);
+  return result;
 }
 
-function downloadPNG() {
-  const element = document.getElementById("certificate-preview");
-  html2canvas(element).then(canvas => {
-    const link = document.createElement("a");
-    link.download = `Evidencia_Modulo_${currentModuleId}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+function convertMathToLatex(html){
+  // 1. Convert formula boxes to $$...$$ display math
+  html=html.replace(/<div class="formula-box">([\s\S]*?)<\/div>/g,function(m,content){
+    var latex=htmlToLatex(content).trim();
+    return '<div class="formula-box">$$'+latex+'$$</div>';
   });
+
+  // 2. Protect $$...$$ blocks from double processing
+  var mathBlocks=[];
+  html=html.replace(/\$\$([\s\S]*?)\$\$/g,function(m,content){
+    mathBlocks.push(content);
+    return '\x00MATH'+(mathBlocks.length-1)+'\x00';
+  });
+
+  // 3. Convert remaining math notation (outside $$ blocks)
+  html=htmlToLatex(html);
+
+  // 4. Restore $$ blocks
+  html=html.replace(/\x00MATH(\d+)\x00/g,function(m,idx){
+    return '$$'+mathBlocks[parseInt(idx)]+'$$';
+  });
+
+  // 5. Split by HTML tags and wrap inline math (skip $$ blocks)
+  var parts=html.split(/(<[^>]+>)/);
+  var result='';
+  for(var i=0;i<parts.length;i++){
+    if(parts[i].length===0) continue;
+    if(parts[i].charAt(0)==='<' && parts[i].charAt(parts[i].length-1)==='>'){
+      result+=parts[i];
+    }else if(parts[i].indexOf('$$')!==-1){
+      // Already display math - don't wrap
+      result+=parts[i];
+    }else{
+      result+=wrapInlineMath(parts[i]);
+    }
+  }
+  return result;
 }
 
-// Cargar portafolio al iniciar
-window.onload = function() {
-  renderPortfolio();
-};
+
+function normalizeStr(s){
+  return String(s).toLowerCase().replace(/\s+/g,'').replace(/×/g,'*').replace(/·/g,'*')
+    .replace(/²/g,'^2').replace(/³/g,'^3').replace(/⁴/g,'^4').replace(/⁵/g,'^5').replace(/⁶/g,'^6')
+    .replace(/⁻¹/g,'^-1').replace(/⁻²/g,'^-2').replace(/⁻³/g,'^-3')
+    .replace(/√/g,'sqrt').replace(/π/g,'pi');
+}
+function getModulo(id){return MODULES.find(m=>m.id===id)}
+function siguienteModulo(id){
+  const idx = MODULES.findIndex(m=>m.id===id);
+  if(idx<0||idx>=MODULES.length-1) return null;
+  // Skip m0
+  for(let i=idx+1;i<MODULES.length;i++){
+    if(MODULES[i].id!=='m0') return MODULES[i];
+  }
+  return null;
+}
+function toast(msg,type='info'){
+  const t=$('toast');t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function hoy(){
+  const d=new Date();
+  return d.toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});
+}
+function fechaHora(){
+  return new Date().toLocaleString('es-MX');
+}
+
+/* ============================================================
+   NOTA DEL MÓDULO
+   Nota (0–10) = 90% aciertos en actividades + 10% consolidación
+   ============================================================ */
+function calcularNota(modId){
+  const est=ESTADO.modulos[modId];
+  const pctAct=est.totalActividades>0 ? est.scoreActividades/est.totalActividades : 0;
+  const cons=est.consolidacionHecha?1:0;
+  return Math.round((pctAct*9 + cons*1)*10)/10;
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  const grid=$('modules-grid');
+  grid.innerHTML='';
+  MODULES.filter(m=>m.id!=='m0').forEach(m=>{
+    const est=ESTADO.modulos[m.id];
+    let estadoClase='available',estadoTxt='📖 Disponible',icono=m.icono;
+    if(est.dominado){estadoClase='completed';estadoTxt='✅ Aprobado';}
+    else if(est.finalizado){estadoClase='in-progress';estadoTxt='🎯 Finalizado (no aprobado)';}
+    else if(est.completado){estadoClase='in-progress';estadoTxt='🎯 En curso';}
+    const pct=Math.round((est.scoreActividades/est.totalActividades)*100);
+    const notaTxt=est.finalizado && est.nota!==null ? `<div style="font-size:.8rem;margin-top:4px"><strong>Nota: ${est.nota.toFixed(1)}/10</strong></div>` : '';
+    const card=document.createElement('div');
+    card.className='module-card '+estadoClase;
+    setHTML(card,`
+      <div class="m-icon">${icono}</div>
+      <div class="m-num">Módulo ${m.num}</div>
+      <div class="m-title">${m.titulo}</div>
+      <div class="m-status ${estadoClase}">${estadoTxt}</div>
+      ${notaTxt}
+      <div class="m-progress">
+        <div style="font-size:.75rem;color:var(--text-muted)">Avance: ${pct}%</div>
+        <div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+      </div>`);
+    card.onclick=()=>abrirModulo(m.id);
+    grid.appendChild(card);
+  });
+  // Update global progress
+  const mods=MODULES.filter(m=>m.id!=='m0');
+  let totalDone=0,totalAct=0;
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    totalDone+=e.scoreActividades;
+    totalAct+=e.totalActividades;
+  });
+  // Add consolidation bonus
+  let dominatedCount=mods.filter(m=>ESTADO.modulos[m.id].dominado).length;
+  let pct=Math.round(((totalDone/totalAct)*0.7 + (dominatedCount/mods.length)*0.3)*100);
+  if(isNaN(pct))pct=0;
+  $('progress-pct').textContent=pct+'%';
+  $('progress-fill').style.width=pct+'%';
+  // Render side panels
+  renderFormulaRef();
+  renderErroresList();
+  renderProgresoDetallado();
+  saveState();
+}
+
+/* ============================================================
+   VISTA DE MÓDULO
+   ============================================================ */
+let moduloActual=null;
+function irDashboard(){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('view-dashboard').classList.add('active');
+  moduloActual=null;
+  renderDashboard();
+  window.scrollTo(0,0);
+}
+/* ============================================================
+   SELECCIÓN DE ACTIVIDADES POR SESIÓN
+   ============================================================ */
+// Semilla de sesión: cambia cada vez que se abre el archivo
+var SESSION_SEED = Math.floor(Math.random()*1000000);
+
+// Shuffle determinista con semilla (para que las 3 actividades no cambien al navegar dentro de la misma sesión)
+function shuffleWithSeed(arr,seed){
+  var s=seed;
+  for(var i=arr.length-1;i>0;i--){
+    s=(s*9301+49297)%233280;
+    var j=Math.floor((s/233280)*(i+1));
+    var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
+  }
+  return arr;
+}
+
+// Devuelve los índices de las 3 actividades a mostrar en esta sesión
+function getActividadesVisibles(modId){
+  var m=getModulo(modId);
+  if(!m||m.esDiagnostico) return m.actividades.map(function(_,i){return i});
+  var est=ESTADO.modulos[modId];
+  var todas=m.actividades.map(function(a,i){return {idx:i,answered:est.actividades[i]&&est.actividades[i].correcta}});
+  var sinResponder=todas.filter(function(t){return !t.answered});
+  var respondidas=todas.filter(function(t){return t.answered});
+  // Semilla por módulo (parseInt evita colisiones entre m1 y m10)
+  var numMod=parseInt(modId.slice(1),10);
+  shuffleWithSeed(sinResponder,SESSION_SEED+numMod*1000);
+  shuffleWithSeed(respondidas,SESSION_SEED+numMod*1000+7);
+  // Priorizar sin responder, hasta 3
+  var visibles=sinResponder.slice(0,3);
+  // Rellenar con respondidas si faltan
+  if(visibles.length<3){
+    visibles=visibles.concat(respondidas.slice(0,3-visibles.length));
+  }
+  // Ordenar por índice original
+  visibles.sort(function(a,b){return a.idx-b.idx});
+  return visibles.map(function(v){return v.idx});
+}
+
+function abrirModulo(id){
+  const m=getModulo(id);
+  if(!m)return;
+  moduloActual=id;
+  const est=ESTADO.modulos[id];
+  if(!est.primerAcceso)est.primerAcceso=fechaHora();
+  est.ultimoAcceso=fechaHora();
+  $('bc-modulo').textContent='Módulo '+m.num+': '+m.titulo;
+  renderModuloContenido(id);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  $('view-module').classList.add('active');
+  window.scrollTo(0,0);
+  saveState();
+}
+function renderModuloContenido(id){
+  const m=getModulo(id);
+  const cont=$('module-content');
+  const est=ESTADO.modulos[id];
+  let html=`
+    <div class="module-header">
+      <h2><span style="font-size:1.6rem">${m.icono}</span> Módulo ${m.num}: ${m.titulo}</h2>
+      <div class="objetivo"><strong>Objetivo:</strong> ${m.objetivo}</div>
+    </div>`;
+  // M0: diagnóstico
+  if(m.esDiagnostico){
+    html+=`<div class="section"><h3>🧭 Preguntas de diagnóstico</h3>`;
+    if(ESTADO.m0.completado){
+      html+=`<div class="diag-result ${ESTADO.m0.score>=5?'alto':ESTADO.m0.score>=3?'medio':'bajo'}">
+        <strong>Resultado: ${ESTADO.m0.score}/${ESTADO.m0.max}</strong><br>
+        ${ESTADO.m0.recomendaciones.map(r=>`<div class="diag-rec">• ${r}</div>`).join('')}
+      </div>`;
+      html+=`<button class="btn" onclick="repetirDiagnostico()">🔄 Repetir diagnóstico</button>`;
+    }
+    m.actividades.forEach((a,i)=>html+=renderActividad(a,id,i));
+    html+=`</div>`;
+    setHTML(cont,html);
+    attachActividadHandlers(id);
+    $('btn-dominar').disabled=true;
+    $('dominar-msg').textContent='';
+    return;
+  }
+  // Repaso OPCIONAL (no obligatorio): cada módulo es independiente
+  if(m.repaso && m.repaso.length>0){
+    html+=`<div class="section">
+      <div class="accordion">
+        <div class="acc-head" onclick="toggleAcc(this)"><span>🔁 Repaso opcional de conceptos previos (no obligatorio)</span><span class="arrow">▶</span></div>
+        <div class="acc-body">
+          <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:10px">Si lo necesitas, repasa estas preguntas de otros módulos. No afectan la nota de este módulo.</p>
+          ${m.repaso.map((a,i)=>renderActividadSimple(a,id,'repaso-'+i)).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+  // Teoría
+  html+=`<div class="section">
+    <h3>📚 Mini-teoría</h3>
+    <div class="accordion">
+      <div class="acc-head" onclick="toggleAcc(this)"><span>Ver teoría (click para desplegar)</span><span class="arrow">▶</span></div>
+      <div class="acc-body"><div class="teoria-content">${m.teoria}</div></div>
+    </div>
+  </div>`;
+  // Ejemplo resuelto
+  if(m.ejemplo && m.ejemplo.length>0){
+    html+=`<div class="section"><h3>🧩 Ejemplo resuelto paso a paso</h3><div id="ejemplo-display"></div></div>`;
+  }
+  // Generador de práctica (M3-M8)
+  if(['m3','m4','m5','m9','m11'].includes(id)){
+    html+=`<div class="practice-gen">
+      <h3>🎲 Generador de práctica infinita</h3>
+      <p style="font-size:.88rem">Genera ejercicios aleatorios con verificación automática. Practica cuantas veces quieras.</p>
+      <div class="gen-controls">
+        <button class="btn btn-primary" onclick="generarPractica('${id}')">🔄 Generar otro ejercicio</button>
+        <button class="btn btn-ghost" onclick="mostrarSolucionGen()">💡 Ver solución</button>
+      </div>
+      <div class="gen-display" id="gen-display" style="display:none"></div>
+    </div>`;
+  }
+  // Actividades (3 por sesión, seleccionadas aleatoriamente)
+  var visibles=getActividadesVisibles(id);
+  var totalMod=m.actividades.length;
+  html+=`<div class="section"><h3>✏️ Actividades <span class="badge">${visibles.length} de ${totalMod}</span></h3>`;
+  html+=`<p style="font-size:.82rem;color:var(--text-muted);margin-bottom:12px">Esta sesión muestra ${visibles.length} actividades. Al reabrir el archivo verás otras distintas. ¡Sigue practicando!</p>`;
+  visibles.forEach(function(idx){
+    html+=renderActividad(m.actividades[idx],id,idx);
+  });
+  html+=`</div>`;
+  // Consolidación
+  html+=`<div class="consolidacion">
+    <h3>🏆 Consolidación: resuélvelo tú</h3>
+    <p>${getConsolidacion(id)}</p>
+    <div class="autoeval">
+      <p style="font-weight:600;margin-bottom:6px">Autoevaluación guiada:</p>
+      <label><input type="checkbox" id="auto-1"> Identifiqué qué regla aplicar</label>
+      <label><input type="checkbox" id="auto-2"> Verifiqué mi respuesta</label>
+      <label><input type="checkbox" id="auto-3"> Identifiqué restricciones</label>
+      <label><input type="checkbox" id="auto-4"> Mi respuesta coincide con la esperada</label>
+    </div>
+    <div class="act-actions" style="margin-top:12px">
+      <button class="btn btn-success" onclick="guardarConsolidacion('${id}')">✓ Marcar consolidación como hecha</button>
+    </div>
+    <div id="cons-feedback" style="margin-top:8px"></div>
+  </div>`;
+  // Nota del módulo (aparece al finalizar)
+  html+=`<div id="nota-modulo"></div>`;
+  setHTML(cont,html);
+  attachActividadHandlers(id);
+  if(m.ejemplo && m.ejemplo.length>0)renderEjemplo(m.ejemplo,0);
+  actualizarEstadoDominar(id);
+  renderNotaModulo(id);
+}
+
+/* Consolidaciones de Cálculo Diferencial (una por módulo).
+   Las consolidaciones originales (de Cálculo Integral, que no correspondían
+   a los temas de este curso) se conservan abajo como referencia:
+
+   ORIGINALES (Integral):
+   m1: Calcula la antiderivada general de f(x)=8x^3 y verifica derivando. Luego encuentra la antiderivada específica sabiendo que F(0)=5.
+   m2: Resuelve la integral de (4x^3-6x+2) dx mostrando cada paso.
+   m3: Calcula la integral de x^-4 dx y de x^(2/3) dx. Verifica ambos derivando.
+   m4: Calcula la integral de (5 sen x - 2 cos x) dx y verifica derivando.
+   m5: Calcula la integral de 6x/(3x^2+1) dx identificando f y f'.
+   m6: Calcula la suma izquierda de f(x)=2x en [0,4] con n=4. Muestra la tabla de subintervalos.
+   m7: Calcula el área entre y=x+3 e y=x^2 en el intervalo donde se intersecan.
+   m8: Resuelve la integral de 3x^2(x^3+2)^4 dx por sustitución, mostrando u, du y el regreso a x.
+*/
+function getConsolidacion(id){
+  const consolidaciones={
+    m1:'Evalúa $f(x)=x^{3}-2x+5$ en $x=-1$ y $x=2$. Después determina si $y=x^{2}$ e $y=\\pm\\sqrt{x}$ son funciones, justificando con la prueba de la línea vertical.',
+    m2:'Determina el dominio y el rango de $f(x)=\\sqrt{x+4}$ y de $g(x)=\\dfrac{1}{x^{2}-9}$. Muestra cada restricción.',
+    m3:'Dadas $f(x)=2x-3$ y $g(x)=x^{2}+1$, calcula $(f+g)(x)$, $(f\\cdot g)(2)$ y $(g\\circ f)(x)$, mostrando cada paso.',
+    m4:'Resuelve $5^{x}=125$ y $\\log_{3}(x+1)=2$. Verifica tus soluciones sustituyendo en la ecuación original.',
+    m5:'Calcula $\\cos(120^{\\circ})$ y $\\tan\\!\\left(\\frac{\\pi}{6}\\right)$ usando el círculo unitario. Indica el cuadrante y el signo de cada resultado.',
+    m6:'Un triángulo rectángulo tiene catetos $8$ y $15$. Calcula la hipotenusa y $\\operatorname{sen}\\,\\theta$, $\\cos\\theta$, $\\tan\\theta$ para el ángulo $\\theta$ opuesto al cateto $8$. Convierte también $150^{\\circ}$ a radianes.',
+    m7:'Ubica en el círculo unitario los ángulos $\\frac{2\\pi}{3}$ y $\\frac{5\\pi}{4}$. Determina las coordenadas $(\\cos\\theta,\\operatorname{sen}\\,\\theta)$ de cada punto y el signo de $\\tan\\theta$ en cada caso.',
+    m8:'En un triángulo $ABC$ se conocen $a=7$, $b=5$ y $C=60^{\\circ}$. Calcula $c$ con la ley de cosenos. Después, usando la ley de senos, calcula el ángulo $A$.',
+    m9:'Calcula $\\displaystyle\\lim_{x\\to 2}\\frac{x^{2}-4}{x-2}$, $\\displaystyle\\lim_{x\\to\\infty}\\frac{3x^{2}-x}{5x^{2}+4}$ y $\\displaystyle\\lim_{x\\to 0}\\frac{\\operatorname{sen}\\,3x}{x}$ (sugerencia: multiplica y divide por $3$).',
+    m10:'Determina $k$ para que $f(x)=\\begin{cases}\\frac{x^{2}-1}{x-1}, & x\\neq 1 \\\\ k, & x=1\\end{cases}$ sea continua en $x=1$. Justifica las tres condiciones.',
+    m11:'Calcula $f\'(x)$ de $f(x)=\\dfrac{x^{2}+1}{x}$ y de $g(x)=\\sqrt{3x-2}$. Después encuentra la ecuación de la recta tangente a $f$ en $x=1$.'
+  };
+  return consolidaciones[id]||'Resuelve el ejercicio final del módulo.';
+}
+
+function toggleAcc(head){
+  head.classList.toggle('open');
+  head.nextElementSibling.classList.toggle('open');
+}
+
+/* Ejemplo paso a paso */
+let ejemploIdx=0;
+function renderEjemplo(pasos,idx){
+  ejemploIdx=idx;
+  const disp=$('ejemplo-display');
+  if(!disp)return;
+  const p=pasos[idx];
+  let dots=pasos.map((_,i)=>`<span class="dot ${i===idx?'active':''}" onclick="renderEjemplo(MODULES.find(m=>m.id===moduloActual).ejemplo,${i})"></span>`).join('');
+  setHTML(disp,`
+    <div class="paso-display">
+      <div class="paso-num">Paso ${p.num} de ${pasos.length}</div>
+      <div class="paso-titulo">${p.titulo}</div>
+      <div class="paso-content">${p.contenido}</div>
+      <div class="paso-regla">📌 Regla: ${p.regla}</div>
+    </div>
+    <div class="ejemplo-nav">
+      <button class="btn btn-sm" onclick="renderEjemplo(MODULES.find(m=>m.id===moduloActual).ejemplo,${Math.max(0,idx-1)})" ${idx===0?'disabled':''}>← Anterior</button>
+      <div class="ejemplo-dots">${dots}</div>
+      <button class="btn btn-sm" onclick="renderEjemplo(MODULES.find(m=>m.id===moduloActual).ejemplo,${Math.min(pasos.length-1,idx+1)})" ${idx===pasos.length-1?'disabled':''}>Siguiente →</button>
+    </div>`);
+}
+
+/* Se conserva por compatibilidad: el repaso ya es opcional y no bloquea nada */
+function marcarRepasoHecho(id){
+  ESTADO.modulos[id].repasoHecho=true;
+  saveState();
+  toast('Repaso marcado como visto','success');
+}
+
+/* ============================================================
+   RENDERIZADORES DE ACTIVIDADES
+   ============================================================ */
+function renderActividadSimple(act,modId,rId){
+  // Simplified renderer for repaso (no tracking)
+  if(act.tipo==='opcion_multiple'){
+    let opts=act.opciones.map((o,i)=>`<div class="opcion" onclick="seleccionarSimple(this,'${rId}',${i},${act.correcta})"><div class="marker">${String.fromCharCode(65+i)}</div><div>${o}</div></div>`).join('');
+    return `<div class="actividad" id="${rId}"><div class="act-enunciado">${act.enunciado}</div><div class="opciones">${opts}</div><div class="feedback" id="fb-${rId}"></div></div>`;
+  }
+  return `<div class="actividad"><div class="act-enunciado">${act.enunciado}</div><p style="font-size:.85rem;color:var(--text-muted)">(Pregunta de repaso)</p></div>`;
+}
+function seleccionarSimple(el,rId,sel,correcta){
+  const cont=$(rId);
+  cont.querySelectorAll('.opcion').forEach(o=>o.classList.remove('selected','correct','incorrect'));
+  const opts=cont.querySelectorAll('.opcion');
+  const fb=$('fb-'+rId);
+  if(sel===correcta){
+    el.classList.add('correct');
+    fb.className='feedback show ok';
+    setHTML(fb,'✓ ¡Correcto! Buen repaso.');
+  }else{
+    el.classList.add('incorrect');
+    opts[correcta].classList.add('correct');
+    fb.className='feedback show err';
+    setHTML(fb,'La respuesta correcta está resaltada en verde. Revisa este concepto antes de continuar.');
+  }
+}
+
+function renderActividad(act,modId,idx){
+  const aId=`act-${modId}-${idx}`;
+  const est=ESTADO.modulos[modId];
+  const estadoAct=est.actividades[idx]||{intentos:0,correcta:false,primerIntento:null};
+  const enunciadoSeguro = act.enunciado || '(Enunciado no disponible)';
+  let html=`<div class="actividad ${estadoAct.correcta?'respondida-correcta':''}" id="${aId}" data-tipo="${act.tipo}" data-mod="${modId}" data-idx="${idx}">
+    <div class="act-enunciado"><span class="act-num">${idx+1}</span>${enunciadoSeguro}</div>`;
+  switch(act.tipo){
+    case 'opcion_multiple':
+    case 'verdadero_falso':{
+      // For verdadero_falso: ensure opciones exist and convert boolean correcta to index
+      const opciones = act.opciones || ['Verdadero','Falso'];
+      const correctIdx = (act.tipo==='verdadero_falso') ? (act.correcta?0:1) : act.correcta;
+      let opts=opciones.map((o,i)=>{
+        let cls='';
+        if(estadoAct.correcta){
+          cls=i===correctIdx?'correct':'';
+        }
+        return `<div class="opcion ${cls}" onclick="seleccionarOpcion('${aId}',${i})"><div class="marker">${String.fromCharCode(65+i)}</div><div>${o}</div></div>`;
+      }).join('');
+      html+=`<div class="opciones">${opts}</div>`;
+      break;
+    }
+    case 'seleccion_multiple':
+      html+=`<div class="opciones">${act.opciones.map((o,i)=>`<div class="opcion" onclick="toggleMulti('${aId}',${i})"><div class="marker">☐</div><div>${o}</div></div>`).join('')}</div>
+        <div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarMulti('${aId}')">Verificar</button></div>`;
+      break;
+    case 'completar_hueco':
+      // enunciado already rendered above (contains the input)
+      html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarHueco('${aId}',${idx})">Verificar</button></div>`;
+      break;
+    case 'ordenar_pasos':
+      html+=`<div class="orden-list" id="orden-${aId}">${renderOrdenItems(act.pasos,aId)}</div>
+        <div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarOrden('${aId}',${idx})">Verificar orden</button></div>`;
+      break;
+    case 'emparejar':
+      html+=renderEmparejar(act.parejas,aId);
+      html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarEmparejar('${aId}',${idx})">Verificar emparejamientos</button></div>`;
+      break;
+    case 'numerica':
+      // enunciado already rendered above (contains the input)
+      html+=`<div class="act-actions"><button class="btn btn-primary btn-sm" onclick="verificarNumerica('${aId}',${idx})">Verificar</button></div>`;
+      break;
+  }
+  // Hints (always show — generic hints generated if no explicit pistas)
+  {
+    html+=`<div class="hints">
+      <button class="hint-btn" onclick="mostrarPista('${aId}',1)">💡 Pista 1</button>
+      <button class="hint-btn" onclick="mostrarPista('${aId}',2)">💡 Pista 2</button>
+      <button class="hint-btn" onclick="mostrarPista('${aId}',3)">💡 Pista 3 (pista fuerte)</button>
+    </div>
+    <div class="hint-content" id="hint-${aId}"></div>`;
+  }
+  html+=`<div class="feedback" id="fb-${aId}"></div>`;
+  if(estadoAct.intentos>0){
+    html+=`<div class="act-stats">Intentos: ${estadoAct.intentos} ${estadoAct.correcta?'✓':'· Sigue intentando'}</div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function renderOrdenItems(pasos,aId){
+  // Mezcla uniforme (Fisher-Yates)
+  let shuffled=barajar(pasos);
+  return shuffled.map((p,i)=>`<div class="orden-item" data-orden="${p.orden}">
+    <span class="pos">${i+1}</span>
+    <span class="txt">${p.texto}</span>
+    <button class="up" onclick="moverOrden('${aId}',${i},-1)">↑</button>
+    <button class="down" onclick="moverOrden('${aId}',${i},1)">↓</button>
+  </div>`).join('');
+}
+function moverOrden(aId,i,dir){
+  const list=$('orden-'+aId);
+  const items=[...list.querySelectorAll('.orden-item')];
+  const j=i+dir;
+  if(j<0||j>=items.length)return;
+  list.insertBefore(items[j],items[i]);
+  // Update pos numbers
+  [...list.querySelectorAll('.orden-item')].forEach((it,k)=>it.querySelector('.pos').textContent=k+1);
+}
+function renderEmparejar(parejas,aId){
+  let lefts=parejas.map((p,i)=>`<div class="emp-item" data-side="L" data-idx="${i}" onclick="selEmp('${aId}','L',${i})">${p.izq}</div>`).join('');
+  let rights=barajar(parejas).map(p=>`<div class="emp-item" data-side="R" data-val="${p.der}" onclick="selEmp('${aId}','R',this)">${p.der}</div>`).join('');
+  return `<div class="emparejar-grid">
+    <div class="emp-col">${lefts}</div>
+    <div class="emp-col" id="emp-right-${aId}">${rights}</div>
+  </div>
+  <div id="emp-status-${aId}" style="font-size:.8rem;margin-top:6px;color:var(--text-muted)"></div>`;
+}
+let empSel={};
+function selEmp(aId,side,idx){
+  const cont=$(aId);
+  if(!empSel[aId])empSel[aId]={};
+  cont.querySelectorAll(`.emp-item[data-side="${side}"]`).forEach(e=>e.classList.remove('selected'));
+  if(side==='L'){
+    empSel[aId].L=idx;
+    cont.querySelectorAll(`.emp-item[data-side="L"]`)[idx].classList.add('selected');
+  }else{
+    // idx is the element
+    idx.classList.add('selected');
+    empSel[aId].Relem=idx;
+  }
+  if(empSel[aId].L!==undefined && empSel[aId].Relem){
+    // Match
+    const act=getActFromElem(aId);
+    const pareja=act.parejas[empSel[aId].L];
+    const rightVal=empSel[aId].Relem.getAttribute('data-val');
+    if(pareja.der===rightVal){
+      const leftElem=cont.querySelectorAll('.emp-item[data-side="L"]')[empSel[aId].L];
+      leftElem.classList.add('correct','matched');
+      leftElem.classList.remove('selected');
+      empSel[aId].Relem.classList.add('correct','matched');
+      empSel[aId].Relem.classList.remove('selected');
+      empSel[aId]={};
+      const matched=cont.querySelectorAll('.emp-item.matched').length;
+      $('emp-status-'+aId).textContent=`${matched}/${act.parejas.length} emparejados`;
+    }else{
+      const leftElem=cont.querySelectorAll('.emp-item[data-side="L"]')[empSel[aId].L];
+      leftElem.classList.add('incorrect');
+      empSel[aId].Relem.classList.add('incorrect');
+      setTimeout(()=>{
+        leftElem.classList.remove('incorrect','selected');
+        empSel[aId].Relem.classList.remove('incorrect','selected');
+        empSel[aId]={};
+      },800);
+    }
+  }
+}
+function getActFromElem(aId){
+  const parts=aId.split('-');
+  const modId=parts[1];
+  const idx=parseInt(parts[2]);
+  return getModulo(modId).actividades[idx];
+}
+
+/* ============================================================
+   VERIFICADORES
+   ============================================================ */
+function seleccionarOpcion(aId,sel){
+  const cont=$(aId);
+  if(cont.classList.contains('respondida-correcta'))return;
+  cont.querySelectorAll('.opcion').forEach(o=>o.classList.remove('selected'));
+  cont.querySelectorAll('.opcion')[sel].classList.add('selected');
+  cont.dataset.sel=sel;
+  // Auto-verify on selection
+  verificarOpcion(aId);
+}
+function attachActividadHandlers(modId){
+  // No-op; handlers are inline onclick
+}
+function verificarOpcion(aId){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const idx=parseInt(cont.dataset.idx);
+  const act=getModulo(modId).actividades[idx];
+  const sel=parseInt(cont.dataset.sel);
+  if(sel===undefined||isNaN(sel)){toast('Selecciona una opción','info');return}
+  // For verdadero_falso, correcta is boolean: convert to index
+  const correctIdx=(act.tipo==='verdadero_falso')?(act.correcta?0:1):act.correcta;
+  const opciones=act.opciones||['Verdadero','Falso'];
+  const fb=$('fb-'+aId);
+  const isCorrect=sel===correctIdx;
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    cont.querySelectorAll('.opcion')[sel].classList.add('correct');
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado||'',opciones[sel]);
+  }else{
+    cont.querySelectorAll('.opcion')[sel].classList.add('incorrect');
+    cont.querySelectorAll('.opcion')[correctIdx].classList.add('correct');
+    fb.className='feedback show err';
+    let errMsg='Respuesta incorrecta. ';
+    if(act.feedback.errores){
+      const errKey=act.tipo==='verdadero_falso'?(sel===0?true:false):sel;
+      errMsg=act.feedback.errores[errKey]||act.feedback.errores[sel]||'Respuesta incorrecta. Revisa la teoría.';
+    }
+    setHTML(fb,errMsg);
+    registrarError(modId,idx,act.enunciado||'',opciones[sel],opciones[correctIdx]);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function toggleMulti(aId,i){
+  const cont=$(aId);
+  if(cont.classList.contains('respondida-correcta'))return;
+  const opts=cont.querySelectorAll('.opcion');
+  const marker=opts[i].querySelector('.marker');
+  if(marker.textContent==='☐'){marker.textContent='☑';opts[i].classList.add('selected')}
+  else{marker.textContent='☐';opts[i].classList.remove('selected')}
+}
+function verificarMulti(aId){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const idx=parseInt(cont.dataset.idx);
+  const act=getModulo(modId).actividades[idx];
+  const opts=cont.querySelectorAll('.opcion');
+  let selected=[];
+  opts.forEach((o,i)=>{if(o.querySelector('.marker').textContent==='☑')selected.push(i)});
+  if(selected.length===0){toast('Selecciona al menos una','info');return}
+  const correctSet=new Set(act.correctas);
+  const selSet=new Set(selected);
+  const isCorrect=correctSet.size===selSet.size&&[...correctSet].every(x=>selSet.has(x));
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    opts.forEach((o,i)=>{if(correctSet.has(i))o.classList.add('correct')});
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado||'',selected.map(i=>act.opciones[i]).join(', '));
+  }else{
+    opts.forEach((o,i)=>{
+      if(correctSet.has(i)&&selSet.has(i))o.classList.add('correct');
+      else if(selSet.has(i)&&!correctSet.has(i))o.classList.add('incorrect');
+      else if(correctSet.has(i))o.classList.add('correct');
+    });
+    fb.className='feedback show err';
+    let errTxt='Algunas selecciones son incorrectas. ';
+    if(act.feedback.errores){
+      selected.forEach(s=>{
+        if(act.feedback.errores[s]&&!correctSet.has(s))errTxt+=act.feedback.errores[s]+' ';
+      });
+    }
+    setHTML(fb,errTxt);
+    registrarError(modId,idx,act.enunciado||'',selected.map(i=>act.opciones[i]).join(','),act.correctas.map(i=>act.opciones[i]).join(','));
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarHueco(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const input=cont.querySelector('input.input-line');
+  if(!input)return;
+  const val=input.value.trim();
+  if(!val){toast('Escribe tu respuesta','info');return}
+  const norm=normalizeStr(val);
+  const correctas=act.respuesta.map(r=>normalizeStr(r));
+  const isCorrect=correctas.some(r=>r===norm);
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    input.style.borderColor='var(--success)';
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedbackCorrecto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado||'',val);
+  }else{
+    input.style.borderColor='var(--danger)';
+    fb.className='feedback show err';
+    setHTML(fb,act.feedbackError);
+    registrarError(modId,idx,act.enunciado||'',val,act.respuesta[0]);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarOrden(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const list=$('orden-'+aId);
+  const items=[...list.querySelectorAll('.orden-item')];
+  const currentOrder=items.map(it=>parseInt(it.dataset.orden));
+  const expectedOrder=act.pasos.map(p=>p.orden);
+  const isCorrect=currentOrder.every((v,i)=>v===expectedOrder[i]);
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    items.forEach(it=>it.style.borderColor='var(--success)');
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado||'','Orden correcto');
+  }else{
+    fb.className='feedback show err';
+    setHTML(fb,act.feedback.errores||'El orden no es correcto. Revisa cuál paso debe ir primero.');
+    registrarError(modId,idx,act.enunciado||'',currentOrder.join(','),expectedOrder.join(','));
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarEmparejar(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const matched=cont.querySelectorAll('.emp-item.matched').length;
+  const isCorrect=matched===act.parejas.length;
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedback.correcto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado||'','Todos emparejados');
+  }else{
+    fb.className='feedback show err';
+    setHTML(fb,`Llevas ${matched}/${act.parejas.length} correctos. `+(act.feedback.errores||'Sigue intentando.'));
+    // Nota: no se registra un intento extra aquí; un intento = una verificación completa
+  }
+  actualizarEstadoDominar(modId);
+}
+
+function verificarNumerica(aId,idx){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const act=getModulo(modId).actividades[idx];
+  const input=cont.querySelector('input.input-line');
+  if(!input)return;
+  const val=parseFloat(input.value.replace(',','.'));
+  if(isNaN(val)){toast('Escribe un número','info');return}
+  const isCorrect=Math.abs(val-act.respuesta)<=act.tolerancia;
+  const fb=$('fb-'+aId);
+  registrarIntento(modId,idx,isCorrect);
+  if(isCorrect){
+    cont.classList.add('respondida-correcta');
+    input.style.borderColor='var(--success)';
+    fb.className='feedback show ok';
+    setHTML(fb,act.feedbackCorrecto);
+    descargarEvidenciaActividad(modId,idx,true,act.enunciado||'',val);
+  }else{
+    input.style.borderColor='var(--danger)';
+    fb.className='feedback show err';
+    setHTML(fb,act.feedbackError);
+    registrarError(modId,idx,act.enunciado||'',val,act.respuesta);
+  }
+  actualizarEstadoDominar(modId);
+}
+
+/* Pistas */
+function mostrarPista(aId,nivel){
+  const cont=$(aId);
+  const modId=cont.dataset.mod;
+  const idx=parseInt(cont.dataset.idx);
+  const act=getModulo(modId).actividades[idx];
+  const hintEl=$('hint-'+aId);
+  let label=nivel===1?'Recordatorio conceptual':nivel===2?'Paso clave':'Primer paso';
+  let pista;
+  if(act.pistas && act.pistas[nivel-1]){
+    pista=act.pistas[nivel-1];
+  }else{
+    // Generate generic hints based on activity type
+    pista=generarPistaGenerica(act,nivel,modId);
+  }
+  if(!pista)return;
+  setHTML(hintEl,`<span class="hint-level">${label}:</span>${pista}`);
+  hintEl.classList.add('show');
+}
+function generarPistaGenerica(act,nivel,modId){
+  const tipo=act.tipo;
+  // Get the correct answer's text as a hint source (handle verdadero_falso and missing opciones)
+  let correctaTxt='';
+  if(act.tipo==='verdadero_falso'){
+    correctaTxt=act.correcta?'Verdadero':'Falso';
+  }else if(act.opciones && act.correcta!==undefined){
+    correctaTxt=act.opciones[act.correcta];
+  }else if(act.respuesta){
+    correctaTxt=Array.isArray(act.respuesta)?act.respuesta[0]:act.respuesta;
+  }
+
+  if(nivel===1){
+    const reminders={
+      m0:'Repasa las reglas de exponentes, álgebra y trigonometría básica.',
+      m1:'Recuerda: una función asigna a cada entrada exactamente una salida. Evalúa sustituyendo.',
+      m2:'Busca restricciones: denominador distinto de cero, radicando no negativo, argumento de logaritmo positivo.',
+      m3:'Para composición, evalúa primero la función interna $g$ y sustituye el resultado en $f$.',
+      m4:'Usa propiedades de exponentes y logaritmos: $\\log_{a}(b\\cdot c)=\\log_{a}b+\\log_{a}c$, $a^{m}\\cdot a^{n}=a^{m+n}$.',
+      m5:'Recuerda SOHCAHTOA y los valores notables de $30^{\\circ}$, $45^{\\circ}$ y $60^{\\circ}$.',
+      m6:'Convierte grados a radianes multiplicando por $\\frac{\\pi}{180^{\\circ}}$. En triángulos rectángulos, aplica SOHCAHTOA.',
+      m7:'Piensa en el círculo unitario: $\\theta$ da el punto $(\\cos\\theta,\\operatorname{sen}\\,\\theta)$. Ubica el cuadrante.',
+      m8:'Ley de senos para dos ángulos y un lado; ley de cosenos para tres lados o dos lados con ángulo incluido.',
+      m9:'Primero intenta sustitución directa. Si sale $\\frac{0}{0}$, factoriza o usa conjugado.',
+      m10:'Verifica las tres condiciones: $f(a)$ existe, el límite existe y ambos coinciden.',
+      m11:'Recuerda: $\\frac{d}{dx}(x^{n})=nx^{n-1}$, y para compuestas usa la regla de la cadena.'
+    };
+    return reminders[modId]||'Revisa la teoría del módulo y aplica la regla correspondiente.';
+  }
+  if(nivel===2){
+    if(tipo==='opcion_multiple'||tipo==='verdadero_falso'){
+      return 'Analiza cada opción: ¿cuál al evaluarse o aplicarse correctamente da el resultado esperado?';
+    }
+    if(tipo==='completar_hueco'){
+      return 'El término que falta es parte de la respuesta correcta. Identifica qué operación falta.';
+    }
+    if(tipo==='ordenar_pasos'){
+      return 'El primer paso siempre es identificar o plantear; el último es simplificar o verificar.';
+    }
+    if(tipo==='numerica'){
+      return 'Identifica qué valores necesitas calcular y en qué orden. Cuidado con unidades y signos.';
+    }
+    return 'Identifica el paso clave que falta en tu razonamiento.';
+  }
+  if(nivel===3){
+    if(tipo==='opcion_multiple'||tipo==='verdadero_falso'){
+      return 'La respuesta correcta está relacionada con: '+String(correctaTxt).replace(/<[^>]+>/g,'').substring(0,60)+'...';
+    }
+    if(tipo==='completar_hueco'){
+      return 'La respuesta empieza con: '+String(correctaTxt).substring(0,4)+'...';
+    }
+    if(tipo==='numerica'){
+      return 'El resultado es aproximadamente '+act.respuesta+' (calcula los pasos intermedios).';
+    }
+    return 'Revisa el ejemplo resuelto del módulo para ver el primer paso aplicado.';
+  }
+  return '';
+}
+
+/* ============================================================
+   REGISTRO DE INTENTOS Y ERRORES
+   ============================================================ */
+function registrarIntento(modId,idx,correcto){
+  if(modId==='m0'){
+    if(!ESTADO.m0.intentos[idx])ESTADO.m0.intentos[idx]=0;
+    ESTADO.m0.intentos[idx]++;
+    if(correcto&&!ESTADO.m0.intentos[idx+'_ok']){
+      ESTADO.m0.intentos[idx+'_ok']=true;
+      ESTADO.m0.score++;
+    }
+    evalDiagnostico();
+    return;
+  }
+  const est=ESTADO.modulos[modId];
+  if(!est.actividades[idx])est.actividades[idx]={intentos:0,correcta:false,primerIntento:fechaHora()};
+  est.actividades[idx].intentos++;
+  if(correcto&&!est.actividades[idx].correcta){
+    est.actividades[idx].correcta=true;
+    est.scoreActividades++;
+  }
+  est.completado=est.scoreActividades>=Math.ceil(est.totalActividades*0.5);
+  saveState();
+}
+function registrarError(modId,idx,enunciado,dada,correcta){
+  ESTADO.errores.push({
+    mod:modId, idx:idx, enunciado:String(enunciado).substring(0,100),
+    respuestaDada:String(dada).substring(0,80),
+    respuestaCorrecta:String(correcta).substring(0,80),
+    fecha:fechaHora()
+  });
+  if(ESTADO.errores.length>100)ESTADO.errores=ESTADO.errores.slice(-100);
+  saveState();
+}
+
+function evalDiagnostico(){
+  const m0=ESTADO.m0;
+  m0.max=getModulo('m0').actividades.length;
+  m0.completado=Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).length>=m0.max;
+  // Generate recommendations based on categories
+  const cats={derivadas:0,exponentes:0,sigma:0,algebra:0};
+  const acts=getModulo('m0').actividades;
+  Object.keys(m0.intentos).filter(k=>k.endsWith('_ok')).forEach(k=>{
+    const i=parseInt(k);
+    if(acts[i]&&acts[i].cat)cats[acts[i].cat]++;
+  });
+  m0.recomendaciones=[];
+  if(cats.derivadas<2)m0.recomendaciones.push('Refuerza derivadas básicas (x^n, sen, cos, ln) — las necesitas en todos los módulos.');
+  if(cats.exponentes<2)m0.recomendaciones.push('Refuerza leyes de exponentes y radicales antes del módulo 3 (regla de la potencia).');
+  if(cats.sigma<1)m0.recomendaciones.push('Repasa la notación sigma antes del módulo 6 (sumas de Riemann).');
+  if(cats.algebra<2)m0.recomendaciones.push('Refuerza álgebra de fracciones — la usarás en sustitución y área entre curvas.');
+  if(m0.recomendaciones.length===0)m0.recomendaciones.push('¡Excelente base! Puedes avanzar con confianza por todos los módulos.');
+  saveState();
+}
+function repetirDiagnostico(){
+  ESTADO.m0={completado:false,score:0,max:6,recomendaciones:[],intentos:[]};
+  saveState();
+  abrirModulo('m0');
+}
+
+/* ============================================================
+   ESTADO FINALIZAR, NOTA Y DESCARGA
+   ============================================================ */
+function actualizarEstadoDominar(modId){
+  if(modId==='m0')return;
+  const est=ESTADO.modulos[modId];
+  const btn=$('btn-dominar');
+  const msg=$('dominar-msg');
+  if(!btn)return;
+  const pct=est.totalActividades>0 ? est.scoreActividades/est.totalActividades : 0;
+  if(est.consolidacionHecha){
+    btn.disabled=false;
+    msg.textContent='Puedes finalizar el módulo. Avance actual en actividades: '+Math.round(pct*100)+'%.';
+  }else{
+    btn.disabled=true;
+    msg.textContent='Para finalizar el módulo, completa la consolidación (sección inferior). Tu nota se calcula con 90% de actividades y 10% de consolidación.';
+  }
+}
+
+function finalizarModulo(){
+  if(!moduloActual||moduloActual==='m0')return;
+  if(!ESTADO.usuario.nombre){
+    toast('Escribe tu nombre en "Mis datos" para generar tu nota','info');
+    editarDatos();
+    return;
+  }
+  const est=ESTADO.modulos[moduloActual];
+  const m=getModulo(moduloActual);
+  const pct=est.totalActividades>0 ? est.scoreActividades/est.totalActividades : 0;
+  est.nota=calcularNota(moduloActual);
+  est.dominado=pct>=m.criterioDominio && est.consolidacionHecha;
+  est.insignia=est.dominado;
+  est.finalizado=true;
+  est.fechaFinal=fechaHora();
+  saveState();
+  renderNotaModulo(moduloActual);
+  toast(`Módulo finalizado. Nota: ${est.nota.toFixed(1)}/10`, est.dominado?'success':'info');
+}
+
+function renderNotaModulo(modId){
+  const el=$('nota-modulo');
+  if(!el)return;
+  const est=ESTADO.modulos[modId];
+  const m=getModulo(modId);
+  if(!est || !est.finalizado){el.innerHTML='';return;}
+  const pct=est.totalActividades>0 ? Math.round((est.scoreActividades/est.totalActividades)*100) : 0;
+  const aprobado=est.dominado;
+  const nombre=escapeHtml(ESTADO.usuario.nombre||'(sin nombre)');
+  setHTML(el,`
+    <div class="nota-card">
+      <h3>📝 Nota del módulo ${m.num}: ${escapeHtml(m.titulo)}</h3>
+      <p style="font-size:.9rem;color:var(--text-muted)">Estudiante: <strong style="color:var(--text)">${nombre}</strong></p>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px">
+        <div class="nota-valor">${est.nota.toFixed(1)}<small> / 10</small></div>
+        <div>
+          <span class="nota-estado ${aprobado?'aprobado':'pendiente'}">${aprobado?'✅ Aprobado':'🔁 No aprobado: repite las actividades para subir tu nota'}</span>
+        </div>
+      </div>
+      <table>
+        <tr><td>Actividades correctas</td><td>${est.scoreActividades} / ${est.totalActividades}</td></tr>
+        <tr><td>Porcentaje de aciertos</td><td>${pct}%</td></tr>
+        <tr><td>Consolidación</td><td>${est.consolidacionHecha?'Completada':'Pendiente'}</td></tr>
+        <tr><td>Criterio de aprobación</td><td>${Math.round(m.criterioDominio*100)}% de aciertos + consolidación</td></tr>
+        <tr><td>Fecha de finalización</td><td>${escapeHtml(est.fechaFinal||'—')}</td></tr>
+      </table>
+      <p style="font-size:.8rem;color:var(--text-muted)">Fórmula de la nota: 90% aciertos en actividades + 10% consolidación.</p>
+      <div class="nota-acciones">
+        <button class="btn btn-download" onclick="descargarReporteModulo('${modId}')">⬇️ Descargar mi nota (con mi nombre)</button>
+        <button class="btn" onclick="irDashboard()">Volver al panel</button>
+      </div>
+    </div>`);
+}
+
+function guardarConsolidacion(modId){
+  const checks=['auto-1','auto-2','auto-3','auto-4'].map(id=>$(id)&&$(id).checked);
+  const allOk=checks.every(c=>c);
+  ESTADO.modulos[modId].consolidacionHecha=true;
+  ESTADO.modulos[modId].intentosConsolidacion++;
+  const fb=$('cons-feedback');
+  if(fb){
+    if(allOk){
+      setHTML(fb,'<div class="feedback show ok">¡Excelente autoevaluación! Marcaste todos los criterios. Ya puedes finalizar el módulo.</div>');
+    }else{
+      setHTML(fb,'<div class="feedback show err">Revisa los criterios sin marcar. La consolidación se registra, pero asegúrate de entender cada paso.</div>');
+    }
+  }
+  actualizarEstadoDominar(modId);
+  saveState();
+  toast('Consolidación registrada','success');
+}
+
+/* ============================================================
+   GENERADORES DE PRÁCTICA
+   ============================================================ */
+let practicaActual=null;
+function generarPractica(modId){
+  var gen={m3:genOperaciones,m4:genExpLog,m5:genTrig,m9:genLimites,m11:genDerivadas}[modId];
+  if(!gen){toast('No hay generador','info');return}
+  practicaActual=gen();var disp=$('gen-display');disp.style.display='block';
+  setHTML(disp,'<div class="gen-problem">'+practicaActual.problema+'</div><div class="numerica-input"><input class="input-line" id="gen-input" placeholder="Tu respuesta"><button class="btn btn-primary btn-sm" onclick="verificarPractica()">Verificar</button></div><div class="feedback" id="gen-feedback"></div>');
+}
+function mostrarSolucionGen(){if(!practicaActual){toast('Genera primero','info');return}var fb=$('gen-feedback');fb.className='feedback show ok';setHTML(fb,'<strong>Solución:</strong> '+practicaActual.solucion);}
+function verificarPractica(){if(!practicaActual)return;var input=$('gen-input'),val=input.value.trim();if(!val){toast('Escribe','info');return}var isCorrect;if(practicaActual.tipo==='numerica'){var num=parseFloat(val.replace(',','.'));isCorrect=!isNaN(num)&&Math.abs(num-practicaActual.respuesta)<=practicaActual.tolerancia;}else{var norm=normalizeStr(val);isCorrect=practicaActual.acepta.some(function(r){return normalizeStr(r)===norm});}var fb=$('gen-feedback');if(isCorrect){fb.className='feedback show ok';setHTML(fb,'Correcto! '+practicaActual.explicacion);input.style.borderColor='var(--success)';}else{fb.className='feedback show err';setHTML(fb,'Revisa. '+practicaActual.pista);input.style.borderColor='var(--danger)';}}
+
+function genOperaciones(){var t=Math.floor(Math.random()*3);if(t===0){var c=1+Math.floor(Math.random()*5),x=1+Math.floor(Math.random()*4),gx=x+c,fx=gx*gx;return{tipo:'numerica',problema:'Sean $f(x)=x^{2}$ y $g(x)=x+'+c+'$. Calcula $(f\\circ g)('+x+')$.',solucion:'$'+fx+'$',acepta:[],respuesta:fx,tolerancia:0.01,pista:'Primero $g('+x+')$.',explicacion:'$'+fx+'$'};}if(t===1){var a=1+Math.floor(Math.random()*4),b=1+Math.floor(Math.random()*4),co=a+1;return{tipo:'simbolica',problema:'$f(x)='+a+'x$, $g(x)=x+'+b+'$. Calcula $(f+g)(x)$.',solucion:'$'+co+'x+'+b+'$',acepta:[co+'x+'+b],pista:'Suma.',explicacion:'$'+co+'x+'+b+'$'};}var x1=Math.floor(Math.random()*4)+1,y1=Math.floor(Math.random()*5)+1,x2=x1+1+Math.floor(Math.random()*3),y2=y1+1+Math.floor(Math.random()*4),m=(y2-y1)/(x2-x1);return{tipo:'numerica',problema:'Pendiente por $('+x1+','+y1+')$ y $('+x2+','+y2+')$.',solucion:'$'+m+'$',acepta:[],respuesta:m,tolerancia:0.01,pista:'$m=\\frac{\\Delta y}{\\Delta x}$',explicacion:'$'+m+'$'};}
+function genExpLog(){var t=Math.floor(Math.random()*3);if(t===0){var bs=[2,3,10],b=bs[Math.floor(Math.random()*3)],e=2+Math.floor(Math.random()*3),v=Math.pow(b,e);return{tipo:'numerica',problema:'$\\log_{'+b+'}('+v+')$',solucion:'$'+e+'$',acepta:[],respuesta:e,tolerancia:0.01,pista:'$'+b+'^{?}='+v+'$',explicacion:'$'+e+'$'};}if(t===1){var m=2+Math.floor(Math.random()*3),n=2+Math.floor(Math.random()*3),b=2+Math.floor(Math.random()*3),s=m+n,v=Math.pow(b,s);return{tipo:'simbolica',problema:'Simplifica $'+b+'^{'+m+'}\\cdot '+b+'^{'+n+'}$',solucion:'$'+b+'^{'+s+'}='+v+'$',acepta:[b+'^'+s,String(v)],pista:'Suma exponentes.',explicacion:'$'+v+'$'};}var b=2+Math.floor(Math.random()*3),x=2+Math.floor(Math.random()*3),v=Math.pow(b,x);return{tipo:'numerica',problema:'Resuelve $'+b+'^{x}='+v+'$',solucion:'$x='+x+'$',acepta:[],respuesta:x,tolerancia:0.01,pista:'Potencia de '+b+'.',explicacion:'$x='+x+'$'};}
+function genTrig(){var a=[{d:0,s:'0',c:'1'},{d:30,s:'\\frac{1}{2}',c:'\\frac{\\sqrt{3}}{2}'},{d:45,s:'\\frac{\\sqrt{2}}{2}',c:'\\frac{\\sqrt{2}}{2}'},{d:60,s:'\\frac{\\sqrt{3}}{2}',c:'\\frac{1}{2}'},{d:90,s:'1',c:'0'}];var p=a[Math.floor(Math.random()*a.length)],isS=Math.random()<0.5,f=isS?'\\operatorname{sen}':'\\cos',v=isS?p.s:p.c;return{tipo:'simbolica',problema:'$'+f+'('+p.d+'^{\\circ})$',solucion:'$'+v+'$',acepta:[v],pista:'Valores notables.',explicacion:'$'+v+'$'};}
+function genLimites(){var t=Math.floor(Math.random()*3);if(t===0){var a=2+Math.floor(Math.random()*4),a2=a*a,r=2*a;return{tipo:'numerica',problema:'$\\lim_{x\\to '+a+'}\\frac{x^{2}-'+a2+'}{x-'+a+'}$',solucion:'$'+r+'$',acepta:[],respuesta:r,tolerancia:0.01,pista:'Factoriza.',explicacion:'$'+r+'$'};}if(t===1){var n=2+Math.floor(Math.random()*2),a=1+Math.floor(Math.random()*4),b=1+Math.floor(Math.random()*4);return{tipo:'numerica',problema:'$\\lim_{x\\to\\infty}\\frac{'+a+'x^{'+n+'}+3x}{'+b+'x^{'+n+'}-2}$',solucion:'$\\frac{'+a+'}{'+b+'}$',acepta:[],respuesta:a/b,tolerancia:0.001,pista:'Coeficientes principales.',explicacion:'$\\frac{'+a+'}{'+b+'}$'};}var a=2+Math.floor(Math.random()*5),c=1+Math.floor(Math.random()*4),r=c*a+2;return{tipo:'numerica',problema:'$\\lim_{x\\to '+a+'}('+c+'x+2)$',solucion:'$'+r+'$',acepta:[],respuesta:r,tolerancia:0.01,pista:'Sustitución directa.',explicacion:'$'+r+'$'};}
+function genDerivadas(){var t=Math.floor(Math.random()*4);if(t===0){var n=2+Math.floor(Math.random()*5);return{tipo:'simbolica',problema:'$\\frac{d}{dx}[x^{'+n+'}]$',solucion:'$'+n+'x^{'+(n-1)+'}$',acepta:[n+'x^'+(n-1)],pista:'Baja exponente.',explicacion:'$'+n+'x^{'+(n-1)+'}$'};}if(t===1){var a=1+Math.floor(Math.random()*3),b=1+Math.floor(Math.random()*4),c=Math.floor(Math.random()*3),co=2*a;return{tipo:'simbolica',problema:'$\\frac{d}{dx}['+a+'x^{2}+'+b+'x+'+c+']$',solucion:'$'+co+'x+'+b+'$',acepta:[co+'x+'+b],pista:'Término a término.',explicacion:'$'+co+'x+'+b+'$'};}if(t===2){var n=2+Math.floor(Math.random()*3),a=2+Math.floor(Math.random()*3),tc=n*Math.pow(a,n);return{tipo:'simbolica',problema:'$\\frac{d}{dx}[('+a+'x)^{'+n+'}]$',solucion:'$'+tc+'x^{'+(n-1)+'}$',acepta:[tc+'x^'+(n-1)],pista:'Regla de la cadena.',explicacion:'$'+tc+'x^{'+(n-1)+'}$'};}var a=1+Math.floor(Math.random()*4),x0=1+Math.floor(Math.random()*3),d=2*a*x0-1;return{tipo:'numerica',problema:'Si $f(x)='+a+'x^{2}-x$, calcula $f\'('+x0+')$.',solucion:'$'+d+'$',acepta:[],respuesta:d,tolerancia:0.01,pista:'Primero $f\'(x)$.',explicacion:'$'+d+'$'};}
+
+/* ============================================================
+   DESCARGAS DE EVIDENCIAS
+   ============================================================ */
+function descargarTexto(filename,content,mime='text/plain'){
+  const blob=new Blob([content],{type:mime+';charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function descargarEvidenciaActividad(modId,idx,correcta,enunciado,respuesta){
+  const ts=fechaHora();
+  const m=getModulo(modId);
+  const content=`EVIDENCIA DE ACTIVIDAD
+======================
+Estudiante: ${ESTADO.usuario.nombre||'(sin nombre)'}
+Grupo: ${ESTADO.usuario.grupo||'(sin grupo)'}
+Fecha: ${ts}
+
+Módulo: ${m.num}. ${m.titulo} (ID: ${modId})
+Actividad #: ${idx+1}
+
+Enunciado:
+${String(enunciado).replace(/<[^>]+>/g,'')}
+
+Respuesta del estudiante: ${String(respuesta).replace(/<[^>]+>/g,'')}
+¿Correcta?: ${correcta?'SÍ':'NO'}
+
+---
+Generado automáticamente por el Curso-Taller de Recuperación de Cálculo Diferencial.
+`;
+  const filename=`evidencia_${modId}_act${idx+1}_${Date.now()}.txt`;
+  descargarTexto(filename,content);
+  ESTADO.evidencias.push({tipo:'actividad',modId,idx,correcta,fecha:ts,filename});
+  saveState();
+}
+
+/* Nota descargable: incluye nombre del estudiante y nota del módulo */
+function descargarReporteModulo(modId){
+  const m=getModulo(modId);
+  const est=ESTADO.modulos[modId];
+  if(!est.finalizado){toast('Finaliza el módulo para descargar tu nota','info');return}
+  const ts=est.fechaFinal||fechaHora();
+  const nombreRaw=ESTADO.usuario.nombre||'Estudiante';
+  const nombre=escapeHtml(nombreRaw);
+  const pct=Math.round((est.scoreActividades/est.totalActividades)*100);
+  const nota=est.nota.toFixed(1);
+  const estado=est.dominado?'Aprobado':'No aprobado';
+  let html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Nota ${escapeHtml(m.titulo)} - ${nombre}</title>
+  <style>body{font-family:Arial,sans-serif;max-width:700px;margin:20px auto;padding:20px;color:#333;background:#fff}
+  h1{color:#333;border-bottom:3px solid #666;padding-bottom:8px}
+  .nombre{font-size:1.3rem;font-weight:bold;margin:10px 0}
+  .nota{font-size:2.6rem;font-weight:bold;color:#222;margin:8px 0}
+  table{border-collapse:collapse;width:100%;margin-top:10px}td,th{border:1px solid #ddd;padding:8px;text-align:left}
+  th{background:#e0e0e0}
+  .estado{display:inline-block;padding:4px 12px;border-radius:12px;border:1px solid #666;font-weight:bold}
+  </style></head><body>
+  <h1>Nota de módulo: ${escapeHtml(m.titulo)}</h1>
+  <p class="nombre">Estudiante: ${nombre}</p>
+  <p><strong>Grupo:</strong> ${escapeHtml(ESTADO.usuario.grupo||'(sin grupo)')}<br>
+  <strong>Correo:</strong> ${escapeHtml(ESTADO.usuario.correo||'—')}<br>
+  <strong>Módulo:</strong> ${m.num}. ${escapeHtml(m.titulo)}<br>
+  <strong>Fecha:</strong> ${escapeHtml(ts)}</p>
+  <div class="nota">Nota: ${nota} / 10</div>
+  <p><span class="estado">${estado}</span></p>
+  <table>
+    <tr><th>Concepto</th><th>Valor</th></tr>
+    <tr><td>Actividades correctas</td><td>${est.scoreActividades} / ${est.totalActividades}</td></tr>
+    <tr><td>Porcentaje de aciertos</td><td>${pct}%</td></tr>
+    <tr><td>Consolidación</td><td>${est.consolidacionHecha?'Completada':'Pendiente'}</td></tr>
+    <tr><td>Criterio de aprobación</td><td>${Math.round(m.criterioDominio*100)}% de aciertos + consolidación</td></tr>
+    <tr><td>Fórmula de la nota</td><td>90% aciertos en actividades + 10% consolidación</td></tr>
+  </table>
+  <h2>Detalle de actividades</h2>
+  <table>
+  <tr><th>#</th><th>Intentos</th><th>Correcta</th></tr>`;
+  m.actividades.forEach((a,i)=>{
+    const aEst=est.actividades[i]||{intentos:0,correcta:false};
+    html+=`<tr><td>${i+1}</td><td>${aEst.intentos||0}</td><td>${aEst.correcta?'✓':'—'}</td></tr>`;
+  });
+  html+=`</table>
+  <hr>
+  <p style="font-size:.8rem;color:#666">Generado por Curso-Taller de Recuperación de Cálculo Diferencial · ${escapeHtml(fechaHora())}</p>
+  </body></html>`;
+  const filename=`nota_${modId}_${nombreRaw.replace(/\s+/g,'_')}.html`;
+  descargarTexto(filename,html,'text/html');
+  ESTADO.evidencias.push({tipo:'nota_modulo',modId,fecha:fechaHora(),filename});
+  saveState();
+  toast('Nota del módulo descargada','success');
+}
+
+function descargarPortafolioCompleto(){
+  const ts=fechaHora();
+  const mods=MODULES.filter(m=>m.id!=='m0');
+  let totalAct=0,totalCorrect=0,totalDom=0;
+  let htmlModulos='';
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    const pct=Math.round((e.scoreActividades/e.totalActividades)*100);
+    if(e.dominado)totalDom++;
+    totalAct+=e.totalActividades;
+    totalCorrect+=e.scoreActividades;
+    htmlModulos+=`<tr>
+      <td>M${m.num}: ${m.titulo}</td>
+      <td>${e.finalizado&&e.nota!==null?e.nota.toFixed(1)+'/10':'—'}</td>
+      <td>${e.scoreActividades}/${e.totalActividades}</td>
+      <td>${pct}%</td>
+      <td>${e.consolidacionHecha?'✓':'—'}</td>
+      <td>${e.dominado?'✓🏅':'—'}</td>
+    </tr>`;
+  });
+  const globalPct=Math.round((totalCorrect/totalAct)*100);
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Portafolio - Cálculo Diferencial</title>
+  <style>
+  body{font-family:Arial,sans-serif;max-width:900px;margin:20px auto;padding:20px;color:#333;line-height:1.6}
+  h1{color:#333;border-bottom:3px solid #666;padding-bottom:8px}
+  h2{color:#333;margin-top:24px}
+  table{border-collapse:collapse;width:100%;margin:10px 0}
+  td,th{border:1px solid #ddd;padding:8px;text-align:left}
+  th{background:#e0e0e0}
+  .resumen{background:#f8fafc;padding:16px;border-radius:8px;margin:16px 0}
+  .ok{color:#333;font-weight:bold}.err{color:#999}
+  .badge{display:inline-block;background:#666;color:#fff;padding:2px 10px;border-radius:12px;font-size:.8rem}
+  </style></head><body>
+  <h1>📚 Portafolio de Avance</h1>
+  <p><strong>Curso:</strong> Recuperación de Cálculo Diferencial<br>
+  <strong>Estudiante:</strong> ${escapeHtml(ESTADO.usuario.nombre||'(sin nombre)')}<br>
+  <strong>Grupo:</strong> ${escapeHtml(ESTADO.usuario.grupo||'(sin grupo)')}<br>
+  <strong>Correo:</strong> ${escapeHtml(ESTADO.usuario.correo||'—')}<br>
+  <strong>Fecha de inicio:</strong> ${new Date(ESTADO.usuario.fechaInicio).toLocaleDateString('es-MX')}<br>
+  <strong>Fecha de generación:</strong> ${escapeHtml(ts)}</p>
+
+  <div class="resumen">
+  <h2>Resumen global</h2>
+  <table>
+  <tr><th>Métrica</th><th>Valor</th></tr>
+  <tr><td>Módulos aprobados</td><td><strong>${totalDom} / ${mods.length}</strong></td></tr>
+  <tr><td>Actividades correctas</td><td>${totalCorrect} / ${totalAct}</td></tr>
+  <tr><td>Progreso global</td><td><strong>${globalPct}%</strong></td></tr>
+  <tr><td>Diagnóstico inicial</td><td>${ESTADO.m0.completado?'Completado':'Pendiente'} (${ESTADO.m0.score}/${ESTADO.m0.max})</td></tr>
+  <tr><td>Total de errores registrados</td><td>${ESTADO.errores.length}</td></tr>
+  </table>
+  </div>
+
+  ${ESTADO.m0.completado&&ESTADO.m0.recomendaciones.length>0?`<div class="resumen"><h2>Recomendaciones del diagnóstico</h2><ul>${ESTADO.m0.recomendaciones.map(r=>`<li>${r}</li>`).join('')}</ul></div>`:''}
+
+  <h2>Detalle por módulo</h2>
+  <table>
+  <tr><th>Módulo</th><th>Nota</th><th>Aciertos</th><th>%</th><th>Consolid.</th><th>Aprobado</th></tr>
+  ${htmlModulos}
+  </table>
+
+  ${ESTADO.errores.length>0?`<h2>Errores frecuentes (para repaso)</h2>
+  <table>
+  <tr><th>Módulo</th><th>Pregunta</th><th>Tu respuesta</th><th>Correcta</th><th>Fecha</th></tr>
+  ${ESTADO.errores.slice(-20).map(e=>`<tr>
+    <td>${e.mod}</td><td>${e.enunciado}</td>
+    <td class="err">${e.respuestaDada}</td>
+    <td class="ok">${e.respuestaCorrecta}</td>
+    <td>${e.fecha}</td>
+  </tr>`).join('')}
+  </table>`:''}
+
+  <h2>Insignias obtenidas</h2>
+  <p>${mods.filter(m=>ESTADO.modulos[m.id].insignia).map(m=>`<span class="badge">${m.icono} ${m.titulo}</span>`).join(' ')||'<em>Aún no has obtenido insignias. ¡Sigue practicando!</em>'}</p>
+
+  <hr>
+  <p style="font-size:.85rem;color:#666">
+  Este portafolio se genera automáticamente a partir de tu actividad en el curso-taller interactivo.<br>
+  Envíalo a tu docente como evidencia de tu proceso de recuperación.<br>
+  Generado: ${escapeHtml(ts)}
+  </p>
+  </body></html>`;
+
+  const filename=`portafolio_calculo_diferencial_${(ESTADO.usuario.nombre||'estudiante').replace(/\s+/g,'_')}.html`;
+  descargarTexto(filename,html,'text/html');
+
+  // Also download JSON with raw data
+  const jsonData={
+    curso:'Recuperación de Cálculo Diferencial',
+    estudiante:ESTADO.usuario,
+    fechaGeneracion:ts,
+    diagnostico:ESTADO.m0,
+    modulos:{},
+    errores:ESTADO.errores.slice(-50),
+    evidencias:ESTADO.evidencias
+  };
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    jsonData.modulos[m.id]={
+      titulo:m.titulo,
+      objetivo:m.objetivo,
+      desbloqueado:e.desbloqueado,
+      completado:e.completado,
+      finalizado:e.finalizado,
+      nota:e.nota,
+      dominado:e.dominado,
+      insignia:e.insignia,
+      scoreActividades:e.scoreActividades,
+      totalActividades:e.totalActividades,
+      consolidacionHecha:e.consolidacionHecha,
+      actividades:e.actividades,
+      primerAcceso:e.primerAcceso,
+      ultimoAcceso:e.ultimoAcceso
+    };
+  });
+  descargarTexto('portafolio_datos.json',JSON.stringify(jsonData,null,2),'application/json');
+
+  toast('Portafolio completo descargado (HTML + JSON)','success');
+}
+
+/* ============================================================
+   PANELES LATERALES
+   ============================================================ */
+function openPanel(id){
+  closePanels();
+  $(id).classList.add('open');
+  $('overlay-bg').classList.add('show');
+}
+function closePanels(){
+  document.querySelectorAll('.side-panel').forEach(p=>p.classList.remove('open'));
+  $('overlay-bg').classList.remove('show');
+}
+function renderFormulaRef(){
+  const c=$('formula-ref-content');
+  if(!c)return;
+  let html='<table>';
+  FORMULAS_REFERENCIA.forEach(f=>{
+    html+=`<tr><td>${f.f}</td><td>${f.r}</td></tr>`;
+  });
+  html+='</table>';
+  setHTML(c,html);
+}
+function renderErroresList(){
+  const c=$('errores-list');
+  if(!c)return;
+  if(ESTADO.errores.length===0){
+    c.innerHTML='<p style="color:var(--text-muted);font-size:.88rem">Aún no tienes errores registrados. ¡Sigue practicando!</p>';
+    return;
+  }
+  let html='';
+  ESTADO.errores.slice(-15).reverse().forEach(e=>{
+    html+=`<div class="err-item">
+      <div class="err-mod">Módulo ${e.mod} · Actividad ${e.idx+1}</div>
+      <div class="err-q">${e.enunciado}</div>
+      <div>Tu respuesta: <span style="color:#999">${e.respuestaDada}</span></div>
+      <div>Correcta: <span style="color:#333;font-weight:bold">${e.respuestaCorrecta}</span></div>
+      <div class="err-date">${e.fecha}</div>
+    </div>`;
+  });
+  setHTML(c,html);
+}
+function renderProgresoDetallado(){
+  const c=$('progreso-detallado');
+  if(!c)return;
+  const mods=MODULES.filter(m=>m.id!=='m0');
+  let html='<table style="width:100%;font-size:.85rem"><tr><th>Módulo</th><th>Aciertos</th><th>%</th><th>Nota</th><th>Estado</th></tr>';
+  mods.forEach(m=>{
+    const e=ESTADO.modulos[m.id];
+    const pct=Math.round((e.scoreActividades/e.totalActividades)*100);
+    const estado=e.dominado?'✅':e.finalizado?'🔁':'📖';
+    const nota=e.finalizado&&e.nota!==null?e.nota.toFixed(1):'—';
+    html+=`<tr><td>${estado} M${m.num}</td><td>${e.scoreActividades}/${e.totalActividades}</td><td>${pct}%</td><td>${nota}</td><td>${e.dominado?'Aprobado':e.finalizado?'No aprobado':'En curso'}</td></tr>`;
+  });
+  html+='</table>';
+  html+=`<div style="margin-top:14px;padding:10px;background:var(--surface-2);border-radius:8px;font-size:.85rem">
+    <strong>Diagnóstico:</strong> ${ESTADO.m0.completado?'Completado':'Pendiente'} (${ESTADO.m0.score}/${ESTADO.m0.max})<br>
+    <strong>Evidencias descargadas:</strong> ${ESTADO.evidencias.length}<br>
+    <strong>Errores registrados:</strong> ${ESTADO.errores.length}
+  </div>`;
+  setHTML(c,html);
+}
+
+/* ============================================================
+   MODAL: EDITAR DATOS
+   ============================================================ */
+function editarDatos(){
+  const m=$('modal-content');
+  setHTML(m,`
+    <h3>👤 Mis datos</h3>
+    <div class="field">
+      <label>Nombre completo (aparecerá en tu nota y portafolio)</label>
+      <input class="input-line" id="dat-nombre" value="${escapeHtml(ESTADO.usuario.nombre)}" placeholder="Tu nombre" style="width:100%">
+    </div>
+    <div class="field">
+      <label>Grupo / sección</label>
+      <input class="input-line" id="dat-grupo" value="${escapeHtml(ESTADO.usuario.grupo)}" placeholder="Ej: Cálculo Diferencial - Grupo B" style="width:100%">
+    </div>
+    <div class="field">
+      <label>Correo de contacto</label>
+      <input class="input-line" id="dat-correo" value="${escapeHtml(ESTADO.usuario.correo)}" placeholder="tu@correo.com" style="width:100%">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarDatos()">Guardar</button>
+    </div>`);
+  $('modal-overlay').classList.add('show');
+}
+function guardarDatos(){
+  ESTADO.usuario.nombre=$('dat-nombre').value.trim();
+  ESTADO.usuario.grupo=$('dat-grupo').value.trim();
+  ESTADO.usuario.correo=$('dat-correo').value.trim();
+  saveState();
+  cerrarModal();
+  toast('Datos guardados','success');
+  renderDashboard();
+  if(moduloActual && moduloActual!=='m0') renderNotaModulo(moduloActual);
+}
+function cerrarModal(){
+  $('modal-overlay').classList.remove('show');
+}
+
+/* ============================================================
+   IMPORTAR / REINICIAR
+   ============================================================ */
+function importarEvidencias(){
+  const m=$('modal-content');
+  setHTML(m,`
+    <h3>📥 Importar evidencias previas</h3>
+    <p style="font-size:.9rem;margin-bottom:12px">Si descargaste anteriormente el archivo <code>portafolio_datos.json</code>, puedes importarlo aquí para restaurar tu progreso.</p>
+    <input type="file" id="import-file" accept=".json" style="margin-bottom:10px">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="procesarImport()">Importar</button>
+    </div>`);
+  $('modal-overlay').classList.add('show');
+}
+function procesarImport(){
+  const file=$('import-file').files[0];
+  if(!file){toast('Selecciona un archivo','error');return}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.estudiante)ESTADO.usuario=data.estudiante;
+      if(data.modulos){
+        Object.keys(data.modulos).forEach(mid=>{
+          if(ESTADO.modulos[mid]){
+            Object.assign(ESTADO.modulos[mid],data.modulos[mid]);
+          }
+        });
+      }
+      if(data.errores)ESTADO.errores=data.errores;
+      if(data.diagnostico)ESTADO.m0=Object.assign(ESTADO.m0,data.diagnostico);
+      initModulosEstado();
+      saveState();
+      cerrarModal();
+      renderDashboard();
+      toast('Progreso importado correctamente','success');
+    }catch(err){
+      toast('Error: archivo inválido','error');
+    }
+  };
+  reader.readAsText(file);
+}
+function reiniciarProgreso(){
+  const m=$('modal-content');
+  setHTML(m,`
+    <h3>🔄 Reiniciar progreso</h3>
+    <p style="font-size:.9rem;margin-bottom:12px;color:var(--danger)">⚠️ Esto borrará TODO tu progreso, evidencias y errores. Esta acción no se puede deshacer.</p>
+    <p style="font-size:.88rem">Se recomienda descargar tu portafolio completo antes de reiniciar.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" style="background:var(--danger);color:#fff" onclick="confirmarReset()">Sí, reiniciar todo</button>
+    </div>`);
+  $('modal-overlay').classList.add('show');
+}
+function confirmarReset(){
+  localStorage.removeItem(STORAGE_KEY);
+  ESTADO={
+    usuario:{nombre:'',grupo:'',correo:'',fechaInicio:new Date().toISOString()},
+    m0:{completado:false,score:0,max:6,recomendaciones:[],intentos:[]},
+    modulos:{},
+    errores:[],
+    evidencias:[],
+    ultimoAcceso:new Date().toISOString()
+  };
+  initModulosEstado();
+  cerrarModal();
+  irDashboard();
+  toast('Progreso reiniciado','info');
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+function init(){
+  loadState();
+  initModulosEstado();
+  renderDashboard();
+  // First-time welcome
+  if(!ESTADO.usuario.nombre && !localStorage.getItem(STORAGE_KEY+'_welcomed')){
+    setTimeout(()=>{
+      editarDatos();
+      localStorage.setItem(STORAGE_KEY+'_welcomed','1');
+    },800);
+  }
+}
+/* Dark mode toggle */
+function toggleDarkMode(){
+  var html=document.documentElement;
+  var current=html.getAttribute('data-theme');
+  var newTheme=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',newTheme);
+  try{localStorage.setItem('calc_theme',newTheme)}catch(e){}
+  updateDarkModeButton(newTheme);
+}
+function updateDarkModeButton(theme){
+  var btn=document.getElementById('btn-dark-mode');
+  if(!btn)return;
+  if(theme==='dark'){
+    btn.innerHTML='☀️ <span class="btn-label">Modo claro</span>';
+  }else{
+    btn.innerHTML='🌙 <span class="btn-label">Modo oscuro</span>';
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  try{
+    var savedTheme=localStorage.getItem('calc_theme')||'light';
+    document.documentElement.setAttribute('data-theme',savedTheme);
+    updateDarkModeButton(savedTheme);
+  }catch(e){}
+  init();
+});
 </script>
-
 </body>
 </html>
