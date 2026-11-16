@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperación de Cálculo Integral · Curso-Taller Interactivo</title>
+<!-- KaTeX CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<!-- KaTeX JS -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<!-- html2canvas para la descarga de la insignia/nota en PNG -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+:root{
+  --primary:#4a4a4a; --primary-dark:#2a2a2a; --primary-light:#e0e0e0;
+  --accent:#6a6a6a; --accent-light:#f0f0f0;
+  --success:#3a3a3a; --success-light:#e8e8e8;
+  --danger:#6a6a6a; --danger-light:#f2f2f2;
+  --warning:#7a7a7a; --warning-light:#f5f5f5;
+  --bg:#f5f5f5; --surface:#ffffff; --surface-2:#ebebeb;
+  --text:#1a1a1a; --text-muted:#707070; --border:#d4d4d4;
+  --btn-text:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08);
+  --shadow-lg:0 10px 25px -5px rgba(0,0,0,.12),0 8px 10px -6px rgba(0,0,0,.08);
+  --radius:14px; --radius-sm:8px;
+  --font:'Segoe UI',Roboto,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --primary:#666666; --primary-dark:#444444; --primary-light:#333333;
+  --accent:#888888; --accent-light:#2a2a2a;
+  --success:#555555; --success-light:#2a2a2a;
+  --danger:#888888; --danger-light:#2a2a2a;
+  --warning:#777777; --warning-light:#2a2a2a;
+  --bg:#1a1a1a; --surface:#252525; --surface-2:#303030;
+  --text:#e8e8e8; --text-muted:#999999; --border:#383838;
+  --btn-text:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
+  --shadow-lg:0 10px 25px -5px rgba(0,0,0,.5),0 8px 10px -6px rgba(0,0,0,.3);
+}
+body {
+  font-family: var(--font);
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+  padding: 15px 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+h1 { font-size: 1.5rem; margin: 0; }
+.btn {
+  background: var(--primary);
+  color: var(--btn-text);
+  border: none;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  transition: opacity 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn:hover { opacity: 0.9; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.grid-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.module-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 12px;
+  background: var(--accent-light);
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.hidden { display: none !important; }
+#certificate-preview {
+  background: var(--surface);
+  border: 2px dashed var(--primary);
+  padding: 30px;
+  text-align: center;
+  border-radius: var(--radius);
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header General -->
+  <header>
+    <h1>Cálculo Integral · Módulos Independientes</h1>
+    <div>
+      <button class="btn" onclick="toggleTheme()">🌓 Tema</button>
+    </div>
+  </header>
+
+  <!-- VISTA: DASHBOARD PRINCIPAL -->
+  <div id="view-dashboard" class="card">
+    <h2>Panel de Módulos (Independientes)</h2>
+    <p>Selecciona cualquier módulo libremente para practicar o evaluar tus conocimientos. No se requiere orden estricto ni carga de archivos previos.</p>
+    
+    <div class="grid-modules">
+      <!-- Módulo 1 -->
+      <div class="module-card">
+        <div>
+          <span class="badge">Módulo 1</span>
+          <h3>Antiderivadas y Teorema Fundamental</h3>
+          <p>Conceptos básicos de integración y acumulación de área.</p>
+        </div>
+        <button class="btn" onclick="openModule(1)">Acceder al Módulo</button>
+      </div>
+      <!-- Módulo 2 -->
+      <div class="module-card">
+        <div>
+          <span class="badge">Módulo 2</span>
+          <h3>Métodos de Integración</h3>
+          <p>Sustitución, partes y fracciones parciales.</p>
+        </div>
+        <button class="btn" onclick="openModule(2)">Acceder al Módulo</button>
+      </div>
+      <!-- Módulo 3 -->
+      <div class="module-card">
+        <div>
+          <span class="badge">Módulo 3</span>
+          <h3>Aplicaciones de la Integral</h3>
+          <p>Áreas bajo la curva, sólidos de revolución y longitudes.</p>
+        </div>
+        <button class="btn" onclick="openModule(3)">Acceder al Módulo</button>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+      <h3>Portafolio de Evidencias y Avance Local</h3>
+      <div id="portfolio-container" style="background: var(--surface-2); padding: 15px; border-radius: var(--radius-sm);">
+        <p>Aún no hay módulos completados en este dispositivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA: CONTENEDOR DE MÓDULOS -->
+  <div id="view-module" class="card hidden">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <button class="btn" onclick="goDashboard()">← Volver al Dashboard</button>
+      <span id="module-title-header" style="font-weight: bold; font-size: 1.1rem;"></span>
+    </div>
+
+    <div id="module-content-body">
+      <!-- Contenido interactivo dinámico del módulo -->
+    </div>
+
+    <div style="margin-top: 25px; text-align: right;">
+      <button class="btn" onclick="completeModuleEval()">Finalizar y Evaluar Módulo</button>
+    </div>
+  </div>
+
+  <!-- VISTA: RESULTADO Y DESCARGA DE PNG -->
+  <div id="view-result" class="card hidden">
+    <h2>¡Módulo Completado con Éxito!</h2>
+    <p>Has terminado la práctica de este módulo de forma independiente.</p>
+    
+    <div id="certificate-preview">
+      <h3>Constancia de Logro - Cálculo Integral</h3>
+      <p id="cert-user-info">Módulo acreditado satisfactoriamente</p>
+      <h1 id="cert-score" style="color: var(--primary);">Calificación: 100 / 100</h1>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Fecha: <span id="cert-date"></span></p>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+      <button class="btn" onclick="downloadPNG()">Descargar Nota en PNG</button>
+      <button class="btn" onclick="goDashboard()">Regresar al Dashboard</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentModuleId = null;
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute("data-theme");
+  html.setAttribute("data-theme", current === "dark" ? "" : "dark");
+}
+
+function openModule(id) {
+  currentModuleId = id;
+  document.getElementById("view-dashboard").classList.add("hidden");
+  document.getElementById("view-result").classList.add("hidden");
+  document.getElementById("view-module").classList.remove("hidden");
+
+  const titles = {
+    1: "Módulo 1: Antiderivadas y Teorema Fundamental",
+    2: "Módulo 2: Métodos de Integración",
+    3: "Módulo 3: Aplicaciones de la Integral"
+  };
+  
+  document.getElementById("module-title-header").innerText = titles[id];
+  document.getElementById("module-content-body").innerHTML = `
+    <p>Ejercicios interactivos correspondientes al <strong>${titles[id]}</strong>.</p>
+    <p>Resuelve las cuestiones planteadas en este espacio de práctica autónoma.</p>
+    <div style="padding: 15px; background: var(--surface-2); border-radius: 8px; margin-top: 15px;">
+      <p>$$\\int x^2 dx = \\frac{x^3}{3} + C$$</p>
+      <label>Escribe tu respuesta simplificada:</label><br>
+      <input type="text" id="user-answer" style="padding: 8px; width: 100%; margin-top: 8px; border-radius: 4px; border: 1px solid var(--border);" placeholder="Ej. x^3/3 + C">
+    </div>
+  `;
+}
+
+function goDashboard() {
+  document.getElementById("view-module").classList.add("hidden");
+  document.getElementById("view-result").classList.add("hidden");
+  document.getElementById("view-dashboard").classList.remove("hidden");
+  renderPortfolio();
+}
+
+function completeModuleEval() {
+  // Guardar en portafolio local (localStorage)
+  let portfolio = JSON.parse(localStorage.getItem("calculo_portfolio") || "{}");
+  portfolio[currentModuleId] = {
+    score: 100,
+    date: new Date().toLocaleDateString()
+  };
+  localStorage.setItem("calculo_portfolio", JSON.stringify(portfolio));
+
+  // Mostrar vista de resultado
+  document.getElementById("view-module").classList.add("hidden");
+  document.getElementById("cert-user-info").innerText = `Módulo ${currentModuleId} acreditado independientemente`;
+  document.getElementById("cert-date").innerText = new Date().toLocaleDateString();
+  document.getElementById("view-result").classList.remove("hidden");
+}
+
+function renderPortfolio() {
+  let portfolio = JSON.parse(localStorage.getItem("calculo_portfolio") || "{}");
+  let container = document.getElementById("portfolio-container");
+  
+  let keys = Object.keys(portfolio);
+  if (keys.length === 0) {
+    container.innerHTML = `<p>Aún no hay módulos completados en este dispositivo.</p>`;
+    return;
+  }
+
+  let html = "<ul>";
+  keys.forEach(k => {
+    html += `<li><strong>Módulo ${k}</strong> - Calificación: ${portfolio[k].score} (Completado el ${portfolio[k].date})</li>`;
+  });
+  html += "</ul>";
+  container.innerHTML = html;
+}
+
+function downloadPNG() {
+  const element = document.getElementById("certificate-preview");
+  html2canvas(element).then(canvas => {
+    const link = document.createElement("a");
+    link.download = `Evidencia_Modulo_${currentModuleId}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+// Cargar portafolio al iniciar
+window.onload = function() {
+  renderPortfolio();
+};
+</script>
+
+</body>
+</html>
